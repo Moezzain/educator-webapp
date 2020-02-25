@@ -1,25 +1,21 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import {DataProvider} from './stateManagement/context'
+import {BrowserRouter as Router, Route, Link, Switch} from 'react-router-dom'
+import LoginView from './views/LoginView'
+import ShowPatientsView from './views/ShowPatientsView'
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <DataProvider>
+      <Router>
+        <Switch>
+        <Route exact path="/" component={LoginView} />
+        <Route exact path="/showpatients" component={ShowPatientsView} />
+        </Switch>
+      </Router>
+   
+    </DataProvider>
   );
 }
 
