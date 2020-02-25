@@ -69,7 +69,7 @@ class Login extends React.Component {
               alignItems: "center"
             }}
           >
-            <CardContainer width="80%">
+            <CardContainer width="80%" padding={30}>
               <Form style={{ display: "flex", flexDirection: "column" }}>
                 <Form.Group controlId="formBasicEmail">
                   <Form.Label>Username</Form.Label>

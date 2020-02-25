@@ -9,7 +9,9 @@ class CardContainer extends Component {
     //   padding: "2%",
      flexDirection: this.props.direction,
       backgroundColor: "rgba(247,247,247,1)",
-      padding: 30,
+      padding: this.props.padding,
+      marginBottom: this.props.marginB,
+      marginTop: this.props.marginT,
       borderRadius: 25
     //   boxShadow: '1px 3px 5px rgba(255,255,255,0.9)' 
       }}>
