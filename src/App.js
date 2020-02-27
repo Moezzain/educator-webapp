@@ -10,16 +10,18 @@ import MyNav from './components/MyNav'
 import { Container } from 'react-bootstrap';
 import SideBar from './components/SideBar';
 
+
 function App() {
   return (
     <DataProvider>
       <Router>
-      <MyNav /> 
-      <SideBar />
+     
+     
         <Switch>
         <Route exact path="/" component={Home} />
         <Route exact path="/login" component={LoginView} />
-        <Route exact path="/showpatients" component={ShowPatientsView} />
+        <Route exact path="/patients" component={ShowPatientsView} />
+        <Route component={Home} />
         </Switch>
       </Router>
    

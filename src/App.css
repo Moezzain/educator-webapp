@@ -19,8 +19,7 @@
   align-items: center;
 }
 
-
-
+/* Patients View */
 .flex-col {
   display: flex; 
   flex-direction: column;
@@ -39,7 +38,6 @@
   background: transparent;
   overflow-y: scroll;
   background: rgba(0,0,0,0.2);
- 
   margin-top: 20px;
   margin-bottom: 20px
 }
@@ -49,8 +47,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  
-  /* border-radius: 30px; */
   padding: 0 30px;
   margin: 0 auto;
+}
+
+/* Side Bar */
+.nav-side{
+  background-color: #3581b8 !important;
+  height: 100% !important;
 }

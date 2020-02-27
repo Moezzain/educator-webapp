@@ -24,7 +24,7 @@ class Login extends React.Component {
     login(this.state)
       .then(res => {
         saveData(res.data.educatorId, res.data.appointments, res.data.chats);
-        this.props.history.push("showpatients");
+        this.props.history.push("/");
       })
       .catch(err => {
         console.log(err);

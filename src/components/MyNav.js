@@ -5,7 +5,7 @@ import {Link} from 'react-router-dom'
 const MyNav  = () => {
   
     return (
-      <Navbar bg="secondary" variant="dark" collapseOnSelect expand="lg">
+      <Navbar bg="secondary" style={{direction: "rtl"}} variant="dark" collapseOnSelect expand="lg">
         <Navbar.Brand >
           <img
             alt=""
@@ -17,9 +17,9 @@ const MyNav  = () => {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
   <Navbar.Collapse id="responsive-navbar-nav">
-    <Nav className="mr-auto">
+    <Nav>
       <Nav.Link ><Link style={{color: "#FFF"}} to="/">Home</Link> </Nav.Link>
-      <Nav.Link ><Link style={{color: "#FFF"}} to="/showpatients">Login</Link></Nav.Link>
+      <Nav.Link ><Link style={{color: "#FFF"}} to="/login">Login</Link></Nav.Link>
       </Nav>
       </Navbar.Collapse>
       </Navbar>

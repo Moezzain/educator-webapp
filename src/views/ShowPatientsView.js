@@ -14,6 +14,7 @@ import { login } from "../API/apiAuth";
 import { DataContext } from "../stateManagement/context";
 import { parseArray } from "../helpers/Converters";
 import MyNav from "../components/MyNav";
+import SideBarComponent from "../components/SideBarComponent";
 import Footer from "../components/Footer";
 import SideBar from "../components/SideBar";
 
@@ -27,15 +28,13 @@ class ShowPatientsView extends React.Component {
 
   componentWillMount() {
     if (this.context.educatorId == "") {
-      this.props.history.goBack();
-      // console.log(this.props)
+      this.props.history.push('/');
     }
   }
 
   render() {
-    // console.log(this.context.chats);
     let { chats } = this.context;
-    if (!this.context.chats[0].id) {
+    if (!chats[0].id) {
       chats = parseArray(this.context.chats);
     }
     const patients = chats.map(chat => {
@@ -94,7 +93,8 @@ class ShowPatientsView extends React.Component {
     });
     return (
       <>
-       
+        <MyNav />
+          <SideBarComponent history={this.props.history} />
        
         <Container
           fluid
