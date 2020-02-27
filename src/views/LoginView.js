@@ -2,97 +2,72 @@ import React from "react";
 import { Button, Form, Row, Col, Container } from "react-bootstrap";
 import CardContainer from "../components/CardContainer";
 import logo from "../assets/ithnain.png";
-import {login} from '../API/apiAuth'
-import {DataContext} from '../stateManagement/context'
+import { login } from "../API/apiAuth";
+import { DataContext } from "../stateManagement/context";
 
 class Login extends React.Component {
+  static contextType = DataContext;
 
-    static contextType = DataContext;
+  state = {
+    username: "",
+    password: ""
+  };
 
+  handleChang = e => {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  };
 
-    state ={
-        username: "",
-        password: ""
-    }
-
-    handleChang = (e) => {
-        this.setState({
-            [e.target.name]: e.target.value
-        })
-    }
-
-    onSubmit = () => {
-        
-        login(this.state)
-        .then(res => {
-            
-            this.context.saveData(res.data.educatorId, res.data.appointments, res.data.chats)
-            this.props.history.push("showpatients")
-        })
-        .catch(err => {
-            console.log(err)
-        })
-    }
-
+  onSubmit = () => {
+    const { saveData } = this.context;
+    login(this.state)
+      .then(res => {
+        saveData(res.data.educatorId, res.data.appointments, res.data.chats);
+        this.props.history.push("showpatients");
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
 
   render() {
-      const {username, password} = this.state;
+    const { username, password } = this.state;
+    const { lang, userLang } = this.context;
+    const { usernameText, enterUsernameText, passwordText, submitText } = lang[
+      userLang
+    ];
     return (
-      <Container
-        fluid
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-          backgroundColor: "#0a122a"
-        }}
-      >
+      <Container className="home-background" fluid>
         <Row>
-          <Col
-            sm={12}
-            lg={4}
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center"
-            }}
-          >
-            <img src={logo} style={{ width: "50%", marginBottom: "4%" }} />
+          <Col sm={12} lg={4} className="container-center">
+            <img src={logo} className="logo" />
           </Col>
-          <Col
-            sm={12}
-            lg={6}
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center"
-            }}
-          >
+          <Col sm={12} lg={6} className="container-center">
             <CardContainer width="80%" padding={30}>
-              <Form style={{ display: "flex", flexDirection: "column" }}>
+              <Form className="flex-col">
                 <Form.Group controlId="formBasicEmail">
-                  <Form.Label>Username</Form.Label>
-                  <Form.Control 
-                  type="text" 
-                  placeholder="Enter username"
-                  value={username}
-                  name={"username"}
-                  onChange={(e) => this.handleChang(e)}
+                  <Form.Label>{usernameText}</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder={enterUsernameText}
+                    value={username}
+                    name={"username"}
+                    onChange={e => this.handleChang(e)}
                   />
                 </Form.Group>
                 <Form.Group controlId="formBasicPassword">
-                  <Form.Label>Password</Form.Label>
-                  <Form.Control 
-                  type="password" 
-                  placeholder="Password"
-                  value={password}
-                  name={"password"}
-                  onChange={(e) => this.handleChang(e)}
+                  <Form.Label>{passwordText}</Form.Label>
+                  <Form.Control
+                    type="password"
+                    placeholder={passwordText}
+                    value={password}
+                    name={"password"}
+                    onChange={e => this.handleChang(e)}
                   />
                 </Form.Group>
-                <Button variant="primary" onClick={this.onSubmit}>
-                  Submit
+                <Button variant="secondary" onClick={this.onSubmit}>
+                  {submitText}
                 </Button>
               </Form>
             </CardContainer>

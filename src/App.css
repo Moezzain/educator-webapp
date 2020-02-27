@@ -1,10 +1,38 @@
 
+/* Login View */
+.home-background {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #0a122a;
+}
+
+.logo {
+  width: 50%;
+  margin-bottom: 4%
+}
+
+.container-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
+.flex-col {
+  display: flex; 
+  flex-direction: column;
+}
+
 .container {
   display: flex;
   flex-direction: row;
   height: 100vh;
   background-color: #0a122a
 }
+
 
 .left-col {
   flex: 1;

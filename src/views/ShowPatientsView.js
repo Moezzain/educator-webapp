@@ -15,6 +15,7 @@ import { DataContext } from "../stateManagement/context";
 import { parseArray } from "../helpers/Converters";
 import MyNav from "../components/MyNav";
 import Footer from "../components/Footer";
+import SideBar from "../components/SideBar";
 
 class ShowPatientsView extends React.Component {
   static contextType = DataContext;
@@ -93,7 +94,8 @@ class ShowPatientsView extends React.Component {
     });
     return (
       <>
-        <MyNav /> 
+       
+       
         <Container
           fluid
           style={{
@@ -104,6 +106,7 @@ class ShowPatientsView extends React.Component {
             backgroundColor: "#0a122a"
           }}
         >
+           
           <CardContainer width="80%" direction="row" padding={10} marginT={40} marginB={40}>
             <Tab.Container id="left-tabs-example" >
               <div className="left-col">

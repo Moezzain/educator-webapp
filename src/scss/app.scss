@@ -4,9 +4,17 @@
 
 /* make the customizations */
 $theme-colors: (
-  
+  "primary": #0a122a,
   "secondary": #3581b8
 );
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: "#0a122a"
+}
 
 /* import bootstrap to set changes */
 @import "bootstrap";

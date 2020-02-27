@@ -5,15 +5,24 @@ class DataProvider extends Component {
   constructor(props) {
     super(props);
     this.state = {
-       test: "contex works",
        educatorId: "",
        appointments: [],
-       chats: []
+       chats: [],
+       userLang: "en",
+       lang: {
+         ar: {},
+         en: {
+           usernameText: "Username",
+           enterUsernameText: "Enter Username",
+           passwordText: "Password",
+           submitText: "Submit"
+         }
+       }
     };
   }
 
   saveData = (educatorId, appointments, chats) => this.setState({educatorId, appointments, chats})
-
+  setUserLang = (userLang) => this.setState({userLang})
 
   render() {
 
@@ -23,7 +32,8 @@ class DataProvider extends Component {
       <DataContext.Provider
         value={{
           ...this.state,
-          saveData: this.saveData
+          saveData: this.saveData,
+          setUserLang: this.setUserLang
         }}
       >
         {this.props.children}
