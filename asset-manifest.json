@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/educator-webapp/static/css/main.66934c36.chunk.css",
+    "main.js": "/educator-webapp/static/js/main.84c21985.chunk.js",
+    "main.js.map": "/educator-webapp/static/js/main.84c21985.chunk.js.map",
+    "runtime-main.js": "/educator-webapp/static/js/runtime-main.de43856e.js",
+    "runtime-main.js.map": "/educator-webapp/static/js/runtime-main.de43856e.js.map",
+    "static/js/2.d1a2d9f0.chunk.js": "/educator-webapp/static/js/2.d1a2d9f0.chunk.js",
+    "static/js/2.d1a2d9f0.chunk.js.map": "/educator-webapp/static/js/2.d1a2d9f0.chunk.js.map",
+    "index.html": "/educator-webapp/index.html",
+    "precache-manifest.27a2acf9a6f27b4aff49190733942c15.js": "/educator-webapp/precache-manifest.27a2acf9a6f27b4aff49190733942c15.js",
+    "service-worker.js": "/educator-webapp/service-worker.js",
+    "static/css/main.66934c36.chunk.css.map": "/educator-webapp/static/css/main.66934c36.chunk.css.map",
+    "static/js/2.d1a2d9f0.chunk.js.LICENSE.txt": "/educator-webapp/static/js/2.d1a2d9f0.chunk.js.LICENSE.txt",
+    "static/media/ithnain.png": "/educator-webapp/static/media/ithnain.287167eb.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.de43856e.js",
+    "static/js/2.d1a2d9f0.chunk.js",
+    "static/css/main.66934c36.chunk.css",
+    "static/js/main.84c21985.chunk.js"
+  ]
+}
