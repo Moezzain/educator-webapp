@@ -1,23 +1,23 @@
 {
   "files": {
     "main.css": "/educator-webapp/static/css/main.66934c36.chunk.css",
-    "main.js": "/educator-webapp/static/js/main.a2909c68.chunk.js",
-    "main.js.map": "/educator-webapp/static/js/main.a2909c68.chunk.js.map",
+    "main.js": "/educator-webapp/static/js/main.60420e42.chunk.js",
+    "main.js.map": "/educator-webapp/static/js/main.60420e42.chunk.js.map",
     "runtime-main.js": "/educator-webapp/static/js/runtime-main.de43856e.js",
     "runtime-main.js.map": "/educator-webapp/static/js/runtime-main.de43856e.js.map",
-    "static/js/2.c078b820.chunk.js": "/educator-webapp/static/js/2.c078b820.chunk.js",
-    "static/js/2.c078b820.chunk.js.map": "/educator-webapp/static/js/2.c078b820.chunk.js.map",
+    "static/js/2.fa379e53.chunk.js": "/educator-webapp/static/js/2.fa379e53.chunk.js",
+    "static/js/2.fa379e53.chunk.js.map": "/educator-webapp/static/js/2.fa379e53.chunk.js.map",
     "index.html": "/educator-webapp/index.html",
-    "precache-manifest.105abc12c1613bd28e115b6df16c74fd.js": "/educator-webapp/precache-manifest.105abc12c1613bd28e115b6df16c74fd.js",
+    "precache-manifest.88ad2a4923e7600880a03b2d41fc83f3.js": "/educator-webapp/precache-manifest.88ad2a4923e7600880a03b2d41fc83f3.js",
     "service-worker.js": "/educator-webapp/service-worker.js",
     "static/css/main.66934c36.chunk.css.map": "/educator-webapp/static/css/main.66934c36.chunk.css.map",
-    "static/js/2.c078b820.chunk.js.LICENSE.txt": "/educator-webapp/static/js/2.c078b820.chunk.js.LICENSE.txt",
+    "static/js/2.fa379e53.chunk.js.LICENSE.txt": "/educator-webapp/static/js/2.fa379e53.chunk.js.LICENSE.txt",
     "static/media/ithnain.png": "/educator-webapp/static/media/ithnain.287167eb.png"
   },
   "entrypoints": [
     "static/js/runtime-main.de43856e.js",
-    "static/js/2.c078b820.chunk.js",
+    "static/js/2.fa379e53.chunk.js",
     "static/css/main.66934c36.chunk.css",
-    "static/js/main.a2909c68.chunk.js"
+    "static/js/main.60420e42.chunk.js"
   ]
 }
