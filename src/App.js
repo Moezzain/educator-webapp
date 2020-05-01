@@ -18,6 +18,7 @@ function App() {
       
         <Switch>
         <Route exact path="/" component={LoginView} />
+        {/* <Route exact path="/" component={ShowPatientsView} /> */}
         <Route exact path="/showpatients" component={ShowPatientsView} />
         </Switch>
       </Router>

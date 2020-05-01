@@ -1,12 +1,27 @@
 import axios from "axios"
 import apiUrl from '../config/apiConfig'
+import { sha256 } from 'js-sha256';
 
+const encrypt = (text) => {
+    return sha256(text);
+}
 
-export const login = async (user) => {
-    // const password =  await encrypt(password);
-    // console.log(password)
+export const login = async ({ username, password }) => {
+    let encryptedPassword = await encrypt(password);
+    
     const data = {
-        user
+        id: username,
+        password: encryptedPassword
     }
     return axios.post(`${apiUrl}/login`, data)
+}
+
+export const getMessages = async id => {
+    try {
+        let result = await axios
+            .get(`${apiUrl}/message?chatId=${id}`, { timeout: 10000 })
+        return result;
+    } catch (error) {
+        return error
+    }
 }
