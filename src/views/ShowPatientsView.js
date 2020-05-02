@@ -7,7 +7,9 @@ import {
   Col,
   Container,
   Tab,
-  Nav
+  Nav,
+  Accordion,
+  Card,
 } from "react-bootstrap";
 import CardContainer from "../components/CardContainer";
 import logo from "../assets/ithnain.png";
@@ -232,6 +234,52 @@ class ShowPatientsView extends React.Component {
     })
   }
 
+
+  renderAppointments() {
+    const { appointments } = this.context;
+    // let appointments = {
+    //   '2020-11-28':
+    //     [{ date: '2020-11-28T17:00:00.000Z', name: 'W3', time: '20:00:00' },
+    //     { date: '2020-11-28T17:00:00.000Z', name: 'W1', time: '08:00:00' }],
+    //   '2020-11-29': [{ date: '2020-11-29T17:00:00.000Z', name: 'W2', time: '16:00:00' }]
+    // }
+    console.log('appointments render:', appointments);
+
+    if (!appointments || (appointments && !Object.keys(appointments).length)) {
+      return null
+    }
+
+    // return Object.keys(appointments).map(appointmentDate => {
+    //   let appointmentsInDay = appointments[appointmentDate]
+
+    //   return (
+    //     <Accordion key={appointmentDate} defaultActiveKey={appointmentDate}>
+    //       <Card>
+    //         <Card.Header>
+    //           <Accordion.Toggle as={Button} variant="link" eventKey={appointmentDate}>
+    //             {appointmentDate}
+    //           </Accordion.Toggle>
+    //         </Card.Header>
+    //         <Accordion.Collapse eventKey={appointmentDate}>
+    //           <Card.Body>
+    //             {appointmentsInDay.map(({ appointmentId, time, name }) => {
+    //               let hours = parseInt(time.split(':')[0])
+    //               let minutes = time.split(':')[1]
+    //               let displayTime = hours > 12 ? `${hours - 12}:${minutes}` : `${hours}:${minutes}`
+    //               return (
+    //                 <ListGroup.Item key={appointmentId} eventKey={appointmentId}>
+    //                   {displayTime}: {name}
+    //                 </ListGroup.Item>
+    //               );
+    //             })}
+    //           </Card.Body>
+    //         </Accordion.Collapse>
+    //       </Card>
+    //     </Accordion>
+    //   )
+    // })
+  }
+
   renderPatientsList() {
     const { chats } = this.context;
     if (!chats) {
@@ -256,14 +304,14 @@ class ShowPatientsView extends React.Component {
 
 
   renderListHeader() {
-    let {activeList} = this.state;
+    let { activeList } = this.state;
     let patientsStyle, appointmentStyle;
-    if(activeList=='appointments'){
-      patientsStyle='dark'
-      appointmentStyle= 'primary'
-    } else{
-      patientsStyle='primary'
-      appointmentStyle= 'dark'
+    if (activeList == 'appointments') {
+      patientsStyle = 'dark'
+      appointmentStyle = 'primary'
+    } else {
+      patientsStyle = 'primary'
+      appointmentStyle = 'dark'
     }
     return (
       <div style={{
@@ -280,7 +328,7 @@ class ShowPatientsView extends React.Component {
   }
 
   render() {
-
+    let { activeList } = this.state
     return (
       <>
         <MyNav />
@@ -298,7 +346,10 @@ class ShowPatientsView extends React.Component {
             <Tab.Container id="left-tabs-example" >
               <div className="left-col">
                 {this.renderListHeader()}
-                <ListGroup >{this.renderPatientsList()}</ListGroup>
+                {activeList == 'appointments' ?
+                  <ListGroup >{this.renderAppointments()}</ListGroup>
+                  : <ListGroup >{this.renderPatientsList()}</ListGroup>
+                }
               </div>
 
               <div className="right-col">
