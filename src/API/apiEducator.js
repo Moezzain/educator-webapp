@@ -7,6 +7,10 @@ export  const getEducatorIds= async () => {
         .then(data => {
             let educators = {}
             data.forEach((educator) => {
+                console.log('educator:');
+                console.log( JSON.parse(educator));
+                
+                
                 let { name, id } = JSON.parse(educator)
                 educators[id]= { name, id }
             })

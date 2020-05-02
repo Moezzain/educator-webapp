@@ -7,7 +7,7 @@ class DataProvider extends Component {
     super(props);
     this.state = {
       test: "contex works",
-      educatorId: '',
+      educatorId: '8bd3c7e1-c6ec-48bf-8ac8-80bf1f013eef',
       loading: false,
       appointments: [],
       educators: {},

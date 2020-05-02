@@ -25,6 +25,7 @@ class ShowPatientsView extends React.Component {
     username: "",
     password: "",
     showPatient: false,
+    activeList: '',
   };
 
   componentWillMount() {
@@ -73,7 +74,7 @@ class ShowPatientsView extends React.Component {
         surgery,
         otherDiseases,
         haveTakenDiet,
-         } = chat.medicalProfile
+      } = chat.medicalProfile
       return (
         <Tab.Pane key={chat.id} eventKey={chat.id}>
           <div
@@ -246,6 +247,38 @@ class ShowPatientsView extends React.Component {
     });
   }
 
+  setActiveList = (type) => {
+    this.setState({
+      activeList: type,
+    })
+
+  }
+
+
+  renderListHeader() {
+    let {activeList} = this.state;
+    let patientsStyle, appointmentStyle;
+    if(activeList=='appointments'){
+      patientsStyle='dark'
+      appointmentStyle= 'primary'
+    } else{
+      patientsStyle='primary'
+      appointmentStyle= 'dark'
+    }
+    return (
+      <div style={{
+        display: 'block',
+        backgroundColor: 'white',
+        textAlign: 'center',
+        padding: 10
+      }}>
+        <Button variant={patientsStyle} onClick={() => this.setActiveList('patients')} style={{ marginRight: 5 }}>المحادثات</Button>
+        <Button variant={appointmentStyle} onClick={() => this.setActiveList('appointments')} >المواعيد</Button>
+
+      </div>
+    )
+  }
+
   render() {
 
     return (
@@ -264,6 +297,7 @@ class ShowPatientsView extends React.Component {
           <CardContainer width="80%" direction="row" padding={10} marginT={40} marginB={40}>
             <Tab.Container id="left-tabs-example" >
               <div className="left-col">
+                {this.renderListHeader()}
                 <ListGroup >{this.renderPatientsList()}</ListGroup>
               </div>
 
