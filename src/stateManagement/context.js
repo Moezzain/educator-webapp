@@ -17,12 +17,6 @@ class DataProvider extends Component {
     };
   }
 
-  async componentDidMount() {
-    console.log('educator: ', this.state.educatorId);
-
-
-  }
-
   saveData = (educatorId, appointments, chats) => {
     this.setState({ educatorId, appointments, chats })
     if (educatorId == '8bd3c7e1-c6ec-48bf-8ac8-80bf1f013eef')

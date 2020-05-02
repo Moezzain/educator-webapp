@@ -1,4 +1,4 @@
-let apiUrl = 'http://api.ithnain.com'
+let apiUrl = 'https://api.ithnain.com'
 // let apiUrl = 'http://cors-anywhere.herokuapp.com/https://ithnain-test-backend.herokuapp.com'
 // let apiUrl= 'http://localhost:3001'
 // const expressPort = 3000
