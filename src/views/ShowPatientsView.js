@@ -8,6 +8,7 @@ import {
   Container,
   Tab,
   Nav,
+  Table,
   Accordion,
   Card,
 } from "react-bootstrap";
@@ -217,6 +218,7 @@ class ShowPatientsView extends React.Component {
     });
 
   }
+
   renderChat() {
     let { chats } = this.context;
     if (!chats) {
@@ -234,8 +236,51 @@ class ShowPatientsView extends React.Component {
     })
   }
 
-
   renderAppointments() {
+    const { appointments } = this.context;
+
+    if (!appointments || (appointments && !Object.keys(appointments).length)) {
+      return null;
+    }
+
+    return Object.keys(appointments).map(appointmentDate => {
+      let appointmentsInDay = appointments[appointmentDate]
+
+      return (
+        <Tab.Pane key={appointmentDate} eventKey={appointmentDate}>
+          <div style={{ width: '100vh', maxHeight: '80vh', }}>
+            <div style={{fontWeight:'600', marginBottom: 10, textAlign: 'center', fontSize: 20}}>{appointmentDate}</div>
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Patient Name</th>
+                </tr>
+              </thead>
+              <tbody>
+                {appointmentsInDay.map(({ appointmentId, time, name }) => {
+                  let hours = parseInt(time.split(':')[0])
+                  let minutes = time.split(':')[1]
+                  let displayTime = hours > 12 ? `${hours - 12}:${minutes}` : `${hours}:${minutes}`
+                  return (
+                    <tr key={appointmentId}>
+                    <td>{displayTime}</td>
+                    <td>{name}</td>
+                    {/* <ListGroup.Item key={appointmentId} eventKey={appointmentId}>
+                      {displayTime}: {name}
+                    </ListGroup.Item> */}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </Table>
+          </div>
+        </Tab.Pane>
+      )
+    })
+  }
+
+  renderAppointmentsList() {
     const { appointments } = this.context;
     // let appointments = {
     //   '2020-11-28':
@@ -249,6 +294,14 @@ class ShowPatientsView extends React.Component {
       return null
     }
 
+    return Object.keys(appointments).map(appointmentDate => {
+      return (
+        <ListGroup.Item key={appointmentDate} eventKey={appointmentDate}>
+          {appointmentDate}
+        </ListGroup.Item>
+
+      );
+    });
     // return Object.keys(appointments).map(appointmentDate => {
     //   let appointmentsInDay = appointments[appointmentDate]
 
@@ -328,7 +381,7 @@ class ShowPatientsView extends React.Component {
   }
 
   render() {
-    let { activeList } = this.state
+    let { activeList, showPatient } = this.state
     return (
       <>
         <MyNav />
@@ -347,16 +400,18 @@ class ShowPatientsView extends React.Component {
               <div className="left-col">
                 {this.renderListHeader()}
                 {activeList == 'appointments' ?
-                  <ListGroup >{this.renderAppointments()}</ListGroup>
+                  <ListGroup >{this.renderAppointmentsList()}</ListGroup>
                   : <ListGroup >{this.renderPatientsList()}</ListGroup>
                 }
               </div>
 
               <div className="right-col">
                 <Tab.Content>
-                  {this.state.showPatient ?
-                    this.renderPatientInfo()
-                    : this.renderChat()
+                  {activeList == 'appointments' ?
+                    this.renderAppointments()
+                    : showPatient ?
+                      this.renderPatientInfo()
+                      : this.renderChat()
                   }
                 </Tab.Content>
               </div>

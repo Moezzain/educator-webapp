@@ -1,6 +1,6 @@
-// let apiUrl = 'https://api.ithnain.com'
+let apiUrl = 'https://api.ithnain.com'
 // let apiUrl = 'http://cors-anywhere.herokuapp.com/https://ithnain-test-backend.herokuapp.com'
-let apiUrl= 'http://localhost:3000'
+// let apiUrl= 'http://localhost:3000'
 // const expressPort = 3000
 // const apiUrls = {
 //   production: 'Production URL',

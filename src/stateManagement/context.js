@@ -6,10 +6,9 @@ class DataProvider extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      test: "contex works",
-      educatorId: '8bd3c7e1-c6ec-48bf-8ac8-80bf1f013eef',
+      educatorId: '',
       loading: false,
-      appointments: [],
+      appointments: {},
       educators: {},
       chats: [
         { id: '1234', patientName: 'w' }
@@ -17,10 +16,7 @@ class DataProvider extends Component {
     };
   }
 
-  componentDidMount() {
-    this.getEducatorData();
 
-  }
   saveData = (educatorId, appointments, chats) => {
     appointments = this.filterAppointments(appointments)
     this.setState({ educatorId, appointments, chats })
@@ -30,12 +26,12 @@ class DataProvider extends Component {
   }
 
   filterAppointments(appointments) {
-    
+
     if (appointments) {
       let output = {}
       appointments.forEach(app => {
-        if(typeof app=='string'){
-          app= JSON.parse(app)
+        if (typeof app == 'string') {
+          app = JSON.parse(app)
         }
         var appointmentDate = app.date.split('T')[0]
         //if there is no array with this Date key, make one and add to it the appointment
@@ -79,7 +75,7 @@ class DataProvider extends Component {
   }
 
   setEducatorId = educatorId => {
-    let appointments= this.filterAppointments(this.state.educators[educatorId].appointments)
+    let appointments = this.filterAppointments(this.state.educators[educatorId].appointments)
 
     this.setState({
       educatorId,
