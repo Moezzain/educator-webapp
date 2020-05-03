@@ -29,6 +29,7 @@ class ShowPatientsView extends React.Component {
     password: "",
     showPatient: false,
     activeList: '',
+    activeChat: '',
   };
 
   componentWillMount() {
@@ -221,6 +222,7 @@ class ShowPatientsView extends React.Component {
 
   renderChat() {
     let { chats } = this.context;
+    let { activeChat } = this.state;
     if (!chats) {
       return null
     }
@@ -230,7 +232,9 @@ class ShowPatientsView extends React.Component {
           <div>
             <a style={{ color: '#3581b8' }} onClick={() => this.setState({ showPatient: true })}>مشاهدة البروفايل</a>
           </div>
-          <Chat chatId={chat.id} />
+          {activeChat == chat.id ?
+            <Chat chatId={chat.id} />
+            : null}
         </Tab.Pane>
       )
     })
@@ -249,7 +253,7 @@ class ShowPatientsView extends React.Component {
       return (
         <Tab.Pane key={appointmentDate} eventKey={appointmentDate}>
           <div style={{ width: '100vh', maxHeight: '80vh', }}>
-            <div style={{fontWeight:'600', marginBottom: 10, textAlign: 'center', fontSize: 20}}>{appointmentDate}</div>
+            <div style={{ fontWeight: '600', marginBottom: 10, textAlign: 'center', fontSize: 20 }}>{appointmentDate}</div>
             <Table striped bordered hover>
               <thead>
                 <tr>
@@ -264,9 +268,9 @@ class ShowPatientsView extends React.Component {
                   let displayTime = hours > 12 ? `${hours - 12}:${minutes}` : `${hours}:${minutes}`
                   return (
                     <tr key={appointmentId}>
-                    <td>{displayTime}</td>
-                    <td>{name}</td>
-                    {/* <ListGroup.Item key={appointmentId} eventKey={appointmentId}>
+                      <td>{displayTime}</td>
+                      <td>{name}</td>
+                      {/* <ListGroup.Item key={appointmentId} eventKey={appointmentId}>
                       {displayTime}: {name}
                     </ListGroup.Item> */}
                     </tr>
@@ -333,6 +337,12 @@ class ShowPatientsView extends React.Component {
     // })
   }
 
+  setActiveChat(chatId){
+    this.setState({
+      activeChat: chatId
+    })
+  }
+
   renderPatientsList() {
     const { chats } = this.context;
     if (!chats) {
@@ -340,7 +350,7 @@ class ShowPatientsView extends React.Component {
     }
     return chats.map(chat => {
       return (
-        <ListGroup.Item key={chat.id} eventKey={chat.id}>
+        <ListGroup.Item key={chat.id} eventKey={chat.id} onClick={()=>this.setActiveChat(chat.id)}>
           {chat.patientName}
         </ListGroup.Item>
 
