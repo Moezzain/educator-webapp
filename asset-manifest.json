@@ -1,23 +1,23 @@
 {
   "files": {
-    "main.css": "/educator-webapp/static/css/main.66934c36.chunk.css",
-    "main.js": "/educator-webapp/static/js/main.c10400c6.chunk.js",
-    "main.js.map": "/educator-webapp/static/js/main.c10400c6.chunk.js.map",
-    "runtime-main.js": "/educator-webapp/static/js/runtime-main.de43856e.js",
-    "runtime-main.js.map": "/educator-webapp/static/js/runtime-main.de43856e.js.map",
-    "static/js/2.3179e3df.chunk.js": "/educator-webapp/static/js/2.3179e3df.chunk.js",
-    "static/js/2.3179e3df.chunk.js.map": "/educator-webapp/static/js/2.3179e3df.chunk.js.map",
-    "index.html": "/educator-webapp/index.html",
-    "precache-manifest.6470cacca29c8ef79eee32de32201709.js": "/educator-webapp/precache-manifest.6470cacca29c8ef79eee32de32201709.js",
-    "service-worker.js": "/educator-webapp/service-worker.js",
-    "static/css/main.66934c36.chunk.css.map": "/educator-webapp/static/css/main.66934c36.chunk.css.map",
-    "static/js/2.3179e3df.chunk.js.LICENSE.txt": "/educator-webapp/static/js/2.3179e3df.chunk.js.LICENSE.txt",
-    "static/media/ithnain.png": "/educator-webapp/static/media/ithnain.287167eb.png"
+    "main.css": "./static/css/main.66934c36.chunk.css",
+    "main.js": "./static/js/main.ec998a37.chunk.js",
+    "main.js.map": "./static/js/main.ec998a37.chunk.js.map",
+    "runtime-main.js": "./static/js/runtime-main.5e4f6aa1.js",
+    "runtime-main.js.map": "./static/js/runtime-main.5e4f6aa1.js.map",
+    "static/js/2.3179e3df.chunk.js": "./static/js/2.3179e3df.chunk.js",
+    "static/js/2.3179e3df.chunk.js.map": "./static/js/2.3179e3df.chunk.js.map",
+    "index.html": "./index.html",
+    "precache-manifest.315bc40da9d8e1a3492369b9dc315270.js": "./precache-manifest.315bc40da9d8e1a3492369b9dc315270.js",
+    "service-worker.js": "./service-worker.js",
+    "static/css/main.66934c36.chunk.css.map": "./static/css/main.66934c36.chunk.css.map",
+    "static/js/2.3179e3df.chunk.js.LICENSE.txt": "./static/js/2.3179e3df.chunk.js.LICENSE.txt",
+    "static/media/ithnain.png": "./static/media/ithnain.287167eb.png"
   },
   "entrypoints": [
-    "static/js/runtime-main.de43856e.js",
+    "static/js/runtime-main.5e4f6aa1.js",
     "static/js/2.3179e3df.chunk.js",
     "static/css/main.66934c36.chunk.css",
-    "static/js/main.c10400c6.chunk.js"
+    "static/js/main.ec998a37.chunk.js"
   ]
 }
