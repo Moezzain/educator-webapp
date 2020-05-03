@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "b235c68d5404e219e64a69c2c8c0bb51",
+    "revision": "86beed899c71c81f2fa3f26543a89215",
     "url": "/educator-webapp/index.html"
   },
   {
-    "revision": "84761cbc43d23cde6e86",
+    "revision": "5294058674ee371bcc3c",
     "url": "/educator-webapp/static/css/main.66934c36.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/educator-webapp/static/js/2.3179e3df.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "84761cbc43d23cde6e86",
-    "url": "/educator-webapp/static/js/main.0e499bf9.chunk.js"
+    "revision": "5294058674ee371bcc3c",
+    "url": "/educator-webapp/static/js/main.c10400c6.chunk.js"
   },
   {
     "revision": "133d8980e20ab5cf8447",

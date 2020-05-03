@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/educator-webapp/static/css/main.66934c36.chunk.css",
-    "main.js": "/educator-webapp/static/js/main.0e499bf9.chunk.js",
-    "main.js.map": "/educator-webapp/static/js/main.0e499bf9.chunk.js.map",
+    "main.js": "/educator-webapp/static/js/main.c10400c6.chunk.js",
+    "main.js.map": "/educator-webapp/static/js/main.c10400c6.chunk.js.map",
     "runtime-main.js": "/educator-webapp/static/js/runtime-main.de43856e.js",
     "runtime-main.js.map": "/educator-webapp/static/js/runtime-main.de43856e.js.map",
     "static/js/2.3179e3df.chunk.js": "/educator-webapp/static/js/2.3179e3df.chunk.js",
     "static/js/2.3179e3df.chunk.js.map": "/educator-webapp/static/js/2.3179e3df.chunk.js.map",
     "index.html": "/educator-webapp/index.html",
-    "precache-manifest.9eaad1a568c4d782b6ef3da212d361d2.js": "/educator-webapp/precache-manifest.9eaad1a568c4d782b6ef3da212d361d2.js",
+    "precache-manifest.6470cacca29c8ef79eee32de32201709.js": "/educator-webapp/precache-manifest.6470cacca29c8ef79eee32de32201709.js",
     "service-worker.js": "/educator-webapp/service-worker.js",
     "static/css/main.66934c36.chunk.css.map": "/educator-webapp/static/css/main.66934c36.chunk.css.map",
     "static/js/2.3179e3df.chunk.js.LICENSE.txt": "/educator-webapp/static/js/2.3179e3df.chunk.js.LICENSE.txt",
@@ -18,6 +18,6 @@
     "static/js/runtime-main.de43856e.js",
     "static/js/2.3179e3df.chunk.js",
     "static/css/main.66934c36.chunk.css",
-    "static/js/main.0e499bf9.chunk.js"
+    "static/js/main.c10400c6.chunk.js"
   ]
 }
