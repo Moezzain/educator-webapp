@@ -12,14 +12,17 @@ import {
   Accordion,
   Card,
 } from "react-bootstrap";
+import { useMediaQuery } from 'react-responsive'
 import CardContainer from "../components/CardContainer";
 import logo from "../assets/ithnain.png";
 import { login } from "../API/apiAuth";
 import { DataContext } from "../stateManagement/context";
 import { parseArray } from "../helpers/Converters";
+
 import MyNav from "../components/MyNav";
 import Footer from "../components/Footer";
 import Chat from '../components/Chat';
+import PatientProfile from './PatientProfile';
 
 class ShowPatientsView extends React.Component {
   static contextType = DataContext;
@@ -27,7 +30,6 @@ class ShowPatientsView extends React.Component {
   state = {
     username: "",
     password: "",
-    showPatient: false,
     activeList: '',
     activeChat: '',
   };
@@ -52,177 +54,11 @@ class ShowPatientsView extends React.Component {
     }
   }
 
-
-  renderPatientInfo() {
-
-    let { chats } = this.context;
-
-    if (!chats) {
-      return null
-    }
-    return chats.map(chat => {
-      if (!chat.medicalProfile) {
-        return null
-      }
-      let { years,
-        age,
-        weight,
-        height,
-        hba1c,
-        medications,
-        patientName,
-        notes,
-        disease,
-        sex,
-        whoIsPatient,
-        surgery,
-        otherDiseases,
-        haveTakenDiet,
-      } = chat.medicalProfile
-      return (
-        <Tab.Pane key={chat.id} eventKey={chat.id}>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: "column"
-            }}
-          >
-
-            <a style={{ color: '#3581b8', fontSize: 26 }} onClick={() => this.setState({ showPatient: false })}>فتح المحادثة</a>
-
-            <h3>{chat.id}</h3>
-
-            <Form style={{ width: '100vh', maxHeight: '80vh', overflowY: 'auto', overflowX: 'hidden' }}>
-              <Form.Row>
-                <Form.Group as={Col}>
-                  <Form.Label column sm="10">
-                    disease
-              </Form.Label>
-                  <Col sm="10">
-                    <Form.Control type="text" value={disease} />
-                  </Col>
-                </Form.Group>
-                <Form.Group as={Col}>
-                  <Form.Label column sm="10">
-                    years
-              </Form.Label>
-                  <Col sm="10">
-                    <Form.Control type="text" value={years} />
-                  </Col>
-                </Form.Group>
-              </Form.Row>
-              <Form.Row>
-                <Form.Group as={Col}>
-                  <Form.Label column sm="10">
-                    Hba1C
-              </Form.Label>
-                  <Col sm="10">
-                    <Form.Control type="text" value={hba1c} />
-                  </Col>
-                </Form.Group>
-                <Form.Group as={Col}>
-                  <Form.Label column sm="10">
-                    age
-              </Form.Label>
-                  <Col sm="10">
-                    <Form.Control type="text" value={age} />
-                  </Col>
-                </Form.Group>
-              </Form.Row>
-              <Form.Row>
-                <Form.Group as={Col}>
-                  <Form.Label column sm="10">
-                    sex
-              </Form.Label>
-                  <Col sm="10">
-                    <Form.Control type="text" value={sex} />
-                  </Col>
-                </Form.Group>
-                <Form.Group as={Col}>
-                  <Form.Label column sm="10">
-                    Patient Type
-              </Form.Label>
-                  <Col sm="10">
-                    <Form.Control type="text" value={whoIsPatient} />
-                  </Col>
-                </Form.Group>
-              </Form.Row>
-              <Form.Row>
-                <Form.Group as={Col}>
-                  <Form.Label column sm="10">
-                    medications
-              </Form.Label>
-                  <Col sm="10">
-                    <Form.Control type="text" value={medications} />
-                  </Col>
-                </Form.Group>
-                <Form.Group as={Col}>
-                  <Form.Label column sm="10">
-                    otherDiseases
-              </Form.Label>
-                  <Col sm="10">
-                    <Form.Control type="text" value={otherDiseases} />
-                  </Col>
-                </Form.Group>
-              </Form.Row>
-              <Form.Row>
-                <Form.Group as={Col}>
-                  <Form.Label column sm="10">
-                    Weight
-              </Form.Label>
-                  <Col sm="10">
-                    <Form.Control type="text" value={weight} />
-                  </Col>
-                </Form.Group>
-                <Form.Group as={Col}>
-                  <Form.Label column sm="10">
-                    Height
-              </Form.Label>
-                  <Col sm="10">
-                    <Form.Control type="text" value={height} />
-                  </Col>
-                </Form.Group>
-              </Form.Row>
-              <Form.Row>
-                <Form.Group as={Col}>
-                  <Form.Label column sm="10">
-                    Diet Taken
-              </Form.Label>
-                  <Col sm="10">
-                    <Form.Control type="text" value={haveTakenDiet} />
-                  </Col>
-                </Form.Group>
-                <Form.Group as={Row}>
-                  <Form.Label column sm="10">
-                    Past Surgeries
-              </Form.Label>
-                  <Col sm="10">
-                    <Form.Control type="text" value={surgery} />
-                  </Col>
-                </Form.Group>
-              </Form.Row>
-              <Form.Group as={Row}>
-                <Form.Label column sm="10">
-                  Notes
-              </Form.Label>
-                <Col sm="10">
-                  <Form.Control type="textarea" value={notes} />
-                </Col>
-              </Form.Group>
-            </Form>
-
-          </div>
-        </Tab.Pane>
-      );
-    });
-
-  }
-
   renderChat() {
-    let { chats } = this.context;
+    let { chats, showPatient } = this.context;
     let { activeChat } = this.state;
+    console.log('rendering chat', typeof chats, '\nactivated', activeChat);
+
     if (!chats) {
       return null
     }
@@ -230,7 +66,7 @@ class ShowPatientsView extends React.Component {
       return (
         <Tab.Pane key={chat.id} eventKey={chat.id}>
           <div>
-            <a style={{ color: '#3581b8' }} onClick={() => this.setState({ showPatient: true })}>مشاهدة البروفايل</a>
+            <a style={{ color: '#3581b8' }} onClick={() => showPatient()}>مشاهدة البروفايل</a>
           </div>
           {activeChat == chat.id ?
             <Chat chatId={chat.id} />
@@ -242,10 +78,16 @@ class ShowPatientsView extends React.Component {
 
   renderAppointments() {
     const { appointments } = this.context;
-
+    // let appointments = {
+    //   '2020-11-28':
+    //     [{ date: '2020-11-28T17:00:00.000Z', name: 'W3', time: '20:00:00' },
+    //     { date: '2020-11-28T17:00:00.000Z', name: 'W1', time: '08:00:00' }],
+    //   '2020-11-29': [{ date: '2020-11-29T17:00:00.000Z', name: 'W2', time: '16:00:00' }]
+    // }
     if (!appointments || (appointments && !Object.keys(appointments).length)) {
       return null;
     }
+    console.log('rendering appointments');
 
     return Object.keys(appointments).map(appointmentDate => {
       let appointmentsInDay = appointments[appointmentDate]
@@ -270,9 +112,6 @@ class ShowPatientsView extends React.Component {
                     <tr key={appointmentId}>
                       <td>{displayTime}</td>
                       <td>{name}</td>
-                      {/* <ListGroup.Item key={appointmentId} eventKey={appointmentId}>
-                      {displayTime}: {name}
-                    </ListGroup.Item> */}
                     </tr>
                   );
                 })}
@@ -285,7 +124,7 @@ class ShowPatientsView extends React.Component {
   }
 
   renderAppointmentsList() {
-    const { appointments } = this.context;
+    const { appointments, showAppointments } = this.context;
     // let appointments = {
     //   '2020-11-28':
     //     [{ date: '2020-11-28T17:00:00.000Z', name: 'W3', time: '20:00:00' },
@@ -300,44 +139,15 @@ class ShowPatientsView extends React.Component {
 
     return Object.keys(appointments).map(appointmentDate => {
       return (
-        <ListGroup.Item key={appointmentDate} eventKey={appointmentDate}>
+        <ListGroup.Item key={appointmentDate} eventKey={appointmentDate} onClick={()=>showAppointments()}>
           {appointmentDate}
         </ListGroup.Item>
 
       );
     });
-    // return Object.keys(appointments).map(appointmentDate => {
-    //   let appointmentsInDay = appointments[appointmentDate]
-
-    //   return (
-    //     <Accordion key={appointmentDate} defaultActiveKey={appointmentDate}>
-    //       <Card>
-    //         <Card.Header>
-    //           <Accordion.Toggle as={Button} variant="link" eventKey={appointmentDate}>
-    //             {appointmentDate}
-    //           </Accordion.Toggle>
-    //         </Card.Header>
-    //         <Accordion.Collapse eventKey={appointmentDate}>
-    //           <Card.Body>
-    //             {appointmentsInDay.map(({ appointmentId, time, name }) => {
-    //               let hours = parseInt(time.split(':')[0])
-    //               let minutes = time.split(':')[1]
-    //               let displayTime = hours > 12 ? `${hours - 12}:${minutes}` : `${hours}:${minutes}`
-    //               return (
-    //                 <ListGroup.Item key={appointmentId} eventKey={appointmentId}>
-    //                   {displayTime}: {name}
-    //                 </ListGroup.Item>
-    //               );
-    //             })}
-    //           </Card.Body>
-    //         </Accordion.Collapse>
-    //       </Card>
-    //     </Accordion>
-    //   )
-    // })
   }
 
-  setActiveChat(chatId){
+  setActiveChat(chatId) {
     this.setState({
       activeChat: chatId
     })
@@ -350,7 +160,7 @@ class ShowPatientsView extends React.Component {
     }
     return chats.map(chat => {
       return (
-        <ListGroup.Item key={chat.id} eventKey={chat.id} onClick={()=>this.setActiveChat(chat.id)}>
+        <ListGroup.Item key={chat.id} eventKey={chat.id} onClick={() => this.setActiveChat(chat.id)}>
           {chat.patientName}
         </ListGroup.Item>
 
@@ -365,6 +175,14 @@ class ShowPatientsView extends React.Component {
 
   }
 
+  closeWindows = () => {
+    this.setState({
+      activeChat: '',
+      activeAppointment: '',
+    })
+    this.context.hidePatient();
+    this.context.hideAppointments();
+  }
 
   renderListHeader() {
     let { activeList } = this.state;
@@ -390,21 +208,25 @@ class ShowPatientsView extends React.Component {
     )
   }
 
-  render() {
-    let { activeList, showPatient } = this.state
+  renderCircle() {
+    return (
+      <div style={styles.circle} onClick={() => this.closeWindows()}>
+        X
+      </div>
+    )
+  }
+  renderDesktop() {
+    let { activeList, } = this.state
+    let { shouldShowPatient, shouldShowAppointments } = this.context
+    console.log("shouldShowAppointments", activeList == 'appointments' && shouldShowAppointments);
+    console.log('activeList', activeList);
+    
     return (
       <>
         <MyNav />
         <Container
           fluid
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",
-            height: "100vh",
-            backgroundColor: "#0a122a"
-          }}
-        >
+          style={styles.container}>
           <CardContainer width="80%" direction="row" padding={10} marginT={40} marginB={40}>
             <Tab.Container id="left-tabs-example" >
               <div className="left-col">
@@ -414,13 +236,15 @@ class ShowPatientsView extends React.Component {
                   : <ListGroup >{this.renderPatientsList()}</ListGroup>
                 }
               </div>
-
               <div className="right-col">
+
+
                 <Tab.Content>
-                  {activeList == 'appointments' ?
+                  {this.renderCircle()}
+                  {activeList == 'appointments' && shouldShowAppointments ?
                     this.renderAppointments()
-                    : showPatient ?
-                      this.renderPatientInfo()
+                    : shouldShowPatient ?
+                      <PatientProfile />
                       : this.renderChat()
                   }
                 </Tab.Content>
@@ -432,6 +256,65 @@ class ShowPatientsView extends React.Component {
       </>
     );
   }
+  renderTablet() {
+
+  }
+  renderPhone() {
+
+  }
+  render() {
+
+    return (
+      <>
+        {this.renderDesktop()}
+
+      </>
+    )
+  }
+}
+
+const Desktop = ({ children }) => {
+  const isDesktop = useMediaQuery({ minWidth: 992 })
+  return isDesktop ? children : null
+}
+const Tablet = ({ children }) => {
+  const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 })
+  return isTablet ? children : null
+}
+const Mobile = ({ children }) => {
+  const isMobile = useMediaQuery({ maxWidth: 767 })
+  return isMobile ? children : null
+}
+const Default = ({ children }) => {
+  const isNotMobile = useMediaQuery({ minWidth: 768 })
+  return isNotMobile ? children : null
 }
 
 export default ShowPatientsView;
+
+const styles = {
+  container: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    height: "100vh",
+    backgroundColor: "#0a122a"
+  },
+  circle: {
+    width: 30,
+    height: 30,
+    borderWidth: 0,
+    textAlign: 'center',
+    borderStyle: 'solid',
+    borderColor: '#000',
+    color: '#000',
+    borderRadius: 80,
+    alignItems: 'center',
+    display: 'flex',
+    justifyContent: 'center',
+    position: 'absolute',
+    right: 20,
+    top: 20,
+    boxShadow: "0px 2px 5px 4px rgba(0,0,0,0.1)"
+  }
+}

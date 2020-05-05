@@ -28,8 +28,8 @@ const MyNav = (props) => {
           : loading? 
           <Spinner animation="border" />
           : <Nav className="mr-auto">
-            <Nav.Link ><Link style={{ color: "#FFF" }} to="/">Home</Link> </Nav.Link>
-            <Nav.Link ><Link style={{ color: "#FFF" }} to="/showpatients">Login</Link></Nav.Link>
+            {/* <Nav.Link ><Link style={{ color: "#FFF" }} to="/">Home</Link> </Nav.Link> */}
+            <Nav.Link ><Link style={{ color: "#FFF" }} to="/">Logout</Link></Nav.Link>
           </Nav>
         }
       </Navbar.Collapse>

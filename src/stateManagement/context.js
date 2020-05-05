@@ -6,8 +6,10 @@ class DataProvider extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      educatorId: '',
+      educatorId: 'e0d57df1-e8ae-4ca5-a076-93edb11deaa1',
       loading: false,
+      showPatient: true,
+      showAppointments: true,
       appointments: {},
       educators: {},
       chats: [
@@ -85,6 +87,10 @@ class DataProvider extends Component {
 
   }
   setChats = chats => this.setState({ chats })
+  showPatient = () => this.setState({showPatient: true})
+  hidePatient = () => this.setState({showPatient: false})
+  showAppointments = () => this.setState({showAppointments: true})
+  hideAppointments = () => this.setState({showAppointments: false })
 
   render() {
 
@@ -96,6 +102,12 @@ class DataProvider extends Component {
           getEducatorChats: this.getEducatorChats,
           setEducatorId: this.setEducatorId,
           setChats: this.setChats,
+          showPatient: this.showPatient,
+          hidePatient: this.hidePatient,
+          showAppointments: this.showAppointments,
+          hideAppointments: this.hideAppointments,
+          shouldShowPatient: this.state.showPatient,
+          shouldShowAppointments: this.state.showAppointments,
         }}
       >
         {this.props.children}

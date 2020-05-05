@@ -1,5 +1,4 @@
 import React from "react";
-import { GiftedChat } from 'react-gifted-chat';
 import { ChatFeed, Message, ChatBubble } from 'react-chat-ui'
 import { Container, Spinner } from 'react-bootstrap'
 import { getMessages } from '../API/apiAuth'
@@ -16,35 +15,6 @@ class Chat extends React.Component {
 
     messagesEnd = React.createRef();
     async componentDidMount() {
-        // this.setState({
-        //     messages: [
-        //         new Message({
-        //             id: 1,
-        //             message: "I'm the recipient! (The person you're talking to)",
-        //         }), // Gray bubble
-        //         new Message({ id: 0, message: "I'm you -- the blue bubble!" }),
-        //         new Message({
-        //             id: 1,
-        //             message: "I'm the recipient! (The person you're talking to)",
-        //         }), // Gray bubble
-        //         new Message({ id: 0, message: "I'm you -- the blue bubble!" }),
-        //         new Message({
-        //             id: 1,
-        //             message: "I'm the recipient! (The person you're talking to)",
-        //         }), // Gray bubble
-        //         new Message({ id: 0, message: "I'm you -- the blue bubble!" }),
-        //         new Message({
-        //             id: 1,
-        //             message: "I'm the recipient! (The person you're talking to)",
-        //         }), // Gray bubble
-        //         new Message({ id: 0, message: "I'm you -- the blue bubble!" }),
-        //         new Message({
-        //             id: 1,
-        //             message: "I'm the recipient! (The person you're talking to)",
-        //         }), // Gray bubble
-        //         new Message({ id: 0, message: "I'm you -- the blue bubble!" }),
-        //     ],
-        // });
 
         let chatId = '1234'
         this.setState({ loading: true })
