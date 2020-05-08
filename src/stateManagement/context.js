@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { getEducatorChats, getAllEducators } from '../API/apiEducator'
+import { getEducatorChats, getAllEducatorsAndPatients } from '../API/apiEducator'
 
 const DataContext = React.createContext();
 class DataProvider extends Component {
@@ -8,10 +8,12 @@ class DataProvider extends Component {
     this.state = {
       educatorId: 'e0d57df1-e8ae-4ca5-a076-93edb11deaa1',
       loading: false,
-      showPatient: true,
-      showAppointments: true,
+      patientsVisible: true,
+      appointmentsVisible: true,
+      educatorsVisible: false,
       appointments: {},
       educators: {},
+      patients: {},
       chats: [
         { id: '1234', patientName: 'w' }
       ]
@@ -26,6 +28,9 @@ class DataProvider extends Component {
       this.getEducatorData();
 
   }
+  // componentDidMount(){
+  //   this.getEducatorData();
+  // }
 
   filterAppointments(appointments) {
 
@@ -66,8 +71,12 @@ class DataProvider extends Component {
 
   getEducatorData = async () => {
     this.setState({ loading: true })
-    let educators = await getAllEducators()
-    if (educators) {
+    let {educators, patients} = await getAllEducatorsAndPatients()
+    if (educators && patients) {
+      this.setState({ educators, patients, loading: false })
+      return educators
+    }
+    else if(educators){
       this.setState({ educators, loading: false })
       return educators
     }
@@ -87,11 +96,12 @@ class DataProvider extends Component {
 
   }
   setChats = chats => this.setState({ chats })
-  showPatient = () => this.setState({showPatient: true})
-  hidePatient = () => this.setState({showPatient: false})
-  showAppointments = () => this.setState({showAppointments: true})
-  hideAppointments = () => this.setState({showAppointments: false })
-
+  showPatient = () => this.setState({patientsVisible: true})
+  hidePatient = () => this.setState({patientsVisible: false})
+  showAppointments = () => this.setState({appointmentsVisible: true})
+  hideAppointments = () => this.setState({appointmentsVisible: false })
+  showEducators = () => this.setState({educatorsVisible: true, patientsVisible: false})
+  hideEducators = () => this.setState({educatorsVisible: false, patientsVisible: true})
   render() {
 
     return (
@@ -106,8 +116,8 @@ class DataProvider extends Component {
           hidePatient: this.hidePatient,
           showAppointments: this.showAppointments,
           hideAppointments: this.hideAppointments,
-          shouldShowPatient: this.state.showPatient,
-          shouldShowAppointments: this.state.showAppointments,
+          showEducators: this.showEducators,
+          hideEducators: this.hideEducators,
         }}
       >
         {this.props.children}

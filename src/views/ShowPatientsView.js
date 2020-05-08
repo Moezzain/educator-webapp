@@ -23,6 +23,7 @@ import MyNav from "../components/MyNav";
 import Footer from "../components/Footer";
 import Chat from '../components/Chat';
 import PatientProfile from './PatientProfile';
+import PatientEducators from './PatientEducators';
 
 class ShowPatientsView extends React.Component {
   static contextType = DataContext;
@@ -139,7 +140,7 @@ class ShowPatientsView extends React.Component {
 
     return Object.keys(appointments).map(appointmentDate => {
       return (
-        <ListGroup.Item key={appointmentDate} eventKey={appointmentDate} onClick={()=>showAppointments()}>
+        <ListGroup.Item key={appointmentDate} eventKey={appointmentDate} onClick={() => showAppointments()}>
           {appointmentDate}
         </ListGroup.Item>
 
@@ -215,12 +216,12 @@ class ShowPatientsView extends React.Component {
       </div>
     )
   }
-  renderDesktop() {
+  render() {
     let { activeList, } = this.state
-    let { shouldShowPatient, shouldShowAppointments } = this.context
-    console.log("shouldShowAppointments", activeList == 'appointments' && shouldShowAppointments);
+    let { patientsVisible, appointmentsVisible, educatorsVisible } = this.context
+    console.log("appointmentsVisible", activeList == 'appointments' && appointmentsVisible);
     console.log('activeList', activeList);
-    
+
     return (
       <>
         <MyNav />
@@ -241,11 +242,13 @@ class ShowPatientsView extends React.Component {
 
                 <Tab.Content>
                   {this.renderCircle()}
-                  {activeList == 'appointments' && shouldShowAppointments ?
+                  {activeList == 'appointments' && appointmentsVisible ?
                     this.renderAppointments()
-                    : shouldShowPatient ?
+                    : patientsVisible ?
                       <PatientProfile />
-                      : this.renderChat()
+                      : educatorsVisible ?
+                        <PatientEducators />
+                        : this.renderChat()
                   }
                 </Tab.Content>
               </div>
@@ -256,38 +259,7 @@ class ShowPatientsView extends React.Component {
       </>
     );
   }
-  renderTablet() {
 
-  }
-  renderPhone() {
-
-  }
-  render() {
-
-    return (
-      <>
-        {this.renderDesktop()}
-
-      </>
-    )
-  }
-}
-
-const Desktop = ({ children }) => {
-  const isDesktop = useMediaQuery({ minWidth: 992 })
-  return isDesktop ? children : null
-}
-const Tablet = ({ children }) => {
-  const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 })
-  return isTablet ? children : null
-}
-const Mobile = ({ children }) => {
-  const isMobile = useMediaQuery({ maxWidth: 767 })
-  return isMobile ? children : null
-}
-const Default = ({ children }) => {
-  const isNotMobile = useMediaQuery({ minWidth: 768 })
-  return isNotMobile ? children : null
 }
 
 export default ShowPatientsView;

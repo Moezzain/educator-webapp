@@ -23,7 +23,7 @@ const MyNav = (props) => {
       <Navbar.Collapse id="responsive-navbar-nav">
         {Object.keys(educators).length ?
           Object.keys(educators).map((i) => (
-            <Nav.Link key={educators[i].id} ><Link style={{ color: "#FFF" }} onClick={()=>setEducatorId(educators[i].id)} >{educators[i].name}</Link> </Nav.Link>
+            <Nav.Link key={educators[i].id} style={{ color: "#FFF" }} onClick={()=>setEducatorId(educators[i].id)} >{educators[i].name}</Nav.Link>
           ))
           : loading? 
           <Spinner animation="border" />
