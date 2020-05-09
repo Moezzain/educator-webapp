@@ -1,19 +1,36 @@
 import React, { useContext } from 'react'
-import { Tab, Col, Row, Form, Button } from 'react-bootstrap'
+import { Tab, Col, Row, Form } from 'react-bootstrap'
 import { DataContext } from "../stateManagement/context";
 
+const defaultProfile = {
+  years: '',
+  age: '',
+  weight: '',
+  height: '',
+  hba1c: '',
+  medications: '',
+  patientName: '',
+  notes: '',
+  disease: '',
+  sex: '',
+  whoIsPatient: '',
+  surgery: '',
+  otherDiseases: '',
+  haveTakenDiet: '',
+}
 
 const PatientProfile = (props) => {
   const context = useContext(DataContext)
-  let { chats, hidePatient, showEducators } = context;
+  let { chats, hidePatient, showEducators, activeChat } = context;
 
   if (!chats) {
     return null
   }
+  console.log('rendering profile');
 
   return chats.map(chat => {
     if (!chat.medicalProfile) {
-      return null
+       chat.medicalProfile= defaultProfile
     }
     let { years,
       age,
@@ -30,8 +47,10 @@ const PatientProfile = (props) => {
       otherDiseases,
       haveTakenDiet,
     } = chat.medicalProfile
-    console.log('rendering chats');
 
+    if (chat.id != activeChat) {
+      return;
+    }
     return (
       <Tab.Pane key={chat.id} eventKey={chat.id}>
         <div
@@ -42,13 +61,6 @@ const PatientProfile = (props) => {
             flexDirection: "column"
           }}
         >
-          <div >
-            {/* <a style={{ color: '#3581b8', fontSize: 26 }} onClick={() => hidePatient()}>فتح المحادثة</a> */}
-            {/* <a style={{ color: '#3581b8', fontSize: 26 }} onClick={() => showEducators()}> المختصين المتابعين</a> */}
-            <Button variant="outline-primary" onClick={() => hidePatient()}>فتح المحادثة</Button> {' '}
-            <Button variant="outline-info" onClick={() => showEducators()}>المختصين المتابعين</Button>
-
-          </div>
           <h3>{chat.id}</h3>
 
           <Form style={{ width: '100vh', maxHeight: '75vh', overflowY: 'scroll', overflowX: 'hidden' }}>
@@ -58,7 +70,7 @@ const PatientProfile = (props) => {
                   disease
               </Form.Label>
                 <Col sm="10">
-                  <Form.Control type="text" value={disease} />
+                  <Form.Control type="text" defaultValue={disease} />
                 </Col>
               </Form.Group>
               <Form.Group as={Col}>
@@ -66,7 +78,7 @@ const PatientProfile = (props) => {
                   years
               </Form.Label>
                 <Col sm="10">
-                  <Form.Control type="text" value={years} />
+                  <Form.Control type="text" defaultValue={years} />
                 </Col>
               </Form.Group>
             </Form.Row>
@@ -76,7 +88,7 @@ const PatientProfile = (props) => {
                   Hba1C
               </Form.Label>
                 <Col sm="10">
-                  <Form.Control type="text" value={hba1c} />
+                  <Form.Control type="text" defaultValue={hba1c} />
                 </Col>
               </Form.Group>
               <Form.Group as={Col}>
@@ -84,7 +96,7 @@ const PatientProfile = (props) => {
                   age
               </Form.Label>
                 <Col sm="10">
-                  <Form.Control type="text" value={age} />
+                  <Form.Control type="text" defaultValue={age} />
                 </Col>
               </Form.Group>
             </Form.Row>
@@ -94,7 +106,7 @@ const PatientProfile = (props) => {
                   sex
               </Form.Label>
                 <Col sm="10">
-                  <Form.Control type="text" value={sex} />
+                  <Form.Control type="text" defaultValue={sex} />
                 </Col>
               </Form.Group>
               <Form.Group as={Col}>
@@ -102,7 +114,7 @@ const PatientProfile = (props) => {
                   Patient Type
               </Form.Label>
                 <Col sm="10">
-                  <Form.Control type="text" value={whoIsPatient} />
+                  <Form.Control type="text" defaultValue={whoIsPatient} />
                 </Col>
               </Form.Group>
             </Form.Row>
@@ -112,7 +124,7 @@ const PatientProfile = (props) => {
                   medications
               </Form.Label>
                 <Col sm="10">
-                  <Form.Control type="text" value={medications} />
+                  <Form.Control type="text" defaultValue={medications} />
                 </Col>
               </Form.Group>
               <Form.Group as={Col}>
@@ -120,7 +132,7 @@ const PatientProfile = (props) => {
                   otherDiseases
               </Form.Label>
                 <Col sm="10">
-                  <Form.Control type="text" value={otherDiseases} />
+                  <Form.Control type="text" defaultValue={otherDiseases} />
                 </Col>
               </Form.Group>
             </Form.Row>
@@ -130,7 +142,7 @@ const PatientProfile = (props) => {
                   Weight
               </Form.Label>
                 <Col sm="10">
-                  <Form.Control type="text" value={weight} />
+                  <Form.Control type="text" defaultValue={weight} />
                 </Col>
               </Form.Group>
               <Form.Group as={Col}>
@@ -138,26 +150,26 @@ const PatientProfile = (props) => {
                   Height
               </Form.Label>
                 <Col sm="10">
-                  <Form.Control type="text" value={height} />
+                  <Form.Control type="text" defaultValue={height} />
                 </Col>
               </Form.Group>
             </Form.Row>
             <Form.Row>
-              
-            <Form.Group as={Col}>
+
+              <Form.Group as={Col}>
                 <Form.Label column sm="10">
-                Diet Taken
+                  Diet Taken
               </Form.Label>
                 <Col sm="10">
-                  <Form.Control type="text" value={haveTakenDiet} />
+                  <Form.Control type="text" defaultValue={haveTakenDiet} />
                 </Col>
               </Form.Group>
-              <Form.Group as={Row}>
+              <Form.Group as={Col}>
                 <Form.Label column sm="10">
                   Past Surgeries
               </Form.Label>
                 <Col sm="10">
-                  <Form.Control type="text" value={surgery} />
+                  <Form.Control type="text" defaultValue={surgery} />
                 </Col>
               </Form.Group>
             </Form.Row>
@@ -166,7 +178,7 @@ const PatientProfile = (props) => {
                 Notes
               </Form.Label>
               <Col sm="10">
-                <Form.Control type="textarea" value={notes} />
+                <Form.Control as="textarea" rows="3" defaultValue={notes} />
               </Col>
             </Form.Group>
           </Form>

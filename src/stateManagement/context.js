@@ -6,9 +6,10 @@ class DataProvider extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      educatorId: 'e0d57df1-e8ae-4ca5-a076-93edb11deaa1',
+      educatorId: '',
+      activeChat: '',
       loading: false,
-      patientsVisible: true,
+      patientsVisible: false,
       appointmentsVisible: true,
       educatorsVisible: false,
       appointments: {},
@@ -24,12 +25,12 @@ class DataProvider extends Component {
   saveData = (educatorId, appointments, chats) => {
     appointments = this.filterAppointments(appointments)
     this.setState({ educatorId, appointments, chats })
-    if (educatorId == '8bd3c7e1-c6ec-48bf-8ac8-80bf1f013eef')
+    if (educatorId == '55aabda5-8af2-4a39-b074-80a1852dcb1d')
       this.getEducatorData();
 
   }
-  // componentDidMount(){
-  //   this.getEducatorData();
+  // componentDidMount() {
+  //   this.getEducatorData();  
   // }
 
   filterAppointments(appointments) {
@@ -71,12 +72,12 @@ class DataProvider extends Component {
 
   getEducatorData = async () => {
     this.setState({ loading: true })
-    let {educators, patients} = await getAllEducatorsAndPatients()
+    let { educators, patients } = await getAllEducatorsAndPatients()
     if (educators && patients) {
       this.setState({ educators, patients, loading: false })
       return educators
     }
-    else if(educators){
+    else if (educators) {
       this.setState({ educators, loading: false })
       return educators
     }
@@ -96,12 +97,13 @@ class DataProvider extends Component {
 
   }
   setChats = chats => this.setState({ chats })
-  showPatient = () => this.setState({patientsVisible: true})
-  hidePatient = () => this.setState({patientsVisible: false})
-  showAppointments = () => this.setState({appointmentsVisible: true})
-  hideAppointments = () => this.setState({appointmentsVisible: false })
-  showEducators = () => this.setState({educatorsVisible: true, patientsVisible: false})
-  hideEducators = () => this.setState({educatorsVisible: false, patientsVisible: true})
+  showPatient = () => this.setState({ patientsVisible: true })
+  hidePatient = () => this.setState({ patientsVisible: false })
+  showAppointments = () => this.setState({ appointmentsVisible: true })
+  hideAppointments = () => this.setState({ appointmentsVisible: false })
+  showEducators = () => this.setState({ educatorsVisible: true, patientsVisible: false })
+  hideEducators = () => this.setState({ educatorsVisible: false, patientsVisible: true })
+  setActiveChat = chatId => this.setState({ activeChat: chatId })
   render() {
 
     return (
@@ -118,6 +120,7 @@ class DataProvider extends Component {
           hideAppointments: this.hideAppointments,
           showEducators: this.showEducators,
           hideEducators: this.hideEducators,
+          setActiveChat: this.setActiveChat,
         }}
       >
         {this.props.children}

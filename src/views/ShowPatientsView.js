@@ -1,21 +1,12 @@
 import React from "react";
 import {
   Button,
-  Form,
   ListGroup,
-  Row,
-  Col,
   Container,
-  Tab,
-  Nav,
+  Tab, Tabs,
   Table,
-  Accordion,
-  Card,
 } from "react-bootstrap";
-import { useMediaQuery } from 'react-responsive'
 import CardContainer from "../components/CardContainer";
-import logo from "../assets/ithnain.png";
-import { login } from "../API/apiAuth";
 import { DataContext } from "../stateManagement/context";
 import { parseArray } from "../helpers/Converters";
 
@@ -32,7 +23,13 @@ class ShowPatientsView extends React.Component {
     username: "",
     password: "",
     activeList: '',
-    activeChat: '',
+    lang: {
+      ar: {
+        chat: 'المحادثة', 
+        profile: 'البروفايل',
+        educators: 'المتابعين'
+      }
+    }
   };
 
   componentWillMount() {
@@ -56,8 +53,7 @@ class ShowPatientsView extends React.Component {
   }
 
   renderChat() {
-    let { chats, showPatient } = this.context;
-    let { activeChat } = this.state;
+    let { chats, showPatient, activeChat } = this.context;
     console.log('rendering chat', typeof chats, '\nactivated', activeChat);
 
     if (!chats) {
@@ -65,10 +61,10 @@ class ShowPatientsView extends React.Component {
     }
     return chats.map(chat => {
       return (
-        <Tab.Pane key={chat.id} eventKey={chat.id}>
-          <div>
+        <Tab.Pane key={chat.id} eventKey={chat.id} style={{ marginTop: 20 }}>
+          {/* <div>
             <a style={{ color: '#3581b8' }} onClick={() => showPatient()}>مشاهدة البروفايل</a>
-          </div>
+          </div> */}
           {activeChat == chat.id ?
             <Chat chatId={chat.id} />
             : null}
@@ -148,20 +144,14 @@ class ShowPatientsView extends React.Component {
     });
   }
 
-  setActiveChat(chatId) {
-    this.setState({
-      activeChat: chatId
-    })
-  }
-
   renderPatientsList() {
-    const { chats } = this.context;
+    const { chats, setActiveChat } = this.context;
     if (!chats) {
       return null
     }
     return chats.map(chat => {
       return (
-        <ListGroup.Item key={chat.id} eventKey={chat.id} onClick={() => this.setActiveChat(chat.id)}>
+        <ListGroup.Item key={chat.id} eventKey={chat.id} onClick={() => setActiveChat(chat.id)}>
           {chat.patientName}
         </ListGroup.Item>
 
@@ -178,9 +168,9 @@ class ShowPatientsView extends React.Component {
 
   closeWindows = () => {
     this.setState({
-      activeChat: '',
       activeAppointment: '',
     })
+    this.context.setActiveChat('')
     this.context.hidePatient();
     this.context.hideAppointments();
   }
@@ -216,11 +206,29 @@ class ShowPatientsView extends React.Component {
       </div>
     )
   }
+
+  renderUpperTabs() {
+    const {chat, profile, educators} = this.state.lang.ar;
+    return (
+      <div >
+        <Tabs defaultActiveKey="chat" id="noanim-tab-example" mountOnEnter >
+          <Tab eventKey="chat" title={chat}>
+            {this.renderChat()}
+          </Tab>
+          <Tab eventKey="profile" title={profile}>
+            <PatientProfile />
+          </Tab>
+          <Tab eventKey="educators" title={educators} >
+            <PatientEducators />
+          </Tab>
+        </Tabs>
+      </div>
+    );
+  }
+
   render() {
-    let { activeList, } = this.state
-    let { patientsVisible, appointmentsVisible, educatorsVisible } = this.context
-    console.log("appointmentsVisible", activeList == 'appointments' && appointmentsVisible);
-    console.log('activeList', activeList);
+    let { activeList  } = this.state
+    let { patientsVisible, appointmentsVisible, educatorsVisible , activeChat } = this.context
 
     return (
       <>
@@ -229,7 +237,7 @@ class ShowPatientsView extends React.Component {
           fluid
           style={styles.container}>
           <CardContainer width="80%" direction="row" padding={10} marginT={40} marginB={40}>
-            <Tab.Container id="left-tabs-example" >
+            <Tab.Container >
               <div className="left-col">
                 {this.renderListHeader()}
                 {activeList == 'appointments' ?
@@ -239,16 +247,13 @@ class ShowPatientsView extends React.Component {
               </div>
               <div className="right-col">
 
-
-                <Tab.Content>
+                <Tab.Content style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
                   {this.renderCircle()}
                   {activeList == 'appointments' && appointmentsVisible ?
                     this.renderAppointments()
-                    : patientsVisible ?
-                      <PatientProfile />
-                      : educatorsVisible ?
-                        <PatientEducators />
-                        : this.renderChat()
+                    : activeChat ?
+                      this.renderUpperTabs()
+                      : null
                   }
                 </Tab.Content>
               </div>
