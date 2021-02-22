@@ -7,7 +7,7 @@ class DataProvider extends Component {
     super(props);
     this.state = {
       // educatorId: '',
-      educatorId: 'e0d57df1-e8ae-4ca5-a076-93edb11deaa1',
+      educatorId: '',
       token: '',
       activeChat: '',
       loading: false,
@@ -17,9 +17,7 @@ class DataProvider extends Component {
       appointments: {},
       educators: {},
       patients: {},
-      chats: [
-        { id: '1234', patientName: 'w' }
-      ]
+      chats: []
     };
   }
 
@@ -28,8 +26,9 @@ class DataProvider extends Component {
     appointments = this.filterAppointments(appointments)
     localStorage.setItem('educatorId', educatorId)
     this.setState({ educatorId, appointments, chats })
-    // if (educatorId == '55aabda5-8af2-4a39-b074-80a1852dcb1d')
     // if (educatorId == '8bd3c7e1-c6ec-48bf-8ac8-80bf1f013eef')
+    console.log('educatorId', educatorId);
+    if (educatorId == '55aabda5-8af2-4a39-b074-80a1852dcb1d')
       this.getEducatorData();
 
   }

@@ -11,6 +11,13 @@ class Chat extends React.Component {
 
     state = {
         messages: [],
+        duration: 0,
+        lang:{
+            ar: {
+                messageCount: 'عدد الرسائل',
+                usageDuration: 'مدة الاستخدام'
+            }
+        }
     };
 
     messagesEnd = React.createRef();
@@ -23,6 +30,7 @@ class Chat extends React.Component {
                 console.log('data', data);
                 if (data) {
                     let messages = this.formatMessages(data)
+                    this.setDuration(messages)
                     this.setState({ messages, loading: false })
                     // this.scrollToBottom()
                 }
@@ -34,6 +42,18 @@ class Chat extends React.Component {
                 this.setState({ loading: false })
                 console.log("ERROR GETTING MESSAGES", err)
             })
+
+    }
+
+    setDuration(messages =[]){
+        if(messages && messages.length >0){
+            let first = new Date(messages[0].message.createdOn)
+            let last = new Date(messages[messages.length-1].message.createdOn)
+            const diffTime = Math.abs(last - first);
+            const duration = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+            this.setState({duration})
+            
+        }
 
     }
 
@@ -123,8 +143,8 @@ class Chat extends React.Component {
         );
     }
     render() {
-        const { loading, messages } = this.state;
-
+        const { loading, messages, duration } = this.state;
+        const {messageCount, usageDuration} = this.state.lang.ar
         return (
             <div style={{ paddingLeft: 0, paddingRight: 0, marginLeft: 0, marginRight: 0, width: '100vh', maxHeight: '80vh', overflowY: 'auto' }}>
                 {loading ?
@@ -134,6 +154,11 @@ class Chat extends React.Component {
                         <div>المحادثة فارغة </div>
                         : null
                 }
+                <div>
+                {messages.length} :{messageCount} <br />
+                {usageDuration}: {duration} {"يوم"}
+                    
+                </div>
                 <ChatFeed
                     messages={messages} // Boolean: list of message objects
                     isTyping={this.state.is_typing} // Boolean: is the recipient typing
