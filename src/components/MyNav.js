@@ -6,7 +6,7 @@ import {DataContext} from '../stateManagement/context'
 
 const MyNav = (props) => {
 
-  const {educators, setEducatorId, loading}= useContext(DataContext)
+  const {educators, setActiveEducator, loading, clearState}= useContext(DataContext)
 
   return (
     <Navbar bg="secondary" variant="dark" collapseOnSelect expand="lg">
@@ -23,13 +23,13 @@ const MyNav = (props) => {
       <Navbar.Collapse id="responsive-navbar-nav">
         {Object.keys(educators).length ?
           Object.keys(educators).map((i) => (
-            <Nav.Link key={educators[i].id} style={{ color: "#FFF" }} onClick={()=>setEducatorId(educators[i].id)} >{educators[i].name}</Nav.Link>
+            <Nav.Link key={educators[i].id} style={{ color: "#FFF" }} onClick={()=>setActiveEducator(educators[i].id)} >{educators[i].name}</Nav.Link>
           ))
           : loading? 
           <Spinner animation="border" />
           : <Nav className="mr-auto">
             {/* <Nav.Link ><Link style={{ color: "#FFF" }} to="/">Home</Link> </Nav.Link> */}
-            <Nav.Link ><Link style={{ color: "#FFF" }} to="/">Logout</Link></Nav.Link>
+            <Nav.Link ><Link style={{ color: "#FFF" }} to="/" onClick={()=> clearState()}>Logout</Link></Nav.Link>
           </Nav>
         }
       </Navbar.Collapse>

@@ -7,8 +7,10 @@ export function parseObjectOfArrays(obj){
     let objects={}
     for(var key in obj){
         var current=obj[key]
-        objects[key]= parseArray(current)
-        parsed.push(parseArray(current))
+        if (Array.isArray(current)) {
+            objects[key]= parseArray(current)
+            parsed.push(parseArray(current))
+        }
     }
     return objects
 }

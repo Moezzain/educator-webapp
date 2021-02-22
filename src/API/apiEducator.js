@@ -1,26 +1,45 @@
 import url from '../config/apiConfig'
 import { parseObjectOfArrays } from '../helpers/Converters'
+import axios from "axios"
 
-export const getEducatorIds = async () => {
-  return await fetch(`${url}/educator?get=all`)
-    .then(res => res.json())
-    .then(data => {
+export const getMessages = async (chatId, educatorId, token) => {
+  try {
+    let result = await axios
+        .get(`${url}/message?chatId=${chatId}&educatorId=${educatorId}`, {headers: {
+          Authorization: `Bearer ${token}`
+        }, timeout: 10000 })
+    if (result?.data) {
+      return result.data
+    }
+  } catch (error) {
+      return error
+  }
+}
+
+export const getEducatorIds = async (educatorId, token) => {
+  try {
+
+    const result = await axios.get(`${url}/educator?get=all&id=${educatorId}&educatorId=${educatorId}`, {headers: {
+      Authorization: `Bearer ${token}`
+    }})
+    if (result.data) {
       let educators = {}
-      data.forEach((educator) => {
+      result.data.forEach((educator) => {
         let { name, id } = JSON.parse(educator)
         educators[id] = { name, id }
       })
       return educators;
-    })
-    .catch(err => console.log('error getting ids: ', err)
-    )
+    }
+  } catch(err) {
+    console.log('Error getEducatorIds', err);
+  }
 }
 
-export const getEducatorChats = async () => {
-  const educators = await getEducatorIds();
+export const getEducatorChats = async (educatorId, token) => {
+  const educators = await getEducatorIds(educatorId, token);
   let patientChats = []
   for (var i in educators) {
-    let chats = await getChats(educators[i].id)
+    let chats = await getChats(educators[i].id, token)
     if (chats) {
       educators[i].chats = chats
       educators[i].count = chats.length
@@ -29,66 +48,78 @@ export const getEducatorChats = async () => {
   return educators;
 }
 
-export const getChats = async (educatorId) => {
-
-  return await fetch(`${url}/chat?educatorId=${educatorId}`)
-    .then(res => res.json())
-    .then(data => {
-      if (data.error) {
+export const getChats = async (educatorId, token) => {
+  try {
+    const result = await axios.get(`${url}/chat?educatorId=${educatorId}`, {headers: {
+      Authorization: `Bearer ${token}`
+    }})
+    if(result.data) {
+      if (result.data.error) {
         return;
       }
-      let chats = data.map((item) => JSON.parse(item))
+      let chats = result.data.map((item) => JSON.parse(item))
       return chats
-
-    }).catch(e => console.log(e))
-}
-
-export const getAllEducatorsAndPatients = async () => {
-  const educators = await getEducatorIds();
-  let patients = {}
-  for (var i in educators) {
-    let educator = educators[i]
-    let { chats, appointments } = await getEducatorData(educator.id)
-    if (chats) {
-      educator.chats = chats
-      educator.count = chats.length
-      chats.forEach((chat) => {
-        let patient = patients[chat.patientId]
-        if (!patient) {
-          patients[chat.patientId] = chat
-          patient= patients[chat.patientId]
-        }
-        if (patient && patient.educators) {
-          patient.educators.push({id: educator.id, name: educator.name})
-        }
-        else {
-          patient.educators = [{id: educator.id, name: educator.name}]
-        }
-      })
-      console.log("patients", patients);
-      // break;
-
     }
-    if (appointments) {
-      educators[i].appointments = appointments
-    }
+  } catch (error) {
+    console.log("Error getting chats:", error);
   }
+}
 
-  return {educators, patients};
+export const getAllEducatorsAndPatients = async (educatorId, token) => {
+  try {
+    const educators = await getEducatorIds(educatorId, token);
+    let patients = {}
+    for (var i in educators) {
+      let educator = educators[i]
+      let {chats, appointments}= await getEducatorData(educator.id, token)
+
+      if (chats) {
+        educator.chats = chats
+        educator.count = chats.length
+        chats.forEach((chat) => {
+          let patient = patients[chat.patientId]
+          if (!patient) {
+            patients[chat.patientId] = chat
+            patient= patients[chat.patientId]
+          }
+          if (patient && patient.educators) {
+            patient.educators.push({id: educator.id, name: educator.name})
+          }
+          else {
+            patient.educators = [{id: educator.id, name: educator.name}]
+          }
+        })
+        // break;
+
+      }
+      if (appointments) {
+        educators[i].appointments = appointments
+      }
+    // }
+    }
+
+    return {educators, patients};
+  }
+  catch (error) {
+    console.log(' Error getAllEducatorsAndPatients', error);
+  }
 }
 
 
-export const getEducatorData = async (educatorId) => {
-
-
-  const get = 'chats,appointments,educator,all';
-  return await fetch(`${url}/educator?id=${educatorId}&get=${get}`)
-    .then(res => res.json())
-    .then(data => {
+export const getEducatorData = async (educatorId, token) => {
+  try {
+    const get = 'chats,appointments,educator,all';
+    const result = await axios.get(`${url}/educator?id=${educatorId}&get=${get}&educatorId=${educatorId}`, {headers: {
+      Authorization: `Bearer ${token}`
+    }})
+    if(result.data) {
+      const {data} = result;
       delete data.educator
       let parsedData = parseObjectOfArrays(data);
       const { appointments, chats } = parsedData;
       return { chats, appointments };
-    })
-    .catch(err => console.log(err))
+    }
+  } catch (error) {
+    console.log('getEducatorData', error);
+  }
 }

@@ -1,7 +1,7 @@
 import React from "react";
 import { ChatFeed, Message, ChatBubble } from 'react-chat-ui'
 import { Container, Spinner } from 'react-bootstrap'
-import { getMessages } from '../API/apiAuth'
+import { getMessages } from '../API/apiEducator'
 
 const imgTypes = ['png', 'jpg', 'jpeg', 'gif'];
 const fileTypes = ['pdf', 'doc', 'docx'];
@@ -15,15 +15,14 @@ class Chat extends React.Component {
 
     messagesEnd = React.createRef();
     async componentDidMount() {
-
+        console.log('token:', this.props.token);
         let chatId = '1234'
         this.setState({ loading: true })
-        await getMessages(this.props.chatId)
-            .then(({ data }) => {
+        await getMessages(this.props.chatId, this.props.educatorId, this.props.token)
+            .then((data) => {
+                console.log('data', data);
                 if (data) {
-                    let parsedMessages = data.map((element) => { return JSON.parse(element) })
-                    // return parsedMessages
-                    let messages = this.formatMessages(parsedMessages)
+                    let messages = this.formatMessages(data)
                     this.setState({ messages, loading: false })
                     // this.scrollToBottom()
                 }
