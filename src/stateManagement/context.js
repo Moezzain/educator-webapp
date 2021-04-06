@@ -6,7 +6,9 @@ class DataProvider extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      // educatorId: '',
       educatorId: '',
+      token: '',
       activeChat: '',
       loading: false,
       patientsVisible: false,
@@ -15,23 +17,67 @@ class DataProvider extends Component {
       appointments: {},
       educators: {},
       patients: {},
-      chats: [
-        { id: '1234', patientName: 'w' }
-      ]
+      chats: []
     };
   }
 
 
   saveData = (educatorId, appointments, chats) => {
     appointments = this.filterAppointments(appointments)
+    localStorage.setItem('educatorId', educatorId)
     this.setState({ educatorId, appointments, chats })
+    // if (educatorId == '8bd3c7e1-c6ec-48bf-8ac8-80bf1f013eef')
+    console.log('educatorId', educatorId);
     if (educatorId == '55aabda5-8af2-4a39-b074-80a1852dcb1d')
       this.getEducatorData();
 
   }
+
+  setEducatorId = (educatorId) => this.setState({educatorId});
+
+  saveToken = (token) => {
+    this.setState({token});
+    localStorage.setItem('token', token);
+  }
+  componentDidMount() {
+    this.getLocalData();
+  }
   // componentDidMount() {
-  //   this.getEducatorData();  
+  //   this.getEducatorData(this.state.token);  
   // }
+
+  getLocalData = async () => {
+    return new Promise((resolve, reject) => {
+
+      const educatorId= localStorage.getItem('educatorId')
+      const token = localStorage.getItem('token')
+      if (educatorId && token) {
+        this.saveToken(token)
+        this.setEducatorId(educatorId)
+        resolve({educatorId, token})
+      } else {
+        reject('no educatorId or token set')
+      }
+    })
+  }
+
+  clearState = () => {
+    localStorage.clear();
+    this.setState({
+            // educatorId: '',
+            educatorId: '',
+            token: '',
+            activeChat: '',
+            loading: false,
+            patientsVisible: false,
+            appointmentsVisible: true,
+            educatorsVisible: false,
+            appointments: {},
+            educators: {},
+            patients: {},
+            chats: []
+    })
+  }
 
   filterAppointments(appointments) {
 
@@ -60,7 +106,8 @@ class DataProvider extends Component {
 
   getEducatorChats = async () => {
     this.setState({ loading: true })
-    let educators = await getEducatorChats();
+    const {token, educatorId} = this.state;
+    let educators = await getEducatorChats(educatorId, token);
     if (educators) {
       this.setState({ educators, loading: false })
       return educators
@@ -71,8 +118,9 @@ class DataProvider extends Component {
   }
 
   getEducatorData = async () => {
-    this.setState({ loading: true })
-    let { educators, patients } = await getAllEducatorsAndPatients()
+    this.setState({ loading: true });
+    const {token, educatorId} = this.state;
+    let {educators, patients} = await getAllEducatorsAndPatients(educatorId, token);
     if (educators && patients) {
       this.setState({ educators, patients, loading: false })
       return educators
@@ -86,7 +134,7 @@ class DataProvider extends Component {
     }
   }
 
-  setEducatorId = educatorId => {
+  setActiveEducator = educatorId => {
     let appointments = this.filterAppointments(this.state.educators[educatorId].appointments)
 
     this.setState({
@@ -111,8 +159,11 @@ class DataProvider extends Component {
         value={{
           ...this.state,
           saveData: this.saveData,
+          saveToken: this.saveToken,
+          clearState: this.clearState,
           getEducatorChats: this.getEducatorChats,
           setEducatorId: this.setEducatorId,
+          setActiveEducator: this.setActiveEducator,
           setChats: this.setChats,
           showPatient: this.showPatient,
           hidePatient: this.hidePatient,
@@ -121,6 +172,7 @@ class DataProvider extends Component {
           showEducators: this.showEducators,
           hideEducators: this.hideEducators,
           setActiveChat: this.setActiveChat,
+          getLocalData: this.getLocalData,
         }}
       >
         {this.props.children}

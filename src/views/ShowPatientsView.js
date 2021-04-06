@@ -40,20 +40,24 @@ class ShowPatientsView extends React.Component {
   }
   componentDidMount() {
     let { chats, educators } = this.context
-    if (!this.context.chats[0].id) {
-      chats = parseArray(this.context.chats);
-      this.context.setChats(chats)
-    }
+    try {
+      if (this.context?.chats?.length && !this.context.chats[0].id) {
+        chats = parseArray(this.context.chats);
+        this.context.setChats(chats)
+      }
 
-    let paths = []
-    for (var i in educators) {
-      let educator = educators[i]
-      paths.push({})
+      let paths = []
+      for (var i in educators) {
+        let educator = educators[i]
+        paths.push({})
+      }
+    } catch(err) {
+      console.log('error setting chats:', err);
     }
   }
 
   renderChat() {
-    let { chats, showPatient, activeChat } = this.context;
+    let { chats, showPatient, activeChat, token, educatorId } = this.context;
     console.log('rendering chat', typeof chats, '\nactivated', activeChat);
 
     if (!chats) {
@@ -66,7 +70,7 @@ class ShowPatientsView extends React.Component {
             <a style={{ color: '#3581b8' }} onClick={() => showPatient()}>مشاهدة البروفايل</a>
           </div> */}
           {activeChat == chat.id ?
-            <Chat chatId={chat.id} />
+            <Chat chatId={chat.id} token={token} educatorId={educatorId} />
             : null}
         </Tab.Pane>
       )

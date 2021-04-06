@@ -1,6 +1,5 @@
 import React from 'react';
 import './App.css';
-import './scss/app.scss'
 import {DataProvider} from './stateManagement/context'
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
 import LoginView from './views/LoginView'

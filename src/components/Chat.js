@@ -1,7 +1,7 @@
 import React from "react";
 import { ChatFeed, Message, ChatBubble } from 'react-chat-ui'
 import { Container, Spinner } from 'react-bootstrap'
-import { getMessages } from '../API/apiAuth'
+import { getMessages } from '../API/apiEducator'
 
 const imgTypes = ['png', 'jpg', 'jpeg', 'gif'];
 const fileTypes = ['pdf', 'doc', 'docx'];
@@ -11,19 +11,26 @@ class Chat extends React.Component {
 
     state = {
         messages: [],
+        duration: 0,
+        lang:{
+            ar: {
+                messageCount: 'عدد الرسائل',
+                usageDuration: 'مدة الاستخدام'
+            }
+        }
     };
 
     messagesEnd = React.createRef();
     async componentDidMount() {
-
+        console.log('token:', this.props.token);
         let chatId = '1234'
         this.setState({ loading: true })
-        await getMessages(this.props.chatId)
-            .then(({ data }) => {
+        await getMessages(this.props.chatId, this.props.educatorId, this.props.token)
+            .then((data) => {
+                console.log('data', data);
                 if (data) {
-                    let parsedMessages = data.map((element) => { return JSON.parse(element) })
-                    // return parsedMessages
-                    let messages = this.formatMessages(parsedMessages)
+                    let messages = this.formatMessages(data)
+                    this.setDuration(messages)
                     this.setState({ messages, loading: false })
                     // this.scrollToBottom()
                 }
@@ -35,6 +42,18 @@ class Chat extends React.Component {
                 this.setState({ loading: false })
                 console.log("ERROR GETTING MESSAGES", err)
             })
+
+    }
+
+    setDuration(messages =[]){
+        if(messages && messages.length >0){
+            let first = new Date(messages[0].message.createdOn)
+            let last = new Date(messages[messages.length-1].message.createdOn)
+            const diffTime = Math.abs(last - first);
+            const duration = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+            this.setState({duration})
+            
+        }
 
     }
 
@@ -124,8 +143,8 @@ class Chat extends React.Component {
         );
     }
     render() {
-        const { loading, messages } = this.state;
-
+        const { loading, messages, duration } = this.state;
+        const {messageCount, usageDuration} = this.state.lang.ar
         return (
             <div style={{ paddingLeft: 0, paddingRight: 0, marginLeft: 0, marginRight: 0, width: '100vh', maxHeight: '80vh', overflowY: 'auto' }}>
                 {loading ?
@@ -135,6 +154,11 @@ class Chat extends React.Component {
                         <div>المحادثة فارغة </div>
                         : null
                 }
+                <div>
+                {messages.length} :{messageCount} <br />
+                {usageDuration}: {duration} {"يوم"}
+                    
+                </div>
                 <ChatFeed
                     messages={messages} // Boolean: list of message objects
                     isTyping={this.state.is_typing} // Boolean: is the recipient typing

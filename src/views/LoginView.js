@@ -16,7 +16,19 @@ class Login extends React.Component {
     loading: false,
   }
 
-  handleChang = (e) => {
+  async componentDidMount() {
+    try {
+      const data = await this.context.getLocalData();
+      if(data?.token && data?.educatorId) {
+        this.context.getEducatorChats()
+        this.props.history.push("showpatients")
+      }
+    } catch (err) {
+      console.log('context not loaded');
+    }
+    
+  }
+  handleChange = (e) => {
     this.setState({
       [e.target.name]: e.target.value
     })
@@ -26,8 +38,13 @@ class Login extends React.Component {
     this.setState({ loading: true })
     login(this.state)
       .then(res => {
+        const educator = JSON.parse(res.data.educator)
+        const tokens = educator.token;
+        const token= tokens[tokens.length -1];
+        const {educatorId, appointments, chats} = res.data;
         this.setState({ loading: false })
-        this.context.saveData(res.data.educatorId, res.data.appointments, res.data.chats)
+        this.context.saveToken(token);
+        this.context.saveData(educatorId, appointments, chats)
         this.props.history.push("showpatients")
       })
       .catch(err => {
@@ -80,7 +97,7 @@ class Login extends React.Component {
                     placeholder="Enter username"
                     value={username}
                     name={"username"}
-                    onChange={(e) => this.handleChang(e)}
+                    onChange={(e) => this.handleChange(e)}
                   />
                 </Form.Group>
                 <Form.Group controlId="formBasicPassword">
@@ -90,7 +107,7 @@ class Login extends React.Component {
                     placeholder="Password"
                     value={password}
                     name={"password"}
-                    onChange={(e) => this.handleChang(e)}
+                    onChange={(e) => this.handleChange(e)}
                   />
                 </Form.Group>
                 {loading? <Spinner style={{alignSelf:'center', marginBottom: 10}} animation="border" /> : null}
