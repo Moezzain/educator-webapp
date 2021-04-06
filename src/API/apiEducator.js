@@ -57,7 +57,10 @@ export const getChats = async (educatorId, token) => {
       if (result.data.error) {
         return;
       }
-      let chats = result.data.map((item) => JSON.parse(item))
+      let chats = result.data?.chats?.map((item) => JSON.parse(item))
+      if(!chats) {
+        return []
+      }
       return chats
     }
   } catch (error) {

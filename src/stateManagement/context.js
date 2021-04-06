@@ -46,13 +46,19 @@ class DataProvider extends Component {
   //   this.getEducatorData(this.state.token);  
   // }
 
-  getLocalData = () => {
-    const educatorId= localStorage.getItem('educatorId')
-    const token = localStorage.getItem('token')
-    if (educatorId && token) {
-      this.saveToken(token)
-      this.setEducatorId(educatorId)
-    }
+  getLocalData = async () => {
+    return new Promise((resolve, reject) => {
+
+      const educatorId= localStorage.getItem('educatorId')
+      const token = localStorage.getItem('token')
+      if (educatorId && token) {
+        this.saveToken(token)
+        this.setEducatorId(educatorId)
+        resolve({educatorId, token})
+      } else {
+        reject('no educatorId or token set')
+      }
+    })
   }
 
   clearState = () => {
@@ -166,6 +172,7 @@ class DataProvider extends Component {
           showEducators: this.showEducators,
           hideEducators: this.hideEducators,
           setActiveChat: this.setActiveChat,
+          getLocalData: this.getLocalData,
         }}
       >
         {this.props.children}

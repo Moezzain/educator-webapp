@@ -16,10 +16,11 @@ class Login extends React.Component {
     loading: false,
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     try {
-      this.context.getLocalData();
-      if(this.context.token) {
+      const data = await this.context.getLocalData();
+      if(data?.token && data?.educatorId) {
+        this.context.getEducatorChats()
         this.props.history.push("showpatients")
       }
     } catch (err) {
