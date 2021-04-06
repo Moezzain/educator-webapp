@@ -22,9 +22,15 @@ const MyNav = (props) => {
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
       <Navbar.Collapse id="responsive-navbar-nav">
         {Object.keys(educators).length ?
-          Object.keys(educators).map((i) => (
+          <>
+          {Object.keys(educators).map((i) => (
             <Nav.Link key={educators[i].id} style={{ color: "#FFF" }} onClick={()=>setActiveEducator(educators[i].id)} >{educators[i].name}</Nav.Link>
-          ))
+          ))}
+          <Nav className="mr-auto ml-10">
+            {/* <Nav.Link ><Link style={{ color: "#FFF" }} to="/">Home</Link> </Nav.Link> */}
+            <Nav.Link ><Link style={{ color: "#FFF" }} to="/" onClick={()=> clearState()}>Logout</Link></Nav.Link>
+          </Nav>
+          </>
           : loading? 
           <Spinner animation="border" />
           : <Nav className="mr-auto">
