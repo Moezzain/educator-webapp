@@ -22,12 +22,10 @@ class Chat extends React.Component {
 
     messagesEnd = React.createRef();
     async componentDidMount() {
-        console.log('token:', this.props.token);
         let chatId = '1234'
         this.setState({ loading: true })
         await getMessages(this.props.chatId, this.props.educatorId, this.props.token)
             .then((data) => {
-                console.log('data', data);
                 if (data) {
                     let messages = this.formatMessages(data)
                     this.setDuration(messages)

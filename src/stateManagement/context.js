@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { getEducatorChats, getAllEducatorsAndPatients } from '../API/apiEducator'
+import { getEducatorChats, getAllEducatorsAndPatients, getPatient } from '../API/apiEducator'
 
 const DataContext = React.createContext();
 class DataProvider extends Component {
@@ -134,6 +134,12 @@ class DataProvider extends Component {
     }
   }
 
+  getPatient = async (patientId) => {
+    const {token, educatorId} = this.state;
+    const data = await getPatient(educatorId, token, patientId)
+    return data;
+  }
+
   setActiveEducator = educatorId => {
     let appointments = this.filterAppointments(this.state.educators[educatorId].appointments)
 
@@ -173,6 +179,7 @@ class DataProvider extends Component {
           hideEducators: this.hideEducators,
           setActiveChat: this.setActiveChat,
           getLocalData: this.getLocalData,
+          getPatient: this.getPatient,
         }}
       >
         {this.props.children}
