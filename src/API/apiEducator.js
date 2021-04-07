@@ -50,7 +50,8 @@ export const getEducatorChats = async (educatorId, token) => {
 
 export const getChats = async (educatorId, token) => {
   try {
-    const result = await axios.get(`${url}/chat?educatorId=${educatorId}`, {headers: {
+    const filterDate = 'all';
+    const result = await axios.get(`${url}/chat?educatorId=${educatorId}&filterDate=${filterDate}`, {headers: {
       Authorization: `Bearer ${token}`
     }})
     if(result.data) {
