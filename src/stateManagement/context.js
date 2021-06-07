@@ -6,7 +6,6 @@ class DataProvider extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // educatorId: '',
       educatorId: '',
       token: '',
       activeChat: '',

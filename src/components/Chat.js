@@ -63,7 +63,7 @@ class Chat extends React.Component {
             if (message.media) {
                 var fileNameArr = message.media.split('.');
                 var fileExtension = fileNameArr[fileNameArr.length - 1];
-                var isImg = imgTypes.includes(fileExtension);
+                var isImg =fileExtension.includes('jpg');
                 var isFile = fileTypes.includes(fileExtension);
                 var isAudio = audioTypes.includes(fileExtension);
                 if (isImg) {
