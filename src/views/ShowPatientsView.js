@@ -240,7 +240,7 @@ class ShowPatientsView extends React.Component {
         <Container
           fluid
           style={styles.container}>
-          <CardContainer width="80%" direction="row" padding={10} marginT={40} marginB={40}>
+          <CardContainer width="95%" direction="row" padding={10} marginT={10} marginB={10}>
             <Tab.Container >
               <div className="left-col">
                 {this.renderListHeader()}
