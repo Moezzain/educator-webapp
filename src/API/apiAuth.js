@@ -8,8 +8,6 @@ const encrypt = (text) => {
 
 export const login = async ({ username, password }) => {
     let encryptedPassword = await encrypt(password);
-    console.log("password encrypted: ",encryptedPassword);
-    console.log("username: ",username);
     
     const data = {
         id: username,
