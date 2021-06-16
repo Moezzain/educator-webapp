@@ -64,7 +64,6 @@ class Chat extends React.Component {
   }
 
   formatMessages(messages = []) {
-    console.log('raw  messages: ', messages);
     let formatedMessages = [];
     let date
     for (var i in messages) {
@@ -77,10 +76,8 @@ class Chat extends React.Component {
         var isFile = fileTypes.includes(fileExtension);
         var isAudio = audioTypes.includes(fileExtension);
         if (isImg) {
-        //   console.log('date: ',date);
         
         if(date !== message.createdOn.split('T')[0]){
-          console.log('date changed inside images');
           message.message = { image: message.media };
           message.message.date = message.createdOn.split('T')[0]
           date = message.createdOn.split('T')[0]
@@ -92,6 +89,7 @@ class Chat extends React.Component {
           message.message = { text: message.text, file: message.media };
           delete message.media;
         } else if (isAudio) {
+          
           message.media = message.media.replace('vnd.wave', 'wav');
           message.message = { audio: message.media };
           delete message.media;
@@ -99,10 +97,8 @@ class Chat extends React.Component {
           message.message = { text: '' };
         }
       } else if (message.text) {
-        console.log('date: ',date);
         
         if(date !== message.createdOn.split('T')[0]){
-          console.log('date changed');
           message.message = { text: message.text };
           message.message.date = message.createdOn.split('T')[0]
           date = message.createdOn.split('T')[0]
@@ -122,11 +118,6 @@ class Chat extends React.Component {
 
       formatedMessages.push(formattedMessage);
     }
-    // let filteredMessages = formatedMessages.filter((message) => {
-    //   return !message.message.image;
-    // });
-    // console.log('filteredMessages: ', filteredMessages);
-
     return formatedMessages;
   }
 
@@ -148,7 +139,6 @@ class Chat extends React.Component {
   render() {
     const { loading, messages, duration } = this.state;
     const { messageCount, usageDuration } = this.state.lang.ar;
-    console.log('messages: ', messages);
     return (
       <div>
         {loading ? (
@@ -173,7 +163,7 @@ class Chat extends React.Component {
                     <Message.ImageContent
                       src={message.message.image}
                       alt={
-                        "The image isn'nt working link: " +
+                        "The image isn't working link: " +
                         message.message.image
                       }
                       width={400}
