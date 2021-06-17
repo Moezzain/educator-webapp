@@ -1,4 +1,4 @@
-import React,{Text} from 'react';
+import React, { Text } from 'react';
 import { ChatFeed, ChatBubble } from 'react-chat-ui';
 import { Container, Spinner } from 'react-bootstrap';
 import { getMessages } from '../API/apiEducator';
@@ -9,12 +9,12 @@ import {
   MessageList,
   Message,
   MessageInput,
-  MessageSeparator
+  MessageSeparator,
 } from '@chatscope/chat-ui-kit-react';
 
 const imgTypes = ['png', 'jpg', 'jpeg', 'gif'];
 const fileTypes = ['pdf', 'doc', 'docx'];
-const audioTypes = ['mp3', '3gp', 'caf', 'wav', 'wave', 'm4a'];
+const audioTypes = ['mp3', '3gp', 'caf', 'wav', 'wave', 'm4a', 'aac'];
 
 class Chat extends React.Component {
   state = {
@@ -65,46 +65,45 @@ class Chat extends React.Component {
 
   formatMessages(messages = []) {
     let formatedMessages = [];
-    let date
+    let date;
     for (var i in messages) {
       let message = messages[i];
       let id = parseInt(message.user._id) - 1;
       if (message.media) {
         var fileNameArr = message.media.split('.');
-        var fileExtension = fileNameArr[fileNameArr.length - 1].split('?')[0];
-        var isImg = imgTypes.includes(fileExtension);
-        var isFile = fileTypes.includes(fileExtension);
-        var isAudio = audioTypes.includes(fileExtension);
+        var fileExtension = fileNameArr[fileNameArr.length - 1];
+        var isImg = imgTypes.includes(fileExtension.split('?')[0]);
+        var isFile = fileTypes.includes(fileExtension.split('?')[0]);
+        var isAudio = audioTypes.includes(fileExtension.split('?')[0]);
         if (isImg) {
-        
-        if(date !== message.createdOn.split('T')[0]){
-          message.message = { image: message.media };
-          message.message.date = message.createdOn.split('T')[0]
-          date = message.createdOn.split('T')[0]
-        }else{
-          message.message = { text: message.text };
-        }
-        delete message.media;
+          if (date !== message.createdOn.split('T')[0]) {
+            message.message = { image: message.media };
+            message.message.date = message.createdOn.split('T')[0];
+            date = message.createdOn.split('T')[0];
+          } else {
+            message.message = { image: message.media };
+            message.message.text = message.text;
+          }
+          delete message.media;
         } else if (isFile) {
           message.message = { text: message.text, file: message.media };
           delete message.media;
         } else if (isAudio) {
-          
           message.media = message.media.replace('vnd.wave', 'wav');
           message.message = { audio: message.media };
+          message.message.text = message.text;
           delete message.media;
         } else {
-          message.message = { text: '' };
+          message.message = {
+            text: 'this link is corrupted: ' + message.media,
+          };
         }
       } else if (message.text) {
-        
-        if(date !== message.createdOn.split('T')[0]){
+        if (date !== message.createdOn.split('T')[0]) {
           message.message = { text: message.text };
-          message.message.date = message.createdOn.split('T')[0]
-          date = message.createdOn.split('T')[0]
-        }
-        else
-        message.message = { text: message.text };
+          message.message.date = message.createdOn.split('T')[0];
+          date = message.createdOn.split('T')[0];
+        } else message.message = { text: message.text };
       } else {
         message.message = { text: '' };
       }
@@ -112,8 +111,8 @@ class Chat extends React.Component {
       let userId;
       if (id === 0) userId = 'outgoing';
       else userId = 'incoming';
-      const createdOn = message.message.createdOn.split('T')
-      message.message.createdOn = createdOn
+      const createdOn = message.message.createdOn.split('T');
+      message.message.createdOn = createdOn;
       let formattedMessage = { userId, message: message.message };
 
       formatedMessages.push(formattedMessage);
@@ -154,39 +153,43 @@ class Chat extends React.Component {
           <MainContainer>
             <ChatContainer>
               <MessageList>
-                {messages.map((message) =>(
+                {messages.map((message) => (
                   <div>
+                    {message.message?.date && (
+                      <MessageSeparator content={message.message.date} />
+                    )}
 
-                    {message.message?.date && (<MessageSeparator content={message.message.date} />)}
-                    
-                  {message.message?.image ? (
-                    <Message.ImageContent
-                      src={message.message.image}
-                      alt={
-                        "The image isn't working link: " +
-                        message.message.image
-                      }
-                      width={400}
-                    />
-                  ) : (
-                    <Message
-                      model={{
-                        message: message.message.text,
-                        sentTime: message.message.createdOn,
-                        direction: message.userId,
-                      }}
-                    >
-                      <Message.CustomContent>
-                      <text style={{fontSize:17}}>{message.message.text}</text>
-                      </Message.CustomContent>
-                      <Message.Footer>
-                    <text style={{fontSize:10}}>{message.message.createdOn[1].split('.')[0]}</text>
-                      </Message.Footer>
-                    </Message>)}
+                    {message.message?.image ? (
+                      <Message.ImageContent
+                        src={message.message.image}
+                        alt={
+                          "The image isn't working link: " +
+                          message.message.image
+                        }
+                        width={400}
+                      />
+                    ) : (
+                      <Message
+                        model={{
+                          message: message.message.text,
+                          sentTime: message.message.createdOn,
+                          direction: message.userId,
+                        }}
+                      >
+                        <Message.CustomContent>
+                          <text style={{ fontSize: 17 }}>
+                            {message.message.text}
+                          </text>
+                        </Message.CustomContent>
+                        <Message.Footer>
+                          <text style={{ fontSize: 10 }}>
+                            {message.message.createdOn[1].split('.')[0]}
+                          </text>
+                        </Message.Footer>
+                      </Message>
+                    )}
                   </div>
-                
-                  )
-                )}
+                ))}
               </MessageList>
             </ChatContainer>
           </MainContainer>
@@ -197,4 +200,3 @@ class Chat extends React.Component {
 }
 
 export default Chat;
-
