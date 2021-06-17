@@ -3,7 +3,7 @@ import axios from 'axios';
 import url from './../../../config/apiConfig';
 export const getChatsAction = createAsyncThunk(
   'chats/getChatsAction',
-  async (userAuths,{}) => {
+  async (userAuths,{rejectWithValue}) => {
     console.log('getChatsAction');
 
     try {
@@ -19,18 +19,19 @@ export const getChatsAction = createAsyncThunk(
       if (result?.data) {
         console.log(result);
 
-        return result.data;
+        return result.data.reverse();
       }
     } catch (error) {
       console.log('error', error);
 
-      return error;
+      return rejectWithValue(error);
     }
   }
 );
 const initialState = {
   messages: null,
-  loading: false
+  loading: false,
+  error: null
 };
 const chatsReducer = createSlice({
   name: 'chats',
@@ -49,6 +50,9 @@ const chatsReducer = createSlice({
     },
     [getChatsAction.pending]: (state, action) => {
         state.loading = true
+    },
+    [getChatsAction.rejected]: (state, action) => {
+        state.error = action.payload
     }
   },
 });

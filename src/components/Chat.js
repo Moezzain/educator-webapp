@@ -1,26 +1,24 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { Text, useState, useEffect } from 'react';
-import { ChatFeed, ChatBubble } from 'react-chat-ui';
-import { Container, Spinner } from 'react-bootstrap';
-import { getMessages } from '../API/apiEducator';
+import React, { useState, useEffect } from 'react';
+import { Spinner } from 'react-bootstrap';
 import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import {
   MainContainer,
   ChatContainer,
   MessageList,
   Message,
-  MessageInput,
   MessageSeparator,
 } from '@chatscope/chat-ui-kit-react';
+import ReactAudioPlayer from 'react-audio-player';
 
-import { setChatsAction, getChatsAction } from '../redux/reducers/chatsReducer';
+import { getChatsAction } from '../redux/reducers/chatsReducer';
 import { useSelector, useDispatch } from 'react-redux';
 
 const imgTypes = ['png', 'jpg', 'jpeg', 'gif'];
 const fileTypes = ['pdf', 'doc', 'docx'];
 const audioTypes = ['mp3', '3gp', 'caf', 'wav', 'wave', 'm4a', 'aac'];
 
-const Chat = () => {
+const Chat = (props) => {
   const dispatch = useDispatch();
   const [localMessages, setLocalMessages] = useState([]);
   const [duration, setDuration] = useState(0);
@@ -32,24 +30,23 @@ const Chat = () => {
     },
   });
 
-  const { messages, loading } = useSelector((state) => state.chats)
-
+  const { messages, loading } = useSelector((state) => state.chats);
+  const { chatId, token, educatorId } = props;
   useEffect(() => {
-    // dispatch(setChatsAction('messages!'));
     dispatch(
       getChatsAction({
-        chatId: '441320',
-        token: '6c2e6e93b951c5952c9323b1bdf33b35',
-        educatorId: '1c735207-5ac5-4aa9-b5cd-17242fe95af1',
+        chatId,
+        token,
+        educatorId,
       })
     );
   }, []);
   useEffect(() => {
-    setLocalMessages(formatMessages(messages))
-  }, [messages])
+    setLocalMessages(formatMessages(messages));
+  }, [messages]);
   useEffect(() => {
-    calcDuration(localMessages)
-  },[localMessages])
+    calcDuration(localMessages);
+  }, [localMessages]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
 
   const calcDuration = (messages = []) => {
@@ -63,11 +60,11 @@ const Chat = () => {
   };
   const formatMessages = (messages = []) => {
     console.log('messages that reached formatedMessages: ', messages);
-    
+
     let formatedMessages = [];
     let date;
     for (var i in messages) {
-      let message = {}
+      let message = {};
       Object.assign(message, messages[i]);
       let id = parseInt(message.user._id) - 1;
       if (message.media) {
@@ -121,8 +118,6 @@ const Chat = () => {
     return formatedMessages;
   };
 
-  // const { loading, messages, duration } = this.state;
-  // const { messageCount, usageDuration } = this.state.lang.ar;
   return (
     <div>
       {loading ? (
@@ -131,9 +126,9 @@ const Chat = () => {
         <div>المحادثة فارغة </div>
       ) : null}
       <div>
-          {localMessages.length} :{lang.ar.messageCount} <br />
-          {lang.ar.usageDuration}: {duration} {'يوم'}
-        </div>
+        {localMessages.length} :{lang.ar.messageCount} <br />
+        {lang.ar.usageDuration}: {duration} {'يوم'}
+      </div>
       <div style={{ position: 'relative', height: '750px' }}>
         <MainContainer>
           <ChatContainer>
@@ -153,6 +148,9 @@ const Chat = () => {
                       width={400}
                     />
                   ) : (
+                    message.message?.audio ? <ReactAudioPlayer 
+                    src={message.message.audio}  controls />
+                    :
                     <Message
                       model={{
                         message: message.message.text,
@@ -181,6 +179,5 @@ const Chat = () => {
     </div>
   );
 };
-
 
 export default Chat;
