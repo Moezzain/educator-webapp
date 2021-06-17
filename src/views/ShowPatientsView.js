@@ -59,11 +59,16 @@ class ShowPatientsView extends React.Component {
   renderChat() {
     let { chats, showPatient, activeChat, token, educatorId } = this.context;
     console.log('rendering chat', typeof chats, '\nactivated', activeChat);
-
+    
     if (!chats) {
       return null
     }
     return chats.map(chat => {
+      // console.log(`
+      // chatId:${chat.id}
+      // token: ${token}
+      // educatorId: ${educatorId}
+      // `)
       return (
         <Tab.Pane key={chat.id} eventKey={chat.id} style={{ marginTop: 20 }}>
           {/* <div>

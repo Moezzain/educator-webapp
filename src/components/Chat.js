@@ -1,4 +1,5 @@
-import React, { Text } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { Text, useState, useEffect } from 'react';
 import { ChatFeed, ChatBubble } from 'react-chat-ui';
 import { Container, Spinner } from 'react-bootstrap';
 import { getMessages } from '../API/apiEducator';
@@ -12,62 +13,62 @@ import {
   MessageSeparator,
 } from '@chatscope/chat-ui-kit-react';
 
+import { setChatsAction, getChatsAction } from '../redux/reducers/chatsReducer';
+import { useSelector, useDispatch } from 'react-redux';
+
 const imgTypes = ['png', 'jpg', 'jpeg', 'gif'];
 const fileTypes = ['pdf', 'doc', 'docx'];
 const audioTypes = ['mp3', '3gp', 'caf', 'wav', 'wave', 'm4a', 'aac'];
 
-class Chat extends React.Component {
-  state = {
-    messages: [],
-    duration: 0,
-    lang: {
-      ar: {
-        messageCount: 'عدد الرسائل',
-        usageDuration: 'مدة الاستخدام',
-      },
+const Chat = () => {
+  const dispatch = useDispatch();
+  const [localMessages, setLocalMessages] = useState([]);
+  const [duration, setDuration] = useState(0);
+  // const [loading, setLoading] = useState(false);
+  const [lang, setLang] = useState({
+    ar: {
+      messageCount: 'عدد الرسائل',
+      usageDuration: 'مدة الاستخدام',
     },
-  };
+  });
 
-  messagesEnd = React.createRef();
-  async componentDidMount() {
-    let chatId = '1234';
-    this.setState({ loading: true });
-    await getMessages(
-      this.props.chatId,
-      this.props.educatorId,
-      this.props.token
-    )
-      .then((data) => {
-        if (data) {
-          let messages = this.formatMessages(data.reverse());
-          this.setDuration(messages);
-          this.setState({ messages, loading: false });
-        } else {
-          this.setState({ loading: false });
-          return [];
-        }
+  const { messages, loading } = useSelector((state) => state.chats)
+
+  useEffect(() => {
+    // dispatch(setChatsAction('messages!'));
+    dispatch(
+      getChatsAction({
+        chatId: '441320',
+        token: '6c2e6e93b951c5952c9323b1bdf33b35',
+        educatorId: '1c735207-5ac5-4aa9-b5cd-17242fe95af1',
       })
-      .catch((err) => {
-        this.setState({ loading: false });
-        console.log('ERROR GETTING MESSAGES', err);
-      });
-  }
+    );
+  }, []);
+  useEffect(() => {
+    setLocalMessages(formatMessages(messages))
+  }, [messages])
+  useEffect(() => {
+    calcDuration(localMessages)
+  },[localMessages])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
 
-  setDuration(messages = []) {
+  const calcDuration = (messages = []) => {
     if (messages && messages.length > 0) {
       let first = new Date(messages[0].message.createdOn);
       let last = new Date(messages[messages.length - 1].message.createdOn);
       const diffTime = Math.abs(last - first);
       const duration = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      this.setState({ duration });
+      setDuration(duration);
     }
-  }
-
-  formatMessages(messages = []) {
+  };
+  const formatMessages = (messages = []) => {
+    console.log('messages that reached formatedMessages: ', messages);
+    
     let formatedMessages = [];
     let date;
     for (var i in messages) {
-      let message = messages[i];
+      let message = {}
+      Object.assign(message, messages[i]);
       let id = parseInt(message.user._id) - 1;
       if (message.media) {
         var fileNameArr = message.media.split('.');
@@ -118,85 +119,68 @@ class Chat extends React.Component {
       formatedMessages.push(formattedMessage);
     }
     return formatedMessages;
-  }
-
-  onSend(messages = []) {
-    this.setState((previousState) => ({
-      messages: previousState.messages.append(messages),
-    }));
-  }
-
-  scrollToBottom = () => {
-    this.messagesEnd.scrollIntoView({ behavior: 'smooth' });
   };
-  getTimeStamp(dateObject) {
-    let date = new Date(dateObject);
-    return `${date.getHours()}:${date.getMinutes()} - ${
-      date.getMonth() + 1
-    }/${date.getDate()}`;
-  }
-  render() {
-    const { loading, messages, duration } = this.state;
-    const { messageCount, usageDuration } = this.state.lang.ar;
-    return (
-      <div>
-        {loading ? (
-          <Spinner animation="border" />
-        ) : !messages.length ? (
-          <div>المحادثة فارغة </div>
-        ) : null}
-        <div>
-          {messages.length} :{messageCount} <br />
-          {usageDuration}: {duration} {'يوم'}
-        </div>
-        <div style={{ position: 'relative', height: '750px' }}>
-          <MainContainer>
-            <ChatContainer>
-              <MessageList>
-                {messages.map((message) => (
-                  <div>
-                    {message.message?.date && (
-                      <MessageSeparator content={message.message.date} />
-                    )}
 
-                    {message.message?.image ? (
-                      <Message.ImageContent
-                        src={message.message.image}
-                        alt={
-                          "The image isn't working link: " +
-                          message.message.image
-                        }
-                        width={400}
-                      />
-                    ) : (
-                      <Message
-                        model={{
-                          message: message.message.text,
-                          sentTime: message.message.createdOn,
-                          direction: message.userId,
-                        }}
-                      >
-                        <Message.CustomContent>
-                          <text style={{ fontSize: 17 }}>
-                            {message.message.text}
-                          </text>
-                        </Message.CustomContent>
-                        <Message.Footer>
-                          <text style={{ fontSize: 10 }}>
-                            {message.message.createdOn[1].split('.')[0]}
-                          </text>
-                        </Message.Footer>
-                      </Message>
-                    )}
-                  </div>
-                ))}
-              </MessageList>
-            </ChatContainer>
-          </MainContainer>
+  // const { loading, messages, duration } = this.state;
+  // const { messageCount, usageDuration } = this.state.lang.ar;
+  return (
+    <div>
+      {loading ? (
+        <Spinner animation="border" />
+      ) : !localMessages.length ? (
+        <div>المحادثة فارغة </div>
+      ) : null}
+      <div>
+          {localMessages.length} :{lang.ar.messageCount} <br />
+          {lang.ar.usageDuration}: {duration} {'يوم'}
         </div>
+      <div style={{ position: 'relative', height: '750px' }}>
+        <MainContainer>
+          <ChatContainer>
+            <MessageList>
+              {localMessages.map((message) => (
+                <div>
+                  {message.message?.date && (
+                    <MessageSeparator content={message.message.date} />
+                  )}
+
+                  {message.message?.image ? (
+                    <Message.ImageContent
+                      src={message.message.image}
+                      alt={
+                        "The image isn't working link: " + message.message.image
+                      }
+                      width={400}
+                    />
+                  ) : (
+                    <Message
+                      model={{
+                        message: message.message.text,
+                        sentTime: message.message.createdOn,
+                        direction: message.userId,
+                      }}
+                    >
+                      <Message.CustomContent>
+                        <text style={{ fontSize: 17 }}>
+                          {message.message.text}
+                        </text>
+                      </Message.CustomContent>
+                      <Message.Footer>
+                        <text style={{ fontSize: 10 }}>
+                          {message.message.createdOn[1].split('.')[0]}
+                        </text>
+                      </Message.Footer>
+                    </Message>
+                  )}
+                </div>
+              ))}
+            </MessageList>
+          </ChatContainer>
+        </MainContainer>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
+
 
 export default Chat;

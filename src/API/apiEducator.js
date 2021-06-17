@@ -12,6 +12,8 @@ export const getMessages = async (chatId, educatorId, token) => {
       return result.data
     }
   } catch (error) {
+      console.log('error',error);
+      
       return error
   }
 }
