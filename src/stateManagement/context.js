@@ -25,9 +25,9 @@ class DataProvider extends Component {
     appointments = this.filterAppointments(appointments)
     localStorage.setItem('educatorId', educatorId)
     this.setState({ educatorId, appointments, chats })
-    if (educatorId === '540d2ebd-bca2-4934-98b9-87ec4a592592')
+    // if (educatorId === '540d2ebd-bca2-4934-98b9-87ec4a592592')
     console.log('educatorId', educatorId);
-    // if (educatorId == '55aabda5-8af2-4a39-b074-80a1852dcb1d')
+    if (educatorId == '55aabda5-8af2-4a39-b074-80a1852dcb1d')
       this.getEducatorData();
 
   }
