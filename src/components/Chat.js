@@ -30,9 +30,14 @@ const Chat = (props) => {
     },
   });
 
-  const { messages, loading } = useSelector((state) => state.chats);
-  const { chatId, token, educatorId } = props;
+  const { token, educatorId } = useSelector((state) => state.auth);
+  const { messages, loading, currentChat } = useSelector((state) => state.chats);
+  // const { chatId, token, educatorId } = props;
   useEffect(() => {
+    console.log('chat');
+    
+    console.log('props: ',props);
+    let  chatId = currentChat
     dispatch(
       getChatsAction({
         chatId,
@@ -40,7 +45,7 @@ const Chat = (props) => {
         educatorId,
       })
     );
-  }, []);
+  }, [currentChat]);
   useEffect(() => {
     setLocalMessages(formatMessages(messages));
   }, [messages]);
@@ -119,7 +124,7 @@ const Chat = (props) => {
   };
 
   return (
-    <div>
+    <div style={{height:'100%', width:'100%'}}>
       {loading ? (
         <Spinner animation="border" />
       ) : !localMessages.length ? (
@@ -129,7 +134,7 @@ const Chat = (props) => {
         {localMessages.length} :{lang.ar.messageCount} <br />
         {lang.ar.usageDuration}: {duration} {'يوم'}
       </div>
-      <div style={{ position: 'relative', height: '750px' }}>
+      <div style={{ position: 'relative', height: '90%' ,width:'100%'}}>
         <MainContainer>
           <ChatContainer>
             <MessageList>

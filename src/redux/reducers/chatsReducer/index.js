@@ -30,6 +30,7 @@ export const getChatsAction = createAsyncThunk(
 );
 const initialState = {
   messages: null,
+  currentChat:null,
   loading: false,
   error: null
 };
@@ -41,6 +42,9 @@ const chatsReducer = createSlice({
     setChats: (state, action) => {
       state.chats = action.payload;
     },
+    setCurrentChat: (state, action) => {
+        state.currentChat = action.payload
+    } 
   },
 
   extraReducers: {
@@ -57,6 +61,10 @@ const chatsReducer = createSlice({
   },
 });
 
-export const { setChats: setChatsAction } = chatsReducer.actions;
+export const { 
+    setChats: setChatsAction,
+    setCurrentChat: setCurrentChatAction,
+    clearAll:clearAllChatsAction
+} = chatsReducer.actions;
 
 export default chatsReducer.reducer;

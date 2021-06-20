@@ -1,0 +1,83 @@
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
+import url from '../../../config/apiConfig';
+import { sha256 } from 'js-sha256';
+
+const encrypt = (text) => {
+    return sha256(text);
+}
+
+export const loginAction = createAsyncThunk(
+    'auth/loginAction',
+    async({ username, password },{rejectWithValue}) => {
+        let encryptedPassword = await encrypt(password);
+        console.log(username, password);
+        let auths = {}
+        const data = {
+            id: username,
+            password: encryptedPassword
+        }
+        return axios.post(`${url}/login`, data).then((res) => {
+            const {educatorId, appointments, chats} = res.data;
+
+            console.log('response from auth: ',res);
+            const educator = JSON.parse(res.data.educator)
+            const tokens = educator.token;
+
+            auths.token = tokens[tokens.length -1];
+            auths.educatorId = educatorId
+            auths.appointments = appointments
+            auths.chats = chats
+            console.log('returning');
+            
+            return auths
+        }).catch((e) => {
+            console.log('error',e);
+            return rejectWithValue(false)
+        })
+        
+        
+    }
+)
+
+const initialState = {
+  loading: false,
+  token: null,
+  educatorId: null,
+  appointments: null,
+  chats: null,
+  error: null,
+  response: null
+};
+const authReducer = createSlice({
+  name: 'auth',
+  initialState,
+  reducers: {
+    clearAll: () => initialState,
+    setLoading: (state, action) => {
+        state.loading = action.payload
+    },
+    setChats: (state, action) => {
+      state.chats = action.payload
+    }
+  },
+
+  extraReducers: {
+      [loginAction.fulfilled]: (state, action) => {
+          console.log('returned');
+          state.token = action.payload.token
+          state.educatorId = action.payload.educatorId
+          state.appointments = action.payload.appointments
+          state.chats = action.payload.chats
+          state.loading = false
+      }
+  },
+});
+
+export const {
+    setLoading:setLoadingAction,
+    setChats: setChatsAction,
+    clearAll: clearAllAuthAction
+} = authReducer.actions;
+
+export default authReducer.reducer;
