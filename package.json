@@ -24,7 +24,9 @@
     "react-redux": "^7.2.4",
     "react-responsive": "^8.0.3",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.4.0"
+    "react-scripts": "3.4.0",
+    "recharts": "^2.0.9",
+    "redux-persist": "^6.0.0"
   },
   "scripts": {
     "start": "react-scripts start",

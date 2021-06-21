@@ -22,6 +22,7 @@ const initialState = {
   educators: [],
   patients: [],
   fetchedEducatorId: '',
+  currentEducator:'',
   error: null,
   loading:false
 };
@@ -32,6 +33,9 @@ const educatorsReducer = createSlice({
     clearAll: () => initialState,
     setFetchedEducatiorId: (state, action) => {
         state.fetchedEducatorId = action.payload
+    },
+    setCurrentEducator: (state, action) => {
+      state.currentEducator = action.payload
     }
   },
 
@@ -54,7 +58,8 @@ const educatorsReducer = createSlice({
 
 export const {
     clearAll: clearAllEducatorsAction,
-    setFetchedEducatiorId: setFetchedEducatorIdReducer
+    setFetchedEducatiorId: setFetchedEducatorIdReducer,
+    setCurrentEducator: setCurrentEducatorAction
 } = educatorsReducer.actions;
 
 export default educatorsReducer.reducer;

@@ -16,26 +16,33 @@ import Footer from '../components/Footer';
 import Chat from '../components/Chat';
 import PatientProfile from './PatientProfile';
 import PatientEducators from './PatientEducators';
+import PatientNotes from './PatientNotes';
 
 import { ConversationList, Conversation } from '@chatscope/chat-ui-kit-react';
 import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { setChatsAction } from '../redux/reducers/authReducer';
-import { setCurrentChatAction,clearAllChatsAction } from '../redux/reducers/chatsReducer';
-import { setPatientIdAction } from '../redux/reducers/patientReducer';
-
+import {
+  setCurrentChatAction,
+  clearAllChatsAction,
+} from '../redux/reducers/chatsReducer';
+import {
+  setPatientIdAction,
+  getPatientAction,
+} from '../redux/reducers/patientReducer';
+import { setCurrentEducatorAction } from '../redux//reducers/educatorsReducer';
 import IconButton from '@material-ui/core/IconButton';
 import PersonIcon from '@material-ui/icons/Person';
 import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
-
+import NotesIcon from '@material-ui/icons/Notes';
 
 const ShowPatientsView = () => {
   const dispatch = useDispatch();
 
   const [activeList, setActiveList] = useState('');
   const [localPatients, setLocalPatients] = useState();
-  const [isProfile, setIsProfile] = useState(false)
+  const [currentPage, setCurrentPage] = useState('');
   const [lang, setLang] = useState({
     ar: {
       chat: 'المحادثة',
@@ -45,9 +52,13 @@ const ShowPatientsView = () => {
   });
 
   const { chats, token, educatorId } = useSelector((state) => state.auth);
-  const { fetchedEducatorId, patients } = useSelector(
-    (state) => state.educators
-  );
+  const {
+    fetchedEducatorId,
+    patients,
+    educators,
+    currentEducator,
+  } = useSelector((state) => state.educators);
+  const { patientId } = useSelector((state) => state.patient);
 
   useEffect(() => {
     // if (this.context.educatorId == '') {
@@ -65,16 +76,26 @@ const ShowPatientsView = () => {
   }, [chats, dispatch]);
   useEffect(() => {
     let p;
+    let e;
     if (patients.length !== 0) {
       console.log('filter', patients);
       p = Object.values(patients).filter((patient) => {
         return fetchedEducatorId === patient.educatorId;
       });
     }
-    dispatch(clearAllChatsAction())
+    e = Object.values(educators).filter((educator) => {
+      return fetchedEducatorId === educator.id;
+    });
+    dispatch(setCurrentEducatorAction(e[0]));
+    dispatch(clearAllChatsAction());
     setLocalPatients(p);
+    console.log('educators: ', e);
+
     console.log('patients: ', p);
-  }, [dispatch, educatorId, fetchedEducatorId, patients]);
+  }, [dispatch, educatorId, educators, fetchedEducatorId, patients]);
+  useEffect(() => {
+    dispatch(getPatientAction({ educatorId, token, patientId }));
+  }, [dispatch, educatorId, patientId, token]);
   const renderChat = () => {
     if (!localPatients) {
       return null;
@@ -91,9 +112,9 @@ const ShowPatientsView = () => {
     );
   };
 
-  const activateChat = (chatId,patientId) => {
+  const activateChat = (chatId, patientId) => {
     console.log('currentChat', chatId);
-    dispatch(setPatientIdAction(patientId))
+    dispatch(setPatientIdAction(patientId));
     dispatch(setCurrentChatAction(chatId));
   };
 
@@ -108,7 +129,7 @@ const ShowPatientsView = () => {
             <Conversation
               name={patient.patientName}
               visible={true}
-              onClick={() => activateChat(patient.id,patient.patientId)}
+              onClick={() => activateChat(patient.id, patient.patientId)}
             ></Conversation>
           ))}
         </ConversationList>
@@ -150,35 +171,45 @@ const ShowPatientsView = () => {
     );
   };
   const renderPatient = () => {
-    return (
-      <PatientProfile/>
-    )
-  }
+    return <PatientProfile />;
+  };
   const renderAppointmentsList = () => {
-    let appointments = {
-      '2020-11-28': [
-        { date: '2020-11-28T17:00:00.000Z', name: 'W3', time: '20:00:00' },
-        { date: '2020-11-28T17:00:00.000Z', name: 'W1', time: '08:00:00' },
-      ],
-      '2020-11-29': [
-        { date: '2020-11-29T17:00:00.000Z', name: 'W2', time: '16:00:00' },
-      ],
-    };
+    let appointments = [
+
+      { date: '2020-11-28T17:00:00.000Z', name: 'W3', time: '20:00:00' },
+      { date: '2020-11-28T17:00:00.000Z', name: 'W1', time: '08:00:00' },
+      { date: '2020-11-29T17:00:00.000Z', name: 'W2', time: '16:00:00' },
+    ]
+    if(currentEducator){
+
+    const educatorAppointments = currentEducator.appointments;
+    console.log('educatorAppointments: ', educatorAppointments);
+    educatorAppointments.forEach((appointment) => {
+      appointments.push( {
+        id:appointment.id,
+        date: appointment.date.split('T')[0],
+        name: appointment.name,
+        time: appointment.time,
+      });
+    });
+  }
     console.log('appointments render:', appointments);
 
     if (!appointments || (appointments && !Object.keys(appointments).length)) {
       return null;
     }
 
-    return Object.keys(appointments).map((appointmentDate) => {
+    return Object.values(appointments).map((appointment) => {
       return (
+        <div style={{overflow:'auto', flex:1, backgroundColor: 'green',}}> 
+
         <ListGroup.Item
-          key={appointmentDate}
-          eventKey={appointmentDate}
+          key={appointment.id}
           // onClick={() => showAppointments()}
         >
-          {appointmentDate}
+          {appointment.date}
         </ListGroup.Item>
+        </div>
       );
     });
   };
@@ -199,9 +230,11 @@ const ShowPatientsView = () => {
       </div>
     );
   };
-  const setPatientValue = (val) => {
-    setIsProfile(val)
-  }
+  const setValueCurrentPage = (page) => {
+    console.log(page);
+
+    setCurrentPage(page);
+  };
   return (
     <>
       <MyNav />
@@ -243,29 +276,35 @@ const ShowPatientsView = () => {
                   }}
                 >
                   <IconButton
-                    aria-label="profile"
-                    onClick={() => setIsProfile(true)}
+                    aria-label="chat"
+                    onClick={() => setValueCurrentPage('chat')}
+                  >
+                    <ChatBubbleIcon fontSize="large" />
+                  </IconButton>
+                  <IconButton
+                    aria-label="caht"
+                    onClick={() => {
+                      setValueCurrentPage('profile');
+                    }}
                   >
                     <PersonIcon fontSize="large" />
                   </IconButton>
                   <IconButton
-                    aria-label="chat"
-                    onClick={() => setIsProfile(false)}
+                    aria-label="notes"
+                    onClick={() => {
+                      setValueCurrentPage('notes');
+                    }}
                   >
-                    <ChatBubbleIcon fontSize="large" />
+                    <NotesIcon fontSize="large"></NotesIcon>
                   </IconButton>
 
-                  {isProfile? (
+                  {currentPage === 'profile' ? (
                     renderPatient()
-                    
-                    ):
-                    (
-                      renderChat()
-                      )
-                      
-                        
-
-                      })
+                  ) : currentPage === 'notes' ? (
+                    <PatientNotes />
+                  ) : (
+                    renderChat()
+                  )}
                 </div>
               </Tab.Content>
             </div>

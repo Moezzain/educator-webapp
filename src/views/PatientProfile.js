@@ -19,13 +19,25 @@ import {
 } from 'react-bootstrap';
 import { DataContext } from '../stateManagement/context';
 import { useSelector, useDispatch } from 'react-redux';
-import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-
+import '../App.css';
 import { getPatientAction } from '../redux/reducers/patientReducer';
 import { createStyles } from '@material-ui/core';
 import Popover from '@material-ui/core/Popover';
+import { useTheme } from '@material-ui/core/styles';
 
+import {
+  LineChart,
+  Line,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  ResponsiveContainer,
+  Label,
+  Tooltip,
+  Legend,
+} from 'recharts';
+import Chart from '../components/Chart';
 const defaultProfile = {
   dateAffected: '',
   dateBirth: '',
@@ -64,6 +76,7 @@ const lang = {
 };
 
 const PatientProfile = () => {
+  const theme = useTheme();
   const dispatch = useDispatch();
   // let { chats, hidePatient, showEducators, activeChat, getPatient } = useContext(DataContext)
   const [dateAffected, setDateAffected] = useState('gdfsdgbdgb');
@@ -73,7 +86,7 @@ const PatientProfile = () => {
   const [hba1cs, setHba1cs] = useState([]);
   const [medicines, setMedicines] = useState([]);
   const [patientName, setPatientName] = useState('dbdgbdbt');
-  const [notes, setNotes] = useState('');
+  const [notes, setNotes] = useState([]);
   const [diseaseType, setDiseaseType] = useState('');
   const [sex, setSex] = useState('');
   const [whoIsPatient, setWhoIsPatient] = useState('');
@@ -112,9 +125,9 @@ const PatientProfile = () => {
       console.log(e);
     }
   }, [patientProfile]);
-  useEffect(() => {
-    dispatch(getPatientAction({ educatorId, token, patientId }));
-  }, [patientId]);
+  // useEffect(() => {
+  //   dispatch(getPatientAction({ educatorId, token, patientId }));
+  // }, [patientId]);
 
   console.log('rendering profile');
   const {
@@ -194,24 +207,6 @@ const PatientProfile = () => {
       </Popover.Content>
     </Popover>
   );
-  const medicinesPopover = (
-    <Popover id="popover-basic">
-      <Popover.Title as="h3">{medicinesText}</Popover.Title>
-      <Popover.Content style={{ width: '100%', padding: 0 }}>
-        {medicines?.map((medicine) => (
-          <div
-            style={{
-              border: '1px solid black',
-              width: '100%',
-              textAlign: 'center',
-            }}
-          >
-            {medicine?.medicine}
-          </div>
-        ))}
-      </Popover.Content>
-    </Popover>
-  );
 
   const [notelsAnchorEl, setNotesAnchorEl] = React.useState(null);
 
@@ -224,10 +219,8 @@ const PatientProfile = () => {
   };
 
   const openNotes = Boolean(notelsAnchorEl);
-  // const open = Boolean(anchorEl);
-  // const open = Boolean(anchorEl);
 
-  const notesPopover = () => {
+  const medicinesPopover = () => {
     console.log('notes: ', notes);
 
     return (
@@ -236,18 +229,18 @@ const PatientProfile = () => {
         anchorEl={notelsAnchorEl}
         anchorOrigin={{
           vertical: 'bottom',
-          horizontal: 'left',
+          horizontal: 'right',
         }}
         transformOrigin={{
           vertical: 'top',
-          horizontal: 'left',
+          horizontal: 'right',
         }}
         onClose={handleNotesPopoverClose}
         disableRestoreFocus
       >
         <div style={{ height: '20vh', width: '30vw' }}>
           <ul>
-            {Object.values(notes).map((note) => {
+            {Object.values(medicines).map((medicine) => {
               return (
                 <li style={{ listStyleType: 'none', flex: 1 }}>
                   <Paper
@@ -259,29 +252,9 @@ const PatientProfile = () => {
                       flex: 1,
                     }}
                   >
-                    <td style={{ flex: 1 }}>
-                      <tr style={{ alignSelf: 'center', flex: 1 }}>
-                        <div
-                          style={{
-                            width: '26vw',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            textAlign: 'center',
-                          }}
-                        >
-                          note.title
-                        </div>
-                      </tr>
-                      <tr>
-                        <text>note.text</text>
-                      </tr>
-                      <tr>
-                        <text>note.createdOn</text>
-                      </tr>
-                      <tr>
-                        <text>note.firstName</text>
-                      </tr>
-                    </td>
+                    <text style={{width:'20vw', textAlign:"center",}}>
+                      {medicine.medicine}
+                    </text>
                   </Paper>
                 </li>
               );
@@ -291,100 +264,213 @@ const PatientProfile = () => {
       </Popover>
     );
   };
+  function createData(date, weight) {
+    return { date, weight };
+  }
 
-  return (
-    <div style={{ direction: 'row', flex: 1 }}>
-      {loading ? <Spinner animation="border" /> : ''}
-      <tr style={{ flex: 1 }}>
-        {/* <div>npigr</div>
-          <div>npigr</div> */}
-        <td style={{ flex: 1 }}>
-          <div style={{}}>
-            <div
-              style={{
-                alignItems: 'center',
-                alignSelf: 'center',
-                alignContent: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <Paper style={styles.paper}>
-                <div style={styles.text}>
-                  {dateAffected} :{lang.ar.dateAffectedText}
-                </div>
-              </Paper>
-            </div>
-            <Paper style={styles.paper}>
-              <text
-                style={styles.text}
+  const data = []
+
+  const renderChart = (text) => {
+    weights.forEach((weight) => {
+      data.push(createData(weight.createdOn.split('T')[0],weight.weight))
+    })
+    data.push(createData('2020-04-04',80))
+    data.push(createData('2020-04-08',90))
+    console.log('chart data`: ',data);
+    
+    return (
+      <React.Fragment>
+        <ResponsiveContainer>
+          <LineChart
+            data={data}
+            margin={{
+              top: 16,
+              right: 16,
+              bottom: 0,
+              left: 24,
+            }}
+          >
+            <XAxis dataKey="date" stroke={theme.palette.text.secondary} />
+            <YAxis stroke={theme.palette.text.secondary}>
+              <Label
+                angle={270}
+                position="left"
+                style={{
+                  textAnchor: 'middle',
+                  fill: theme.palette.text.primary,
+                }}
               >
-                {dateBirth} :{lang.ar.dateBirthText}
-              </text>
-            </Paper>
-            <Paper style={styles.paper}>
-            <div style={styles.text}>
-              {patientName} :{lang.ar.whoIsPatientText}
+                {text}
+              </Label>
+            </YAxis>
+            <Tooltip />
+            <Legend />
+            <Line
+              type="monotone"
+              name={text}
+              dataKey="weight"
+              stroke={theme.palette.primary.main}
+              dot={false}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </React.Fragment>
+    );
+  };
+  const renderContent = () => {
+    return (
+      <div>
+        <div
+          style={
+            {
+              // alignItems: 'center',
+              // alignSelf: 'center',
+              // alignContent: 'center',
+              // justifyContent: 'center',
+            }
+          }
+        >
+          <div style={{display:'flex', flexDirection:'row', }}>
 
-            </div>
-            </Paper>
-            <Paper style={styles.paper}>
-            <div style={styles.text}>
-
-              {diseaseType} :{lang.ar.diseaseText}
-            </div>
-            </Paper>
-            <Paper style={styles.paper}>
-            <div style={styles.text}>
-
-              {sex} :{lang.ar.sexText}
-            </div>
-            </Paper>
-            <Paper style={styles.paper}>
-            <div style={styles.text}>
-              {whoIsPatient} :{lang.ar.whoIsPatientText}
-
-            </div>
-            </Paper>
-            <Paper style={styles.paper}>
-            <div style={styles.text}>
-
-              {surgery} :{lang.ar.surgeryText}
-            </div>
-            </Paper>
-            <Paper style={styles.paper}>
-            <div style={styles.text}>
-
-              {otherDisease} :{lang.ar.otherDiseaseText}
-            </div>
-            </Paper>
-            <Paper style={styles.paper}>
-            <div style={styles.text}>
-              {outSideLink} :{lang.ar.outSideLinkText}
-
-            </div>
-            </Paper>
-            <Paper style={styles.paper}>
-            <div style={styles.text}>
-
-              {diet} :{lang.ar.dietText}
-            </div>
-            </Paper>
+        <Paper elevation={3} style={{flex:1, margin:10, height:'5vh'}}>
+          <div style={styles.text} >
+            {patientName} :{lang.ar.whoIsPatientText}
           </div>
-        </td>
-        <td>
-          <div>
-            <Paper
-              style={{ textAlign: 'center', width: '30vw' }}
-              onClick={(e) => {
-                handleNotesPopoverOpen(e);
-              }}
-            >
-              item
-            </Paper>
-            {notesPopover()}
+        </Paper>
+
+        <Paper elevation={3} style={{width: '5vw', margin:10, height:'5vh'}}>
+          <div style={styles.text} onClick={(e) => {handleNotesPopoverOpen(e)}}>
+            Medicines
           </div>
-        </td>
-      </tr>
+        </Paper>
+        {medicinesPopover()}
+          </div>
+          <Paper elevation={3} style={styles.paper}>
+            <div style={styles.text}>
+              {dateAffected} :{lang.ar.dateAffectedText}
+            </div>
+          </Paper>
+        </div>
+        <Paper elevation={3} style={styles.paper}>
+          <text style={styles.text}>
+            {dateBirth} :{lang.ar.dateBirthText}
+          </text>
+        </Paper>
+        <Paper elevation={3} style={styles.paper}>
+          <div style={styles.text}>
+            {diseaseType} :{lang.ar.diseaseText}
+          </div>
+        </Paper>
+        <Paper elevation={3} style={styles.paper}>
+          <div style={styles.text}>
+            {sex} :{lang.ar.sexText}
+          </div>
+        </Paper>
+        <Paper elevation={3} style={styles.paper}>
+          <div style={styles.text}>
+            {whoIsPatient} :{lang.ar.whoIsPatientText}
+          </div>
+        </Paper>
+        <Paper elevation={3} style={styles.paper}>
+          <div style={styles.text}>
+            {surgery} :{lang.ar.surgeryText}
+          </div>
+        </Paper>
+        <Paper elevation={3} style={styles.paper}>
+          <div style={styles.text}>
+            {otherDisease} :{lang.ar.otherDiseaseText}
+          </div>
+        </Paper>
+        <Paper elevation={3} style={styles.paper}>
+          <div style={styles.text}>
+            {outSideLink} :{lang.ar.outSideLinkText}
+          </div>
+        </Paper>
+        <Paper elevation={3} style={styles.paper}>
+          <div style={styles.text}>
+            {diet} :{lang.ar.dietText}
+          </div>
+        </Paper>
+      </div>
+    );
+  };
+  return (
+    <div style={{ flex: 1 }}>
+      {loading ? <Spinner animation="border" /> : ''}
+      <div style={{ display: 'flex', flexDirection: 'row' }}>
+        <div>{renderContent('Weight')}</div>
+
+        <div style={{ flex: 1 }}>
+          <Paper
+              elevation={3}
+            style={{
+              width: '30vw',
+              height: '27vh',
+              marginLeft: '1vw',
+
+              // backgroundColor:'black'
+            }}
+          >
+            {renderChart()}
+          </Paper>
+          <div style={{width:'30vw',display:'flex',flexDirection:'row', marginLeft:'1vw',marginTop:'1vh',height:'39.3vh'}}>
+
+          <Paper
+            elevation={3}
+            style={{
+              flex:1,
+              // marginLeft: '1vw',
+              // marginTop: '1vw',
+              // backgroundColor:'black'
+            }}
+          >
+            <div style={{display:'flex', flexDirection:'column'}}>
+            <text  style={{fontSize:30,textAlign:'center'}}> hba1cs</text>
+            {hba1cs.map((hba1c) => {
+              return (
+
+                <div style={{display:'flex',flexDirection:'row', alignContent:'center'}}>
+                  <text  style={{fontSize:30, color:'#ccc',}}> {hba1c.createdOn.split('T')[0]}:{'\ '} </text>
+              <text  style={{fontSize:30, color:'red'}}> {hba1c.hba1c} </text>
+                  </div>
+              )
+              
+            })}
+                </div>
+          </Paper>
+          <Paper
+            elevation={3}
+            style={{
+              flex:1,
+              marginLeft: '1vw',
+              // marginTop: '1vw',
+              // backgroundColor:'black'
+            }}
+          >
+            <div style={{display:'flex',flexDirection:'column',overflow:'auto',height:'35vh'}}>
+              <text style={{fontSize:30, textAlign:'center'}}>Notes</text>
+              {notes.map((note) => {
+                  return(
+                <Paper elevation={2} style={{flex:1,alignSelf:'center',marginTop:3}}>
+                  <div style={{display:'flex',flexDirection:'column'}}>
+                  <text>
+                    title: {note.title}
+                  </text>
+                    <text>
+                      Content: {note.text}
+                    </text>
+                    <text>
+                      date: {note.createdOn}
+                    </text>
+                  </div>
+                </Paper>
+                )
+              })}
+            </div>
+          </Paper>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
@@ -396,10 +482,9 @@ const styles = {
     position: 'relative',
   },
   paper: {
-    flex: 1,
     textAlign: 'center',
     width: '30vw',
-    height: '5vh',
+    height: '6vh',
     margin: 10,
     fontSize: 20,
     alignVertical: 'center',

@@ -134,7 +134,7 @@ const Chat = (props) => {
         {localMessages.length} :{lang.ar.messageCount} <br />
         {lang.ar.usageDuration}: {duration} {'يوم'}
       </div>
-      <div style={{ position: 'relative', height: '90%' ,width:'100%'}}>
+      <div style={{ position: 'relative', height: '85%' ,width:'100%'}}>
         <MainContainer>
           <ChatContainer>
             <MessageList>
