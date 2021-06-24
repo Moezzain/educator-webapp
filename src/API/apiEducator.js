@@ -20,7 +20,11 @@ export const getMessages = async (chatId, educatorId, token) => {
 
 export const getEducatorIds = async (educatorId, token) => {
   try {
-
+    console.log(`
+  ${educatorId}
+  ${token}
+  ${url}
+  `);
     const result = await axios.get(`${url}/educator?get=all&id=${educatorId}&educatorId=${educatorId}`, {headers: {
       Authorization: `Bearer ${token}`
     }})
@@ -73,12 +77,23 @@ export const getChats = async (educatorId, token) => {
 
 export const getAllEducatorsAndPatients = async (educatorId, token) => {
   try {
+    console.log(`
+  ${educatorId}
+  ${token}
+  ${url}
+  `);
+    const caseHandler = isCaseHandler(educatorId,token)
+    if(caseHandler){
+
+    
     const educators = await getEducatorIds(educatorId, token);
+    console.log('educators: ',educators);
+    
     let patients = {}
     for (var i in educators) {
       let educator = educators[i]
       let {chats, appointments}= await getEducatorData(educator.id, token)
-
+      
       if (chats) {
         educator.chats = chats
         educator.count = chats.length
@@ -105,7 +120,7 @@ export const getAllEducatorsAndPatients = async (educatorId, token) => {
     }
 
     return {educators, patients};
-  }
+}}
   catch (error) {
     console.log(' Error getAllEducatorsAndPatients', error);
   }
@@ -119,6 +134,7 @@ export const getEducatorData = async (educatorId, token) => {
       Authorization: `Bearer ${token}`
     }})
     if(result.data) {
+      
       const {data} = result;
       delete data.educator
       let parsedData = parseObjectOfArrays(data);
@@ -143,4 +159,22 @@ export const getPatient = async (educatorId, token, patientId) => {
   } catch (error) {
     console.log('getPatient Error', error);
   }
+}
+
+export const isCaseHandler = async (educatorId, token) => {
+  console.log(`
+  ${educatorId}
+  ${token}
+  ${url}
+  `);
+  
+  await axios.get(`${url}/educator?id=${educatorId}&get=educator&educatorId=${educatorId}`, {headers: {
+    Authorization: `Bearer ${token}`
+  }}).then((result) => {
+    return result?.data?.isCaseHandler 
+    
+  }).catch((e) => {
+    console.log('isCaseHandler error ',e);
+    
+  })
 }
