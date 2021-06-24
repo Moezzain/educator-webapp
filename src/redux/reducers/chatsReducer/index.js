@@ -1,23 +1,23 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import url from './../../../config/apiConfig';
+import {commonState} from '../../../helpers/commonReducerState'
+
 export const getChatsAction = createAsyncThunk(
   'chats/getChatsAction',
-  async (userAuths,{rejectWithValue}) => {
-    console.log('getChatsAction');
+  async ({chatId, educatorId, token},{rejectWithValue}) => {
 
     try {
       let result = await axios.get(
-        `${url}/message?chatId=${userAuths.chatId}&educatorId=${userAuths.educatorId}`,
+        `${url}/message?chatId=${chatId}&educatorId=${educatorId}`,
         {
           headers: {
-            Authorization: `Bearer ${userAuths.token}`,
+            Authorization: `Bearer ${token}`,
           },
           timeout: 10000,
         }
       );
       if (result?.data) {
-        console.log(result);
 
         return result.data.reverse();
       }
@@ -31,8 +31,7 @@ export const getChatsAction = createAsyncThunk(
 const initialState = {
   messages: null,
   currentChat:null,
-  loading: false,
-  error: null
+  ...commonState
 };
 const chatsReducer = createSlice({
   name: 'chats',

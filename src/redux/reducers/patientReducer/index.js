@@ -2,11 +2,14 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import url from '../../../config/apiConfig';
 import { getPatient } from '../../../API/apiEducator';
+import { commonState } from '../../../helpers/commonReducerState';
 
 export const getPatientAction = createAsyncThunk(
   'patient/getPatientAction',
   async ({ educatorId, token, patientId }, { rejectWithValue }) => {
-    console.log('patient parameters', patientId);
+    console.log('patient educatorId', educatorId);
+    console.log('patient token', token);
+    console.log('patient patientId', patientId);
 
     return await getPatient(educatorId, token, patientId)
       .then((patientData) => {
@@ -22,8 +25,7 @@ export const getPatientAction = createAsyncThunk(
 const initialState = {
   patientProfile: null,
   patientId: null,
-  error: null,
-  loading: false,
+  ...commonState
 };
 const patientReducer = createSlice({
   name: 'patient',
@@ -51,6 +53,6 @@ const patientReducer = createSlice({
   },
 });
 
-export const { setPatientId: setPatientIdAction } = patientReducer.actions;
+export const { setPatientId: setPatientIdAction, clearAll: clearAllPatientAction } = patientReducer.actions;
 
 export default patientReducer.reducer;

@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import url from '../../../config/apiConfig';
 import { sha256 } from 'js-sha256';
+import { commonState } from '../../../helpers/commonReducerState';
 
 const encrypt = (text) => {
     return sha256(text);
@@ -11,7 +12,6 @@ export const loginAction = createAsyncThunk(
     'auth/loginAction',
     async({ username, password },{rejectWithValue}) => {
         let encryptedPassword = await encrypt(password);
-        console.log(username, password);
         let auths = {}
         const data = {
             id: username,
@@ -20,7 +20,6 @@ export const loginAction = createAsyncThunk(
         return axios.post(`${url}/login`, data).then((res) => {
             const {educatorId, appointments, chats} = res.data;
 
-            console.log('response from auth: ',res);
             const educator = JSON.parse(res.data.educator)
             const tokens = educator.token;
 
@@ -28,7 +27,6 @@ export const loginAction = createAsyncThunk(
             auths.educatorId = educatorId
             auths.appointments = appointments
             auths.chats = chats
-            console.log('returning');
             
             return auths
         }).catch((e) => {
@@ -41,13 +39,12 @@ export const loginAction = createAsyncThunk(
 )
 
 const initialState = {
-  loading: false,
   token: null,
   educatorId: null,
   appointments: null,
   chats: null,
-  error: null,
-  response: null
+  response: null,
+  ...commonState
 };
 const authReducer = createSlice({
   name: 'auth',
@@ -64,7 +61,6 @@ const authReducer = createSlice({
 
   extraReducers: {
       [loginAction.fulfilled]: (state, action) => {
-          console.log('returned');
           state.token = action.payload.token
           state.educatorId = action.payload.educatorId
           state.appointments = action.payload.appointments
