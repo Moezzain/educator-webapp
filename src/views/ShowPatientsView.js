@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Button,
   ListGroup,
   Container,
   Tab,
@@ -11,16 +10,17 @@ import CardContainer from '../components/CardContainer';
 import { DataContext } from '../stateManagement/context';
 import { parseArray } from '../helpers/Converters';
 
+// Components  
 import MyNav from '../components/MyNav';
 import Footer from '../components/Footer';
 import Chat from '../components/Chat';
 import PatientProfile from './PatientProfile';
-import PatientEducators from './PatientEducators';
 import PatientNotes from './PatientNotes';
-
-import { ConversationList, Conversation } from '@chatscope/chat-ui-kit-react';
+import PatientSummaries from './patientSummaries'
+import { ConversationList, Conversation, Avatar } from '@chatscope/chat-ui-kit-react';
 import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 
+// Redux
 import { useSelector, useDispatch } from 'react-redux';
 import { setChatsAction } from '../redux/reducers/authReducer';
 import {
@@ -32,22 +32,38 @@ import {
   getPatientAction,
 } from '../redux/reducers/patientReducer';
 import { setCurrentEducatorAction } from '../redux//reducers/educatorsReducer';
+
+// ui libraries
 import IconButton from '@material-ui/core/IconButton';
 import PersonIcon from '@material-ui/icons/Person';
 import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
 import NotesIcon from '@material-ui/icons/Notes';
+import Button from '@material-ui/core/Button';
+import Popover from '@material-ui/core/Popover';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import ShortTextIcon from '@material-ui/icons/ShortText';
+
+import '../App.css'
+import { mainTheme } from '../styles/themes';
+import {localStyles} from '../styles/showPatientsViewStyles'
 
 const ShowPatientsView = () => {
+  const theme = mainTheme
   const dispatch = useDispatch();
 
   const [activeList, setActiveList] = useState('');
   const [localPatients, setLocalPatients] = useState();
   const [currentPage, setCurrentPage] = useState('');
+  const [appointmentAnchorEl, setAppointmentAnchorEl] = useState('');
+  const [currentAppointment, setCurrentAppointment] = useState('')
   const [lang, setLang] = useState({
     ar: {
       chat: 'المحادثة',
       profile: 'البروفايل',
       educators: 'المتابعين',
+      patientName: 'اسم المريض',
+      goToPatient: 'اذهب للمريض',
+      time: 'الوقت'
     },
   });
 
@@ -60,11 +76,10 @@ const ShowPatientsView = () => {
   } = useSelector((state) => state.educators);
   const { patientId } = useSelector((state) => state.patient);
 
+
+  const openAppointment = Boolean(appointmentAnchorEl);
+
   useEffect(() => {
-    // if (this.context.educatorId == '') {
-    //   // this.props.history.goBack();
-    //   // console.log(this.props)
-    // }
     try {
       if (chats?.length && !chats[0].id) {
         let tempChats = parseArray(chats);
@@ -75,24 +90,20 @@ const ShowPatientsView = () => {
     }
   }, [chats, dispatch]);
   useEffect(() => {
-    let p;
-    let e;
-    if (patients.length !== 0) {
-      console.log('filter', patients);
-      p = Object.values(patients).filter((patient) => {
-        return fetchedEducatorId === patient.educatorId;
-      });
-    }
-    e = Object.values(educators).filter((educator) => {
+    let tempEducator;
+    tempEducator = Object.values(educators).filter((educator) => {
       return fetchedEducatorId === educator.id;
     });
-    dispatch(setCurrentEducatorAction(e[0]));
-    dispatch(clearAllChatsAction());
-    setLocalPatients(p);
-    console.log('educators: ', e);
+    if(tempEducator.length  !== 0){
 
-    console.log('patients: ', p);
-  }, [dispatch, educatorId, educators, fetchedEducatorId, patients]);
+      setLocalPatients(tempEducator[0].chats);
+      
+    }
+    dispatch(setCurrentEducatorAction(tempEducator[0]));
+    dispatch(clearAllChatsAction());
+    
+
+  }, [dispatch, educatorId, educators, fetchedEducatorId, localPatients, patients]);
   useEffect(() => {
     dispatch(getPatientAction({ educatorId, token, patientId }));
   }, [dispatch, educatorId, patientId, token]);
@@ -100,7 +111,6 @@ const ShowPatientsView = () => {
     if (!localPatients) {
       return null;
     }
-    console.log('chats rendering');
 
     return (
       <Chat
@@ -113,7 +123,6 @@ const ShowPatientsView = () => {
   };
 
   const activateChat = (chatId, patientId) => {
-    console.log('currentChat', chatId);
     dispatch(setPatientIdAction(patientId));
     dispatch(setCurrentChatAction(chatId));
   };
@@ -124,13 +133,20 @@ const ShowPatientsView = () => {
     }
     return (
       <div>
-        <ConversationList style={{ height: '90vh' }}>
+        <ConversationList style={{ height: '73vh' }}>
           {localPatients.map((patient) => (
-            <Conversation
-              name={patient.patientName}
-              visible={true}
-              onClick={() => activateChat(patient.id, patient.patientId)}
-            ></Conversation>
+            <Conversation 
+            onClick={() => activateChat(patient.id, patient.patientId)}
+            >
+            <Conversation.Content>
+              <div style={{display:'flex',flexDirection:'row', alignItems:'center'}}>
+              <AccountCircleIcon fontSize="large"
+              style={{marginRight:5}}
+              ></AccountCircleIcon>
+            <div style={{}}>{patient.patientName}</div>
+              </div>
+          </Conversation.Content>
+            </Conversation>
           ))}
         </ConversationList>
       </div>
@@ -157,11 +173,12 @@ const ShowPatientsView = () => {
         <Button
           variant={patientsStyle}
           onClick={() => setActiveList('patients')}
-          style={{ marginRight: 5 }}
+          style={localStyles.buttonsText}
         >
-          المحادثات
+          المحادثات 
         </Button>
         <Button
+        style={localStyles.buttonsText}
           variant={appointmentStyle}
           onClick={() => setActiveList('appointments')}
         >
@@ -174,64 +191,97 @@ const ShowPatientsView = () => {
     return <PatientProfile />;
   };
   const renderAppointmentsList = () => {
-    let appointments = [
-
-      { date: '2020-11-28T17:00:00.000Z', name: 'W3', time: '20:00:00' },
-      { date: '2020-11-28T17:00:00.000Z', name: 'W1', time: '08:00:00' },
-      { date: '2020-11-29T17:00:00.000Z', name: 'W2', time: '16:00:00' },
-    ]
-    if(currentEducator){
-
-    const educatorAppointments = currentEducator.appointments;
-    console.log('educatorAppointments: ', educatorAppointments);
-    educatorAppointments.forEach((appointment) => {
-      appointments.push( {
-        id:appointment.id,
-        date: appointment.date.split('T')[0],
-        name: appointment.name,
-        time: appointment.time,
+    let appointments = [];
+    if (currentEducator) {
+      const educatorAppointments = currentEducator.appointments;
+      educatorAppointments.forEach((appointment) => {
+        appointments.push({
+          appointmentId: appointment.appointmentId,
+          date: appointment.date.split('T')[0],
+          name: appointment.name,
+          time: appointment.time,
+          patientId: appointment.patientId
+        });
       });
-    });
-  }
-    console.log('appointments render:', appointments);
+    }
 
     if (!appointments || (appointments && !Object.keys(appointments).length)) {
       return null;
     }
 
-    return Object.values(appointments).map((appointment) => {
-      return (
-        <div style={{overflow:'auto', flex:1, backgroundColor: 'green',}}> 
-
-        <ListGroup.Item
-          key={appointment.id}
-          // onClick={() => showAppointments()}
-        >
-          {appointment.date}
-        </ListGroup.Item>
-        </div>
-      );
-    });
-  };
-  const renderUpperTabs = () => {
     return (
-      <div>
-        <Tabs defaultActiveKey="chat" id="noanim-tab-example" mountOnEnter>
-          <Tab eventKey="chat" title={lang.ar.chat}>
-            {renderChat()}
-          </Tab>
-          <Tab eventKey="profile" title={lang.ar.profile}>
-            <PatientProfile />
-          </Tab>
-          <Tab eventKey="educators" title={lang.ar.educators}>
-            <PatientEducators />
-          </Tab>
-        </Tabs>
+      <div
+        style={{ overflow: 'auto', height: '75vh', backgroundColor: 'green' }}
+      >
+        {Object.values(appointments).map((appointment) => {
+          return (
+            <Button variant="contained" color="white" style={{width: '100%'}}
+            
+              key={appointment.appointmentId}
+              onClick={(e) => showAppointment(e,appointment)}
+            >
+              {appointment.date}
+            </Button>
+          );
+        })}
       </div>
     );
   };
+  const appointmentPopover = () => {
+    return (
+      <Popover
+        open={openAppointment}
+        anchorEl={appointmentAnchorEl}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        onClose={handleAppointmentPopoverClose}
+        disableRestoreFocus
+      >
+        <div style={{ height: '10vh', width: '10vw' }}>
+          <h6 style={{textAlign:'center'}}>
+            {currentAppointment.name} :{lang.ar.patientName}
+            </h6> 
+          <h6 style={{textAlign:'center'}}>
+            {currentAppointment.time} :{lang.ar.time}
+            </h6> 
+          <Button style={localStyles.goToPatientButton}
+          onClick={() => 
+            goToPatient(currentAppointment.patientId)
+          
+        }
+          >
+            {lang.ar.goToPatient}
+          </Button>
+        </div>
+      </Popover>
+    );
+  };
+  const goToPatient = (patientId) => {
+    
+    setCurrentPage('profile')
+    dispatch(getPatientAction({fetchedEducatorId,token,patientId}))
+  }
+  const handleAppointmentPopoverOpen = (e) => {
+    setAppointmentAnchorEl(e.currentTarget);
+  };
+
+  const handleAppointmentPopoverClose = () => {
+    setAppointmentAnchorEl(null);
+  };
+  const showAppointment = (e, appointment) => {
+    setCurrentAppointment(appointment)
+    handleAppointmentPopoverOpen(e)
+    setCurrentPage('appointment')
+    
+  };
+  
   const setValueCurrentPage = (page) => {
-    console.log(page);
 
     setCurrentPage(page);
   };
@@ -245,9 +295,11 @@ const ShowPatientsView = () => {
           padding={10}
           marginT={10}
           marginB={10}
+          backgroundColor={theme.primary.white}
         >
-          <Tab.Container>
-            <div style={{ width: '15%', backgroundColor: '#6A6262' }}>
+          <Tab.Container 
+          >
+            <div style={localStyles.listHeaderDev}>
               {renderListHeader()}
               {activeList === 'appointments' ? (
                 <ListGroup>{renderAppointmentsList()}</ListGroup>
@@ -255,39 +307,28 @@ const ShowPatientsView = () => {
                 <ListGroup>{renderPatientsList()}</ListGroup>
               )}
             </div>
-            <div className="right-col" style={{ width: '80%', height: '100%' }}>
+            <div  style={localStyles.rightColumn}>
               <Tab.Content
-                style={{
-                  marginLeft: 50,
-                  width: '100%',
-                  height: '100%',
-                  overflow: 'hidden',
-                }}
+                style={localStyles.mianDev}
               >
-                {/* <div>
-                  wrngiern vbger
-                </div> */}
 
                 <div
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    overflow: 'hidden',
-                  }}
+                  style={localStyles.iconsDev}
                 >
                   <IconButton
                     aria-label="chat"
                     onClick={() => setValueCurrentPage('chat')}
                   >
-                    <ChatBubbleIcon fontSize="large" />
+                    <ChatBubbleIcon style={localStyles.icons} fontSize="large" />
                   </IconButton>
                   <IconButton
-                    aria-label="caht"
+                    
+                    aria-label="chat"
                     onClick={() => {
                       setValueCurrentPage('profile');
                     }}
                   >
-                    <PersonIcon fontSize="large" />
+                    <PersonIcon style={localStyles.icons} fontSize="large" />
                   </IconButton>
                   <IconButton
                     aria-label="notes"
@@ -295,16 +336,27 @@ const ShowPatientsView = () => {
                       setValueCurrentPage('notes');
                     }}
                   >
-                    <NotesIcon fontSize="large"></NotesIcon>
+                    <NotesIcon style={localStyles.icons} fontSize="large"></NotesIcon>
                   </IconButton>
-
+                  <IconButton
+                    aria-label="summary"
+                    onClick={() => {
+                      setValueCurrentPage('summaries');
+                    }}
+                  >
+                    <ShortTextIcon style={localStyles.icons} fontSize="large"></ShortTextIcon>
+                  </IconButton>
+                      
                   {currentPage === 'profile' ? (
                     renderPatient()
                   ) : currentPage === 'notes' ? (
                     <PatientNotes />
-                  ) : (
-                    renderChat()
-                  )}
+                  ) : currentPage === 'appointment'? (appointmentPopover()) :
+                     currentPage === 'summaries' ? (
+                      <PatientSummaries/>
+                      ):
+                      renderChat()
+                    }
                 </div>
               </Tab.Content>
             </div>
@@ -318,30 +370,4 @@ const ShowPatientsView = () => {
 
 export default ShowPatientsView;
 
-const localStyles = {
-  container: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    height: '89.9vh',
-    width: '100wh',
-    backgroundColor: '#0a122a',
-  },
-  circle: {
-    width: 30,
-    height: 30,
-    borderWidth: 0,
-    textAlign: 'center',
-    borderStyle: 'solid',
-    borderColor: '#000',
-    color: '#000',
-    alignItems: 'center',
-    borderRadius: 80,
-    display: 'flex',
-    justifyContent: 'center',
-    position: 'absolute',
-    right: 20,
-    top: 20,
-    boxShadow: '0px 2px 5px 4px rgba(0,0,0,0.1)',
-  },
-};
+
