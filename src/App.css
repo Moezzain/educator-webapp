@@ -49,4 +49,12 @@
   padding: 20px;
   font-size: 30px;
   text-align: center;
+
+}
+.buttonCenter {
+  align-self: center !important;
+  align-items: center;
+  align-content: center;
+  color: 'black';
+  background-color: #0a122a; 
 }

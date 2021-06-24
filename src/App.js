@@ -9,6 +9,7 @@ import LoginView from './views/LoginView'
 import ShowPatientsView from './views/ShowPatientsView'
 import { PersistGate } from 'redux-persist/integration/react'
 import {persistor} from './redux/index'
+
 const App = () => {
   return (
 
@@ -17,7 +18,6 @@ const App = () => {
       >
        
 
-        {/* <div> */}
         <Switch>
         <Route exact  path="/" component={LoginView} />
         <Route exact path="/showpatients" component={ShowPatientsView} />
@@ -25,8 +25,6 @@ const App = () => {
         </Switch>
 
 
-
-        {/* </div> */}
       </Router>
        </PersistGate>
   );
