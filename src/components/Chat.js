@@ -22,7 +22,6 @@ const Chat = (props) => {
   const dispatch = useDispatch();
   const [localMessages, setLocalMessages] = useState([]);
   const [duration, setDuration] = useState(0);
-  // const [loading, setLoading] = useState(false);
   const [lang, setLang] = useState({
     ar: {
       messageCount: 'عدد الرسائل',
@@ -31,13 +30,11 @@ const Chat = (props) => {
   });
 
   const { token, educatorId } = useSelector((state) => state.auth);
-  const { messages, loading, currentChat } = useSelector((state) => state.chats);
-  // const { chatId, token, educatorId } = props;
+  const { messages, loading, currentChat } = useSelector(
+    (state) => state.chats
+  );
   useEffect(() => {
-    console.log('chat');
-    
-    console.log('props: ',props);
-    let  chatId = currentChat
+    let chatId = currentChat;
     dispatch(
       getChatsAction({
         chatId,
@@ -64,8 +61,6 @@ const Chat = (props) => {
     }
   };
   const formatMessages = (messages = []) => {
-    console.log('messages that reached formatedMessages: ', messages);
-
     let formatedMessages = [];
     let date;
     for (var i in messages) {
@@ -124,7 +119,7 @@ const Chat = (props) => {
   };
 
   return (
-    <div style={{height:'100%', width:'100%'}}>
+    <div style={{ height: '100%', width: '100%' }}>
       {loading ? (
         <Spinner animation="border" />
       ) : !localMessages.length ? (
@@ -134,7 +129,7 @@ const Chat = (props) => {
         {localMessages.length} :{lang.ar.messageCount} <br />
         {lang.ar.usageDuration}: {duration} {'يوم'}
       </div>
-      <div style={{ position: 'relative', height: '85%' ,width:'100%'}}>
+      <div style={{ position: 'relative', height: '85%', width: '100%' }}>
         <MainContainer>
           <ChatContainer>
             <MessageList>
@@ -152,10 +147,26 @@ const Chat = (props) => {
                       }
                       width={400}
                     />
+                  ) : message.message?.audio ? (
+                    <ReactAudioPlayer src={message.message.audio} controls />
+                  ) : message.message?.file ? (
+                    <Message
+                      model={{
+                        message: message.message.text,
+                        sentTime: message.message.createdOn,
+                        direction: message.userId,
+                      }}
+                    >
+                      <Message.CustomContent>
+                      <a href={message.message.file} target='_blank' download>{message.message.text}</a>
+                      </Message.CustomContent>
+                      <Message.Footer>
+                        <text style={{ fontSize: 10 }}>
+                          {message.message.createdOn[1].split('.')[0]}
+                        </text>
+                      </Message.Footer>
+                    </Message>
                   ) : (
-                    message.message?.audio ? <ReactAudioPlayer 
-                    src={message.message.audio}  controls />
-                    :
                     <Message
                       model={{
                         message: message.message.text,
