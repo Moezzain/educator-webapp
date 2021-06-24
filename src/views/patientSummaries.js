@@ -11,7 +11,7 @@ import {styles} from '../styles/patientNotesStyles'
 import  '../App.css'
 import ReadMore from '../components/ReadMore';
 
-const PatientNotes = () => {
+const PatientSummaries = () => {
   const { patientProfile } = useSelector((state) => state.patient);
 
   const [currentPage, setCurrentPage] = useState('notes')
@@ -35,7 +35,7 @@ const PatientNotes = () => {
   }
   const renderCard = () => {
     return(
-      patientProfile?.notes?.map((note) => (
+      patientProfile?.summaries?.map((note) => (
 
       <div style={styles.cardDev}>
 
@@ -75,4 +75,4 @@ const PatientNotes = () => {
   );
 };
 
-export default PatientNotes;
+export default PatientSummaries;
