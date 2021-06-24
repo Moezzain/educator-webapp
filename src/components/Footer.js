@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "../assets/ithnain.png";
+import logo from "../assets/logo-dark-notext.png";
 import { Navbar } from "react-bootstrap";
 
 const Footer = () => {
@@ -18,7 +18,7 @@ const Footer = () => {
         alt=""
         src={logo}
         width="100"
-        height="50"
+        height="40"
         className="d-inline-block align-top"
       />
     </Navbar>

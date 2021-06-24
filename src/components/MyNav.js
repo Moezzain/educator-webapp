@@ -1,9 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { Component, useContext, useEffect } from 'react';
-import logo from '../assets/ithnain.png';
+import logo from '../assets/logo-dark-notext.png';
 import { Navbar, Spinner, Nav } from 'react-bootstrap';
 import { useHistory, Link } from "react-router-dom";
 import { DataContext } from '../stateManagement/context';
+
+//redux
 import { useSelector, useDispatch } from 'react-redux';
 import { clearAllAuthAction } from '../redux/reducers/authReducer';
 import { clearAllChatsAction } from '../redux/reducers/chatsReducer';
@@ -12,7 +14,7 @@ import {
   getEducatorsAndPatients,
   setFetchedEducatorIdReducer
 } from '../redux/reducers/educatorsReducer';
-
+import {clearAllPatientAction} from '../redux/reducers/patientReducer'
 const MyNav = () => {
   const dispatch = useDispatch();
   const history = useHistory()
@@ -22,13 +24,16 @@ const MyNav = () => {
 
 
   useEffect(() => {
-    dispatch(getEducatorsAndPatients(educatorId, token));
+    
+    
+    dispatch(getEducatorsAndPatients({educatorId, token}));
   }, []);
 
   const logout = () => {
     dispatch(clearAllAuthAction());
     dispatch(clearAllEducatorsAction());
     dispatch(clearAllChatsAction());
+    dispatch(clearAllPatientAction())
     history.replace('/')
   };
   
@@ -42,7 +47,7 @@ const MyNav = () => {
         <img
           alt=""
           src={logo}
-          width="80"
+          width="100"
           height="40"
           className="d-inline-block align-top"
         />{' '}
