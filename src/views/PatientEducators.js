@@ -1,41 +1,49 @@
-import React, { useContext } from 'react'
-import { DataContext } from "../stateManagement/context";
-import {
-  ListGroup,
-  Tab,
-} from "react-bootstrap";
-import { useSelector } from 'react-redux';
-
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import Button from '@material-ui/core/Button';
+import Card from '@material-ui/core/Card';
+import { mainTheme } from '../styles/themes';
+import { setFetchedEducatorIdReducer } from '../redux/reducers/educatorsReducer';
+import {styles} from '../styles/patientEducatorsStyles'
 const PatientEducators = (props) => {
-  const {chats, educatorId} = useSelector((state) => state.auth)
+  const theme = mainTheme;
 
-  if (!chats) {
-    return null
-  }
-  return chats.map(chat => {
-    if(!chat){
-      return null
-    }
+  const dispatch = useDispatch();
 
-    return (
-      <Tab.Pane key={chat.id} eventKey={chat.id}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "column"
-          }}
-        >
-        <h3 style={{marginBottom: 10}}>المثقفين المتابعين</h3>
-          <ListGroup as="ul">
-            <div>pibmdninsfinsfoin</div>
-          </ListGroup>
-        </div>
-      </Tab.Pane>
-    )
-  })
-}
+  const { patientProfile } = useSelector((state) => state.patient);
+  const { patients } = useSelector((state) => state.educators);
+  const goToEducator = (educatorId) => {
+    dispatch(setFetchedEducatorIdReducer(educatorId));
+  };
+  return (
+    <div
+      style={styles.root}
+    >
+      <Card
+        style={styles.card}
+      >
+        <text style={styles.title}>
+          Educators
+        </text>
 
+        {Object.values(patients)
+          .filter((patient) => {
+            return patient?.patientId === patientProfile?.patientId;
+          })[0]
+          ?.educators.map((educator) => (
+            <Button
+              variant="contained"
+              onClick={() => {goToEducator(educator.id)}}
+              style={styles.button}
+            >
+              <text style={styles.educatorText}>
+                {educator.name}
+              </text>
+            </Button>
+          ))}
+      </Card>
+    </div>
+  );
+};
 
-export default PatientEducators
+export default PatientEducators;
