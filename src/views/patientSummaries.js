@@ -5,7 +5,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import {styles} from '../styles/patientNotesStyles'
+import {lightStyles, darkStyles} from '../styles/patientNotesStyles'
 
 
 import  '../App.css'
@@ -13,7 +13,8 @@ import ReadMore from '../components/ReadMore';
 
 const PatientSummaries = () => {
   const { patientProfile } = useSelector((state) => state.patient);
-
+  const {darkMode} = useSelector((state) => state.auth)
+ 
   const [currentPage, setCurrentPage] = useState('notes')
   const [currentNote, setCurrentNote] = useState(null)
   const lang = {ar: {
@@ -25,6 +26,7 @@ const PatientSummaries = () => {
     patientName:'اسم المريض',
     learnMore:'اقرا المزيد'
   }}
+  const styles = !darkMode ? lightStyles : darkStyles
 
   const renderReadMore = (note) => {
       setCurrentNote(note)
@@ -41,14 +43,14 @@ const PatientSummaries = () => {
 
     <Card style={styles.root} variant="outlined">
    <CardContent style={styles.cardContent}>
-     <Typography variant="h5" component="h2">
+     <Typography color={styles.color} variant="h5" component="h2">
        {note.title}
      </Typography>
-     <Typography variant="body2" component="p">
+     <Typography color={styles.color} variant="body2" component="p">
        {note.text}
 
      </Typography>
-     <Typography style={styles.date} color="textSecondary" gutterBottom>
+     <Typography color={styles.color} style={styles.date}  gutterBottom>
        {note.createdOn.split('T')[0]}
      </Typography>
      <Typography style={styles.learnMore} color="textSecondary" gutterBottom>

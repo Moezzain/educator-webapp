@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
 import { Spinner } from 'react-bootstrap';
 import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
@@ -10,6 +9,7 @@ import {
   MessageSeparator,
 } from '@chatscope/chat-ui-kit-react';
 import ReactAudioPlayer from 'react-audio-player';
+import { darkStyles, lightStyles } from '../styles/chatStyles';
 
 import { getChatsAction } from '../redux/reducers/chatsReducer';
 import { useSelector, useDispatch } from 'react-redux';
@@ -29,10 +29,13 @@ const Chat = (props) => {
     },
   });
 
-  const { token, educatorId } = useSelector((state) => state.auth);
+  const { token, educatorId, darkMode } = useSelector((state) => state.auth);
   const { messages, loading, currentChat } = useSelector(
     (state) => state.chats
   );
+
+  const localStyles = !darkMode ? lightStyles : darkStyles;
+
   useEffect(() => {
     let chatId = currentChat;
     dispatch(
@@ -49,7 +52,6 @@ const Chat = (props) => {
   useEffect(() => {
     calcDuration(localMessages);
   }, [localMessages]);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
 
   const calcDuration = (messages = []) => {
     if (messages && messages.length > 0) {
@@ -117,9 +119,25 @@ const Chat = (props) => {
     }
     return formatedMessages;
   };
-
+  const customSeparator = (date) => {
+    const d = new Date(date)
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    return (
+      <div
+        style={localStyles.separatorDiv}
+      >
+        <div style={localStyles.leftLine} />
+        <div style={localStyles.date}>
+          {date}, {days[d.getDay()]}
+        </div>
+        <div
+          style={localStyles.rightLine}
+        />
+      </div>
+    );
+  };
   return (
-    <div style={{ height: '100%', width: '100%' }}>
+    <div style={localStyles.root}>
       {loading ? (
         <Spinner animation="border" />
       ) : !localMessages.length ? (
@@ -129,65 +147,71 @@ const Chat = (props) => {
         {localMessages.length} :{lang.ar.messageCount} <br />
         {lang.ar.usageDuration}: {duration} {'يوم'}
       </div>
-      <div style={{ position: 'relative', height: '85%', width: '100%' }}>
-        <MainContainer>
-          <ChatContainer>
-            <MessageList>
-              {localMessages.map((message) => (
-                <div>
-                  {message.message?.date && (
-                    <MessageSeparator content={message.message.date} />
-                  )}
-
-                  {message.message?.image ? (
-                    <Message.ImageContent
-                      src={message.message.image}
-                      alt={
-                        "The image isn't working link: " + message.message.image
-                      }
-                      width={400}
-                    />
-                  ) : message.message?.audio ? (
-                    <ReactAudioPlayer src={message.message.audio} controls />
-                  ) : message.message?.file ? (
-                    <Message
-                      model={{
-                        message: message.message.text,
-                        sentTime: message.message.createdOn,
-                        direction: message.userId,
-                      }}
-                    >
-                      <Message.CustomContent>
-                      <a href={message.message.file} target='_blank' download>{message.message.text}</a>
-                      </Message.CustomContent>
-                      <Message.Footer>
-                        <text style={{ fontSize: 10 }}>
-                          {message.message.createdOn[1].split('.')[0]}
-                        </text>
-                      </Message.Footer>
-                    </Message>
-                  ) : (
-                    <Message
-                      model={{
-                        message: message.message.text,
-                        sentTime: message.message.createdOn,
-                        direction: message.userId,
-                      }}
-                    >
-                      <Message.CustomContent>
-                        <text style={{ fontSize: 17 }}>
-                          {message.message.text}
-                        </text>
-                      </Message.CustomContent>
-                      <Message.Footer>
-                        <text style={{ fontSize: 10 }}>
-                          {message.message.createdOn[1].split('.')[0]}
-                        </text>
-                      </Message.Footer>
-                    </Message>
-                  )}
-                </div>
-              ))}
+      <div style={localStyles.chatDiv}>
+        <MainContainer >
+          <ChatContainer >
+            <MessageList style={localStyles.messagelistContent}> 
+              <MessageList.Content >
+                {localMessages.map((message) => (
+                  <div>
+                    {message.message?.date && customSeparator(message.message.date)}
+                    {message.message?.image ? (
+                      <Message.ImageContent
+                        src={message.message.image}
+                        alt={
+                          "The image isn't working link: " +
+                          message.message.image
+                        }
+                        width={400}
+                      />
+                    ) : message.message?.audio ? (
+                      <ReactAudioPlayer src={message.message.audio} controls />
+                    ) : message.message?.file ? (
+                      <Message
+                        model={{
+                          message: message.message.text,
+                          sentTime: message.message.createdOn,
+                          direction: message.userId,
+                        }}
+                      >
+                        <Message.CustomContent>
+                          <a
+                            href={message.message.file}
+                            target="_blank"
+                            download
+                          >
+                            {message.message.text}
+                          </a>
+                        </Message.CustomContent>
+                        <Message.Footer>
+                          <text style={localStyles.messageFooter}>
+                            {message.message.createdOn[1].split('.')[0]}
+                          </text>
+                        </Message.Footer>
+                      </Message>
+                    ) : (
+                      <Message
+                        model={{
+                          message: message.message.text,
+                          sentTime: message.message.createdOn,
+                          direction: message.userId,
+                        }}
+                      >
+                        <Message.CustomContent>
+                          <text style={localStyles.customMessage}>
+                            {message.message.text}
+                          </text>
+                        </Message.CustomContent>
+                        <Message.Footer>
+                          <text style={localStyles.messageFooter}>
+                            {message.message.createdOn[1].split('.')[0]}
+                          </text>
+                        </Message.Footer>
+                      </Message>
+                    )}
+                  </div>
+                ))}
+              </MessageList.Content>
             </MessageList>
           </ChatContainer>
         </MainContainer>

@@ -1,7 +1,8 @@
-import { mainTheme } from './themes';
+import { mainTheme, darkTheme } from './themes';
+
 const theme = mainTheme;
 
-export const localStyles = {
+export const lightStyles = {
   container: {
     display: 'flex',
     flexDirection: 'row',
@@ -35,7 +36,7 @@ export const localStyles = {
     height: '100%',
     overflow: 'hidden',
   },
-  listHeaderDev: {
+  listDev: {
     width: '20%',
     backgroundColor: theme.primary.bluishWhite,
   },
@@ -43,4 +44,61 @@ export const localStyles = {
     width: '80%',
     height: '100%',
   },
+  cardContainer: theme.primary.white,
+  listHeaderDiv: {
+    display: 'block',
+    backgroundColor: theme.primary.white,
+    textAlign: 'center',
+    padding: 10,
+  }
 };
+export const darkStyles = {
+  container: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    height: '89.9vh',
+    width: '100wh',
+    backgroundColor: darkTheme.primary.black,
+  },
+  buttonsText: {
+    marginTop: 5,
+    marginRight: 5,
+    backgroundColor: darkTheme.primary.black,
+    color: darkTheme.primary.white,
+  },
+  icons: {
+    color: darkTheme.secondary.lightGrey,
+  },
+  goToPatientButton: {
+    width: '6vw',
+    marginLeft: '2vw',
+    backgroundColor: '#6D9DC5',
+  },
+  mianDev: {
+    marginLeft: 20,
+    width: '100%',
+    height: '100%',
+    overflow: 'hidden',
+  },
+  iconsDev: {
+    width: '100%',
+    height: '100%',
+    overflow: 'hidden',
+  },
+  listDev: {
+    width: '20%',
+    backgroundColor: darkTheme.secondary.mainBlue,
+  },
+  rightColumn: {
+    width: '80%',
+    height: '100%',
+  },
+  cardContainer: darkTheme.secondary.darkBlue,
+  listHeaderDiv: {
+    display: 'block',
+    backgroundColor: darkTheme.secondary.darkBlue,
+    textAlign: 'center',
+    padding: 10,
+  }
+}

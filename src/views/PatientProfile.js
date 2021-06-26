@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable no-sparse-arrays */
 import React, { useEffect, useState } from 'react';
 
 // redux
@@ -11,7 +9,7 @@ import Paper from '@material-ui/core/Paper';
 import '../App.css';
 import Popover from '@material-ui/core/Popover';
 import { useTheme } from '@material-ui/core/styles';
-import { styles } from '../styles/patientProfileStyles';
+import { lightStyles, darkStyles } from '../styles/patientProfileStyles';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
@@ -52,6 +50,7 @@ const lang = {
 const PatientProfile = () => {
   const theme = useTheme();
 
+  
   const [dateAffected, setDateAffected] = useState('');
   const [dateBirth, setDateBirth] = useState('');
   const [weights, setWeights] = useState([]);
@@ -68,41 +67,43 @@ const PatientProfile = () => {
   const [outSideLink, setOutSideLink] = useState('');
   const [topics, setTopics] = useState([]);
   const [diet, setDiet] = useState('');
-
-  const { patientId, patientProfile, loading } = useSelector(
-    (state) => state.patient
-  );
-  const { token, educatorId } = useSelector((state) => state.auth);
   
-  useEffect(() => {
-    try {
-      if (patientProfile) {
-        setDateAffected(patientProfile?.dateAffected);
-        setDateBirth(patientProfile?.dateBirth);
-        setWeights(patientProfile?.weights);
-        setHeights(patientProfile?.height);
-        setHba1cs(concatProfile('hba1cs'));
-        
-        
-        setMedicines(concatProfile('medicines'));
-        setPatientName(patientProfile?.realPatientName);
-        setNotes(patientProfile?.notes);
-        setDiseaseType(patientProfile?.diseaseType);
-        setWhoIsPatient(patientProfile?.whoIsPatient);
-        setSurgery(patientProfile?.surgery);
-        setOtherDisease(patientProfile?.otherDisease);
-        setOutSideLink(patientProfile?.outSideLink);
-        setTopics(patientProfile?.topics);
-        setDiet(patientProfile?.diet);
+  const {darkMode } = useSelector((state) => state.auth)
+  const {patientProfile, loading } = useSelector(
+    (state) => state.patient
+    );
+
+    const styles = ! darkMode ? lightStyles : darkStyles 
+
+    useEffect(() => {
+      try {
+        if (patientProfile) {
+          setDateAffected(patientProfile?.dateAffected);
+          setDateBirth(patientProfile?.dateBirth);
+          setWeights(patientProfile?.weights);
+          setHeights(patientProfile?.height);
+          setHba1cs(concatProfile('hba1cs'));
+          
+          
+          setMedicines(concatProfile('medicines'));
+          setPatientName(patientProfile?.realPatientName);
+          setNotes(patientProfile?.notes);
+          setDiseaseType(patientProfile?.diseaseType);
+          setWhoIsPatient(patientProfile?.whoIsPatient);
+          setSurgery(patientProfile?.surgery);
+          setOtherDisease(patientProfile?.otherDisease);
+          setOutSideLink(patientProfile?.outSideLink);
+          setTopics(patientProfile?.topics);
+          setDiet(patientProfile?.diet);
+        }
+      } catch (e) {
+        console.log(e);
       }
-    } catch (e) {
-      console.log(e);
-    }
-  }, [patientProfile]);
-  const concatProfile = (text) => {
-    const subText = text.substring(0,text.length-1)
-    let temp = '';
-    if(patientProfile?.[text])
+    }, [patientProfile]);
+    const concatProfile = (text) => {
+      const subText = text.substring(0,text.length-1)
+      let temp = '';
+      if(patientProfile?.[text])
     patientProfile[text].forEach((item) => {
       temp = temp.concat(item?.[subText]+'\n')
     })
@@ -157,7 +158,7 @@ const PatientProfile = () => {
           <Typography style={styles.text} variant="h5" component="h2">
             {description}
           </Typography>
-          <Typography color="textSecondary">{text}</Typography>
+          <Typography color={styles.textColor} >{text}</Typography>
         </CardContent>
       </Card>
     );
