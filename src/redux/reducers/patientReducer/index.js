@@ -7,10 +7,6 @@ import { commonState } from '../../../helpers/commonReducerState';
 export const getPatientAction = createAsyncThunk(
   'patient/getPatientAction',
   async ({ educatorId, token, patientId }, { rejectWithValue }) => {
-    console.log('patient educatorId', educatorId);
-    console.log('patient token', token);
-    console.log('patient patientId', patientId);
-
     return await getPatient(educatorId, token, patientId)
       .then((patientData) => {
         console.log('patient: ', patientData);

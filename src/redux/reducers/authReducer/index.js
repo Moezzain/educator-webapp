@@ -3,7 +3,7 @@ import axios from 'axios';
 import url from '../../../config/apiConfig';
 import { sha256 } from 'js-sha256';
 import { commonState } from '../../../helpers/commonReducerState';
-
+import {api} from '../../../network'
 const encrypt = (text) => {
     return sha256(text);
 }

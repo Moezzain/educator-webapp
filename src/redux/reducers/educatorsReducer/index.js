@@ -7,6 +7,7 @@ export const getEducatorsAndPatients = createAsyncThunk(
   async ({ educatorId, token },{rejectWithValue}) => {
 
     return await getAllEducatorsAndPatients(educatorId, token).then((data) => {
+        if(data)
         return data
     }).catch((e) => {
         console.log('error',e);

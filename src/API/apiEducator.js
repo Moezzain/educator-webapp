@@ -1,6 +1,7 @@
 import url from '../config/apiConfig'
 import { parseObjectOfArrays } from '../helpers/Converters'
 import axios from "axios"
+import {api} from '../network'
 
 export const getMessages = async (chatId, educatorId, token) => {
   try {
