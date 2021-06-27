@@ -31,7 +31,7 @@ export const loginAction = createAsyncThunk(
             return auths
         }).catch((e) => {
             console.log('error',e);
-            return rejectWithValue(false)
+            return rejectWithValue(true)
         })
         
         
@@ -44,6 +44,7 @@ const initialState = {
   appointments: null,
   chats: null,
   response: null,
+  darkMode: false,
   ...commonState
 };
 const authReducer = createSlice({
@@ -56,6 +57,9 @@ const authReducer = createSlice({
     },
     setChats: (state, action) => {
       state.chats = action.payload
+    },
+    setDarkMode: (state, action) => {
+        state.darkMode = action.payload
     }
   },
 
@@ -66,6 +70,13 @@ const authReducer = createSlice({
           state.appointments = action.payload.appointments
           state.chats = action.payload.chats
           state.loading = false
+      },
+      [loginAction.pending]: (state, action) => {
+          state.loading = true
+      },
+      [loginAction.rejected]: (state, action) => {
+          state.error = action.payload
+          state.loading = false
       }
   },
 });
@@ -73,7 +84,8 @@ const authReducer = createSlice({
 export const {
     setLoading:setLoadingAction,
     setChats: setChatsAction,
-    clearAll: clearAllAuthAction
+    clearAll: clearAllAuthAction,
+    setDarkMode: setDarkModeAction
 } = authReducer.actions;
 
 export default authReducer.reducer;
