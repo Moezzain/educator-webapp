@@ -14,7 +14,7 @@ export const lightStyles = {
     height: '37.8vh',
     marginLeft: 10,
     marginTop: 10,
-    marginRight:10
+    marginRight: 10,
   },
   rightLowerCorner: {
     width: '30vw',
@@ -85,7 +85,18 @@ export const lightStyles = {
     height: '5vh',
   },
   rightSideDiv: {},
-  textColor: "textSecondary"
+  textColor: 'textSecondary',
+  educatorsDiv: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+    alignItems: 'center',
+  },
+  educatorsButton: {
+    width: '50%',
+    margin: 5,
+    backgroundColor: theme.secondary.lightBlue
+  },
 };
 export const darkStyles = {
   root: {
@@ -101,8 +112,8 @@ export const darkStyles = {
     height: '37.8vh',
     marginLeft: 10,
     marginTop: 10,
-    marginRight:10,
-    backgroundColor: darkTheme.primary.black
+    marginRight: 10,
+    backgroundColor: darkTheme.primary.black,
   },
   rightLowerCorner: {
     width: '30vw',
@@ -130,7 +141,7 @@ export const darkStyles = {
     alignSelf: 'center',
     justifyContent: 'center', //Centered vertically
     alignItems: 'center',
-    backgroundColor: darkTheme.primary.black
+    backgroundColor: darkTheme.primary.black,
   },
   paper: {
     textAlign: 'center',
@@ -162,7 +173,7 @@ export const darkStyles = {
     flex: 1,
     margin: 10,
     height: '5vh',
-    backgroundColor: darkTheme.primary.black
+    backgroundColor: darkTheme.primary.black,
   },
   clickPopever: {
     width: '5vw',
@@ -175,5 +186,16 @@ export const darkStyles = {
     height: '5vh',
   },
   rightSideDiv: {},
-  textColor: 'secondary'
+  textColor: 'secondary',
+  educatorsDiv: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+    alignItems: 'center',
+  },
+  educatorsButton: {
+    width: '50%',
+    margin: 5,
+    backgroundColor: darkTheme.secondary.mainBlue
+  },
 };

@@ -36,7 +36,7 @@ import { setDarkModeAction } from '../redux//reducers/authReducer';
 import IconButton from '@material-ui/core/IconButton';
 import PersonIcon from '@material-ui/icons/Person';
 import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
-import NotesIcon from '@material-ui/icons/Notes';
+import NoteIcon from '@material-ui/icons/Note';
 import Button from '@material-ui/core/Button';
 import Popover from '@material-ui/core/Popover';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
@@ -47,7 +47,6 @@ import Brightness4Icon from '@material-ui/icons/Brightness4';
 import '../App.css';
 import { mainTheme,darkTheme } from '../styles/themes';
 import { lightStyles,darkStyles  } from '../styles/showPatientsViewStyles';
-import PatientEducators from './PatientEducators';
 
 const ShowPatientsView = () => {
   
@@ -309,7 +308,7 @@ const ShowPatientsView = () => {
             setValueCurrentPage('notes');
           }}
         >
-          <NotesIcon style={localStyles.icons} fontSize="large"></NotesIcon>
+          <NoteIcon style={localStyles.icons} fontSize="large"></NoteIcon>
         </IconButton>
         <IconButton
           aria-label="summary"
@@ -321,17 +320,6 @@ const ShowPatientsView = () => {
             style={localStyles.icons}
             fontSize="large"
           ></ShortTextIcon>
-        </IconButton>
-        <IconButton
-          aria-label="educators"
-          onClick={() => {
-            setValueCurrentPage('educators');
-          }}
-        >
-          <VisibilityIcon
-            style={localStyles.icons}
-            fontSize="large"
-          ></VisibilityIcon>
         </IconButton>
         <IconButton
           aria-label="darkmode"
@@ -384,9 +372,7 @@ const ShowPatientsView = () => {
                     appointmentPopover()
                   ) : currentPage === 'summaries' ? (
                     <PatientSummaries />
-                  ) : currentPage === 'educators' ? (
-                    <PatientEducators />
-                  ) : (
+                  ) :(
                     renderChat()
                   )}
                 </div>
