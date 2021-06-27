@@ -1,13 +1,15 @@
 import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import reducer from './reducers';
-// import { persistStore } from 'redux-persist';
+import { persistStore } from 'redux-persist';
 
-let middleware = getDefaultMiddleware();
+let middleware = null;
 //DEV
 
-const store = configureStore({reducer});
-console.log('store ',store.getState());
+const store = configureStore({
+  reducer,
+  ...middleware,
+});
 
-// export const persistor = persistStore(store);
+export const persistor = persistStore(store);
 
 export default store;

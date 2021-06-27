@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import url from '../../../config/apiConfig';
-import { getPatient } from '../../../API/apiEducator';
+import { getPatient } from '../../../API/apiPatient';
 import { commonState } from '../../../helpers/commonReducerState';
 
 export const getPatientAction = createAsyncThunk(
