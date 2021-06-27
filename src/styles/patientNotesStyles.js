@@ -23,6 +23,7 @@ export const lightStyles = {
     marginRight: 20,
     position: 'absolute',
     right: 5,
+    bottom:5
   },
   pos: {
     marginBottom: 12,
@@ -70,6 +71,8 @@ export const darkStyles = {
     marginRight: 20,
     position: 'absolute',
     right: 5,
+    bottom:5,
+    color:darkTheme.secondary.lightGrey
   },
   pos: {
     marginBottom: 12,
@@ -91,5 +94,8 @@ export const darkStyles = {
     position: 'relative',
     height: '100%',
   },
-  color: 'secondary'
+  color: 'secondary',
+  text:{
+    color:darkTheme.secondary.lightGrey
+  }
 };

@@ -141,9 +141,9 @@ const Chat = (props) => {
       {loading ? (
         <Spinner animation="border" />
       ) : !localMessages.length ? (
-        <div>المحادثة فارغة </div>
+        <div style={localStyles.emptyMessages}>المحادثة فارغة </div>
       ) : null}
-      <div>
+      <div style={localStyles.statsDiv}>
         {localMessages.length} :{lang.ar.messageCount} <br />
         {lang.ar.usageDuration}: {duration} {'يوم'}
       </div>

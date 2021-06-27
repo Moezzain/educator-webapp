@@ -7,8 +7,8 @@ export const lightStyles = {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
-    height: '89.9vh',
-    width: '100wh',
+    height: '87.5vh',
+    width: '100%',
     backgroundColor: theme.primary.black,
   },
   buttonsText: {
@@ -50,6 +50,9 @@ export const lightStyles = {
     backgroundColor: theme.primary.white,
     textAlign: 'center',
     padding: 10,
+  },
+  patientListName:{
+    color:'black'
   }
 };
 export const darkStyles = {
@@ -57,8 +60,8 @@ export const darkStyles = {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
-    height: '89.9vh',
-    width: '100wh',
+    height: '87.5vh',
+    width: '100%',
     backgroundColor: darkTheme.primary.black,
   },
   buttonsText: {
@@ -100,5 +103,8 @@ export const darkStyles = {
     backgroundColor: darkTheme.secondary.darkBlue,
     textAlign: 'center',
     padding: 10,
-  }
-}
+  },
+  patientListName: {
+    color: darkTheme.secondary.lightGrey,
+  },
+};

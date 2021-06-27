@@ -7,7 +7,7 @@ import { DataContext } from '../stateManagement/context';
 
 //redux
 import { useSelector, useDispatch } from 'react-redux';
-import { clearAllAuthAction } from '../redux/reducers/authReducer';
+import { clearAllAuthAction,logoutAction } from '../redux/reducers/authReducer';
 import { clearAllChatsAction } from '../redux/reducers/chatsReducer';
 import {
   clearAllEducatorsAction,
@@ -34,6 +34,7 @@ const MyNav = () => {
     dispatch(clearAllEducatorsAction());
     dispatch(clearAllChatsAction());
     dispatch(clearAllPatientAction())
+    dispatch(logoutAction({educatorId,token}))
     history.replace('/')
   };
   
@@ -66,7 +67,6 @@ const MyNav = () => {
               </Nav.Link>
             ))}
             <Nav className="mr-auto ml-10">
-              <Nav.Link ><Link style={{ color: "#FFF" }} to="/">Home</Link> </Nav.Link> 
             <Nav.Link>
                 <Link style={{ color: '#FFF' }} to="/" onClick={() => logout()}>
                   Logout

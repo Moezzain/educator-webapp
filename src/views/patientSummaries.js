@@ -46,7 +46,7 @@ const PatientSummaries = () => {
      <Typography color={styles.color} variant="h5" component="h2">
        {note.title}
      </Typography>
-     <Typography color={styles.color} variant="body2" component="p">
+     <Typography color={styles.color} style={styles.text} variant="body2" component="p">
        {note.text}
 
      </Typography>

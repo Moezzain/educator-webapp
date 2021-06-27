@@ -2,6 +2,8 @@ import { mainTheme, darkTheme } from './themes';
 const theme = mainTheme;
 export const lightStyles = {
   root: {
+    flex: 1,
+    width: '95%',
     display: 'flex',
     flexDirection: 'row',
   },
@@ -10,11 +12,13 @@ export const lightStyles = {
     flex: 1,
   },
   chartWrapper: {
-    width: '31vw',
-    height: '37.8vh',
-    marginLeft: 10,
+    width: '100%',
+    height: '100%',
     marginTop: 10,
-    marginRight: 10,
+  },
+  chartDiv: {
+    width: '100%',
+    height: '52.6%',
   },
   rightLowerCorner: {
     width: '30vw',
@@ -32,9 +36,9 @@ export const lightStyles = {
     color: theme.primary.red,
     fontSize: 20,
   },
-  card: {
+  leftSideCard: {
     textAlign: 'center',
-    width: '15vw',
+    width: '100%',
     height: '15vh',
     margin: 10,
     fontSize: 20,
@@ -42,6 +46,21 @@ export const lightStyles = {
     alignSelf: 'center',
     justifyContent: 'center', //Centered vertically
     alignItems: 'center',
+  },
+  rightSideCard: {
+    textAlign: 'center',
+    width: '100%',
+    height: '15vh',
+    marginTop: 10,
+    fontSize: 20,
+    alignVertical: 'center',
+    alignSelf: 'center',
+    justifyContent: 'center', //Centered vertically
+    alignItems: 'center',
+  },
+  rightSideDiv: {
+    flex: 1,
+    width: '50%',
   },
   paper: {
     textAlign: 'center',
@@ -84,22 +103,42 @@ export const lightStyles = {
     margin: 10,
     height: '5vh',
   },
-  rightSideDiv: {},
-  textColor: 'textSecondary',
+  textColor: {
+    color:'black'
+  },
   educatorsDiv: {
     display: 'flex',
-    flexDirection: 'column',
     width: '100%',
     alignItems: 'center',
+    flexWrap: 'wrap',
   },
   educatorsButton: {
-    width: '50%',
+    width: '40%',
     margin: 5,
-    backgroundColor: theme.secondary.lightBlue
+    backgroundColor: theme.secondary.lightBlue,
+  },
+  contentWrapper: {
+    flex: 1,
+    width: '50%',
+  },
+  rightBottomRightDiv: {
+    display: 'flex',
+    flexDirection: 'row',
+    flex: 1,
+    height: '50%',
+  },
+  rightSideLeftColumn: {
+    width: '50%',
+    marginRight: 10,
+  },
+  rightSideRightColumn: {
+    width: '50%',
   },
 };
 export const darkStyles = {
   root: {
+    flex: 1,
+    width: '95%',
     display: 'flex',
     flexDirection: 'row',
   },
@@ -108,12 +147,14 @@ export const darkStyles = {
     flex: 1,
   },
   chartWrapper: {
-    width: '31vw',
-    height: '37.8vh',
-    marginLeft: 10,
+    width: '100%',
+    height: '100%',
     marginTop: 10,
-    marginRight: 10,
     backgroundColor: darkTheme.primary.black,
+  },
+  chartDiv: {
+    width: '100%',
+    height: '52.6%',
   },
   rightLowerCorner: {
     width: '30vw',
@@ -131,9 +172,9 @@ export const darkStyles = {
     color: darkTheme.primary.red,
     fontSize: 20,
   },
-  card: {
+  leftSideCard: {
     textAlign: 'center',
-    width: '15vw',
+    width: '100%',
     height: '15vh',
     margin: 10,
     fontSize: 20,
@@ -142,6 +183,22 @@ export const darkStyles = {
     justifyContent: 'center', //Centered vertically
     alignItems: 'center',
     backgroundColor: darkTheme.primary.black,
+  },
+  rightSideCard: {
+    textAlign: 'center',
+    width: '100%',
+    height: '15vh',
+    marginTop: 10,
+    fontSize: 20,
+    alignVertical: 'center',
+    alignSelf: 'center',
+    justifyContent: 'center', //Centered vertically
+    alignItems: 'center',
+    backgroundColor: darkTheme.primary.black,
+  },
+  rightSideDiv: {
+    flex: 1,
+    width: '50%',
   },
   paper: {
     textAlign: 'center',
@@ -185,17 +242,33 @@ export const darkStyles = {
     margin: 10,
     height: '5vh',
   },
-  rightSideDiv: {},
-  textColor: 'secondary',
+  textColor: {color:darkTheme.secondary.lightGrey,},
   educatorsDiv: {
     display: 'flex',
-    flexDirection: 'column',
     width: '100%',
     alignItems: 'center',
+    flexWrap: 'wrap',
   },
   educatorsButton: {
-    width: '50%',
+    width: '40%',
     margin: 5,
-    backgroundColor: darkTheme.secondary.mainBlue
+    backgroundColor: darkTheme.secondary.mainBlue,
+  },
+  contentWrapper: {
+    flex: 1,
+    width: '50%',
+  },
+  rightBottomRightDiv: {
+    display: 'flex',
+    flexDirection: 'row',
+    flex: 1,
+    height: '50%',
+  },
+  rightSideLeftColumn: {
+    width: '50%',
+    marginRight: 10,
+  },
+  rightSideRightColumn: {
+    width: '50%',
   },
 };

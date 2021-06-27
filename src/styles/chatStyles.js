@@ -8,7 +8,7 @@ export const lightStyles = {
   },
   chatDiv: {
     position: 'relative',
-    height: '85%',
+    height: '80%',
     width: '96%',
     backgroundColor: 'green',
   },
@@ -44,6 +44,12 @@ export const lightStyles = {
     flex: 2,
     textAlign: 'center',
   },
+  statsDiv: {
+    color:'black'
+  },
+  emptyMessages: {
+    color:'black'
+  },
 };
 export const darkStyles = {
   root: {
@@ -52,7 +58,7 @@ export const darkStyles = {
   },
   chatDiv: {
     position: 'relative',
-    height: '85%',
+    height: '80%',
     width: '96%',
   },
   messageFooter: {
@@ -86,5 +92,11 @@ export const darkStyles = {
   date: {
     flex: 2,
     textAlign: 'center',
+  },
+  statsDiv: {
+    color:darkTheme.secondary.lightGrey
+  },
+  emptyMessages: {
+    color:darkTheme.secondary.lightGrey 
   },
 };

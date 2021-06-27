@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ListGroup, Container, Tab, Tabs, Table } from 'react-bootstrap';
+import { ListGroup, Tab, Tabs, Table } from 'react-bootstrap';
 import CardContainer from '../components/CardContainer';
 import { DataContext } from '../stateManagement/context';
 import { parseArray } from '../helpers/Converters';
@@ -43,13 +43,15 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ShortTextIcon from '@material-ui/icons/ShortText';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import Brightness4Icon from '@material-ui/icons/Brightness4';
+import Container from '@material-ui/core/Container';
 
 import '../App.css';
 import { mainTheme,darkTheme } from '../styles/themes';
 import { lightStyles,darkStyles  } from '../styles/showPatientsViewStyles';
+import { useHistory } from 'react-router-dom';
 
 const ShowPatientsView = () => {
-  
+  const history = useHistory()
   const dispatch = useDispatch();
   
   const [activeList, setActiveList] = useState('');
@@ -57,6 +59,7 @@ const ShowPatientsView = () => {
   const [currentPage, setCurrentPage] = useState('');
   const [appointmentAnchorEl, setAppointmentAnchorEl] = useState('');
   const [currentAppointment, setCurrentAppointment] = useState('');
+  const [disableIcons, setDisableIcons] = useState(true)
   const [lang, setLang] = useState({
     ar: {
       chat: 'المحادثة',
@@ -80,7 +83,10 @@ const ShowPatientsView = () => {
   const openAppointment = Boolean(appointmentAnchorEl);
   
   const localStyles = !darkMode ? lightStyles : darkStyles
-
+  useEffect(() => {
+    if(!token)
+    history.replace('/')
+  },[token])
   useEffect(() => {
     try {
       if (chats?.length && !chats[0].id) {
@@ -109,6 +115,11 @@ const ShowPatientsView = () => {
     localPatients,
     patients,
   ]);
+  useEffect(() => {
+    if(patientId){
+      setDisableIcons(false)
+    }
+  },[patientId])
   useEffect(() => {
     dispatch(getPatientAction({ educatorId, token, patientId }));
   }, [dispatch, educatorId, patientId, token]);
@@ -155,7 +166,7 @@ const ShowPatientsView = () => {
                     fontSize="large"
                     style={{ marginRight: 5 }}
                   ></AccountCircleIcon>
-                  <div style={{}}>{patient.patientName}</div>
+                  <div style={localStyles.patientListName}>{patient.patientName}</div>
                 </div>
               </Conversation.Content>
             </Conversation>
@@ -337,12 +348,13 @@ const ShowPatientsView = () => {
     );
   };
   const setValueCurrentPage = (page) => {
+    if(!disableIcons)
     setCurrentPage(page);
   };
   return (
     <>
       <MyNav />
-      <Container fluid style={localStyles.container}>
+      <Container maxWidth={false} fluid style={localStyles.container}>
         <CardContainer
           width="95%"
           direction="row"

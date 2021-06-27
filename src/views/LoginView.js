@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Form, Row, Col, Container, Spinner } from 'react-bootstrap';
 import CardContainer from '../components/CardContainer';
-import logo from '../assets/ithnain.png';
+import logo from '../assets/bright-no-bg.png';
 import { useSelector, useDispatch } from 'react-redux';
 import { loginAction, setLoadingAction, clearAllAuthAction } from '../redux/reducers/authReducer';
 import { useHistory } from 'react-router-dom';
 
-const Login = () => {
+const LoginView = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -49,7 +49,7 @@ const Login = () => {
             alignItems: 'center',
           }}
         >
-          <img src={logo} style={{ width: '50%', marginBottom: '4%' }} />
+          <img src={logo} style={{ width: '100%', marginBottom: '30%' }} />
         </Col>
         <Col
           sm={12}
@@ -110,4 +110,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginView;
