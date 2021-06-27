@@ -1,7 +1,6 @@
 import url from '../config/apiConfig'
 import { parseObjectOfArrays } from '../helpers/Converters'
 import axios from "axios"
-import {api} from '../network'
 
 export const getMessages = async (chatId, educatorId, token) => {
   try {
@@ -147,20 +146,7 @@ export const getEducatorData = async (educatorId, token) => {
   }
 }
 
-export const getPatient = async (educatorId, token, patientId) => {
-  try {
-    const result = await axios.get(`${url}/patient?patientId=${patientId}&educatorId=${educatorId}`, {headers: {
-      Authorization: `Bearer ${token}`
-    }})
-    if(result.data) {
-      const {patient: unparsedPatient, patientProfile} = result.data;
-        const patient = JSON.parse(unparsedPatient);
-        return {patient, patientProfile};
-    }
-  } catch (error) {
-    console.log('getPatient Error', error);
-  }
-}
+
 
 export const isCaseHandler = async (educatorId, token) => {
   console.log(`
@@ -179,3 +165,22 @@ export const isCaseHandler = async (educatorId, token) => {
     
   })
 }
+
+export const logout = async (educatorId, token) => {
+  console.log('educator:',educatorId);
+  console.log('token:',token);
+  
+  const body = {
+    educatorId,
+    notificationToken:" "
+  }
+  const result =  await axios.patch(`${url}/logout`,body,{headers: {
+    Authorization: `Bearer ${token}`}}).then((res) => {
+      console.log('logout: ',res);
+      
+    }).catch((e) => {
+      console.log('error ',e);
+      
+    })
+    return result
+} 

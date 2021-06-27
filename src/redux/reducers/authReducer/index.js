@@ -3,7 +3,7 @@ import axios from 'axios';
 import url from '../../../config/apiConfig';
 import { sha256 } from 'js-sha256';
 import { commonState } from '../../../helpers/commonReducerState';
-import {api} from '../../../network'
+import {logout as logoutAPI} from '../../../API/apiEducator'
 const encrypt = (text) => {
     return sha256(text);
 }
@@ -37,7 +37,12 @@ export const loginAction = createAsyncThunk(
         
     }
 )
-
+export const logoutAction = createAsyncThunk(
+    'auth/logout',
+    async({educatorId,token}) => {
+        await logoutAPI(educatorId,token)
+    } 
+)
 const initialState = {
   token: null,
   educatorId: null,
