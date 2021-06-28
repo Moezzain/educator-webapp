@@ -2,7 +2,7 @@ import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import reducer from './reducers';
 import { persistStore } from 'redux-persist';
 
-let middleware = null;
+let middleware = getDefaultMiddleware();
 //DEV
 
 const store = configureStore({
