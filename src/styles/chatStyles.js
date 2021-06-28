@@ -4,13 +4,11 @@ export const lightStyles = {
   root: {
     height: '100%',
     width: '100%',
-    // backgroundColor:'green'
   },
   chatDiv: {
     position: 'relative',
     height: '80%',
     width: '96%',
-    backgroundColor: 'green',
   },
   messageFooter: {
     ontSize: 10,
@@ -45,10 +43,18 @@ export const lightStyles = {
     textAlign: 'center',
   },
   statsDiv: {
-    color:'black'
+    color: 'black',
   },
   emptyMessages: {
-    color:'black'
+    color: 'black',
+  },
+  chatScrollDiv: {
+    overflow: 'auto',
+    height: '100%',
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column-reverse',
+    backgroundColor: '#F4FBFF',
   },
 };
 export const darkStyles = {
@@ -94,9 +100,17 @@ export const darkStyles = {
     textAlign: 'center',
   },
   statsDiv: {
-    color:darkTheme.secondary.lightGrey
+    color: darkTheme.secondary.lightGrey,
   },
   emptyMessages: {
-    color:darkTheme.secondary.lightGrey 
+    color: darkTheme.secondary.lightGrey,
+  },
+  chatScrollDiv: {
+    overflow: 'auto',
+    height: '100%',
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column-reverse',
+    backgroundColor: darkTheme.secondary.mainBlue,
   },
 };
