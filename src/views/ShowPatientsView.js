@@ -7,7 +7,7 @@ import { parseArray } from '../helpers/Converters';
 // Components
 import MyNav from '../components/MyNav';
 import Footer from '../components/Footer';
-import Chat from '../components/Chat';
+import Chat from './Chat';
 import PatientProfile from './PatientProfile';
 import PatientNotes from './PatientNotes';
 import PatientSummaries from './patientSummaries';
@@ -46,20 +46,20 @@ import Brightness4Icon from '@material-ui/icons/Brightness4';
 import Container from '@material-ui/core/Container';
 
 import '../App.css';
-import { mainTheme,darkTheme } from '../styles/themes';
-import { lightStyles,darkStyles  } from '../styles/showPatientsViewStyles';
+import { mainTheme, darkTheme } from '../styles/themes';
+import { lightStyles, darkStyles } from '../styles/showPatientsViewStyles';
 import { useHistory } from 'react-router-dom';
 
 const ShowPatientsView = () => {
-  const history = useHistory()
+  const history = useHistory();
   const dispatch = useDispatch();
-  
+
   const [activeList, setActiveList] = useState('');
-  const [localPatients, setLocalPatients] = useState();
+  const [localPatients, setLocalPatients] = useState([]);
   const [currentPage, setCurrentPage] = useState('');
   const [appointmentAnchorEl, setAppointmentAnchorEl] = useState('');
   const [currentAppointment, setCurrentAppointment] = useState('');
-  const [disableIcons, setDisableIcons] = useState(true)
+  const [disableIcons, setDisableIcons] = useState(true);
   const [lang, setLang] = useState({
     ar: {
       chat: 'المحادثة',
@@ -70,8 +70,10 @@ const ShowPatientsView = () => {
       time: 'الوقت',
     },
   });
-  
-  const { chats, token, educatorId, darkMode } = useSelector((state) => state.auth);
+
+  const { chats, token, educatorId, darkMode } = useSelector(
+    (state) => state.auth
+  );
   const {
     fetchedEducatorId,
     patients,
@@ -79,14 +81,13 @@ const ShowPatientsView = () => {
     currentEducator,
   } = useSelector((state) => state.educators);
   const { patientId } = useSelector((state) => state.patient);
-  
+
   const openAppointment = Boolean(appointmentAnchorEl);
-  
-  const localStyles = !darkMode ? lightStyles : darkStyles
+
+  const localStyles = !darkMode ? lightStyles : darkStyles;
   useEffect(() => {
-    if(!token)
-    history.replace('/')
-  },[token])
+    if (!token) history.replace('/');
+  }, [token]);
   useEffect(() => {
     try {
       if (chats?.length && !chats[0].id) {
@@ -116,21 +117,21 @@ const ShowPatientsView = () => {
     patients,
   ]);
   useEffect(() => {
-    if(patientId){
-      setDisableIcons(false)
+    if (patientId) {
+      setDisableIcons(false);
     }
-  },[patientId])
+  }, [patientId]);
   useEffect(() => {
     dispatch(getPatientAction({ educatorId, token, patientId }));
   }, [dispatch, educatorId, patientId, token]);
   const renderChat = () => {
-    if (!localPatients) {
+    if (!localPatients.length) {
       return null;
     }
 
     return (
       <Chat
-        style={{ width: 1000, backgroundColor:'green'}}
+        style={{ width: 1000, backgroundColor: 'green' }}
         chatId={5634}
         tokxen={token}
         educatorId={educatorId}
@@ -144,7 +145,7 @@ const ShowPatientsView = () => {
   };
 
   const renderPatientsList = () => {
-    if (!localPatients) {
+    if (!localPatients.length) {
       return null;
     }
     return (
@@ -166,7 +167,9 @@ const ShowPatientsView = () => {
                     fontSize="large"
                     style={{ marginRight: 5 }}
                   ></AccountCircleIcon>
-                  <div style={localStyles.patientListName}>{patient.patientName}</div>
+                  <div style={localStyles.patientListName}>
+                    {patient.patientName}
+                  </div>
                 </div>
               </Conversation.Content>
             </Conversation>
@@ -185,9 +188,7 @@ const ShowPatientsView = () => {
       appointmentStyle = 'dark';
     }
     return (
-      <div
-        style={localStyles.listHeaderDiv}
-      >
+      <div style={localStyles.listHeaderDiv}>
         <Button
           variant={patientsStyle}
           onClick={() => setActiveList('patients')}
@@ -205,9 +206,7 @@ const ShowPatientsView = () => {
       </div>
     );
   };
-  const renderPatient = () => {
-    return <PatientProfile />;
-  };
+
   const renderAppointmentsList = () => {
     let appointments = [];
     if (currentEducator) {
@@ -298,7 +297,7 @@ const ShowPatientsView = () => {
   };
   const renderIcons = () => {
     return (
-      <div >
+      <div>
         <IconButton
           aria-label="chat"
           onClick={() => setValueCurrentPage('chat')}
@@ -334,9 +333,9 @@ const ShowPatientsView = () => {
         </IconButton>
         <IconButton
           aria-label="darkmode"
-          style={{left:'50vw'}}
+          style={{ left: '50vw' }}
           onClick={() => {
-            dispatch(setDarkModeAction(!darkMode))
+            dispatch(setDarkModeAction(!darkMode));
           }}
         >
           <Brightness4Icon
@@ -348,8 +347,7 @@ const ShowPatientsView = () => {
     );
   };
   const setValueCurrentPage = (page) => {
-    if(!disableIcons)
-    setCurrentPage(page);
+    if (!disableIcons) setCurrentPage(page);
   };
   return (
     <>
@@ -377,14 +375,14 @@ const ShowPatientsView = () => {
                 <div style={localStyles.iconsDev}>
                   {renderIcons()}
                   {currentPage === 'profile' ? (
-                    renderPatient()
+                    <PatientProfile />
                   ) : currentPage === 'notes' ? (
                     <PatientNotes />
                   ) : currentPage === 'appointment' ? (
                     appointmentPopover()
                   ) : currentPage === 'summaries' ? (
                     <PatientSummaries />
-                  ) :(
+                  ) : (
                     renderChat()
                   )}
                 </div>
