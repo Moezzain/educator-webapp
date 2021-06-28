@@ -12,6 +12,12 @@ const LoginView = () => {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [lang, setLang] = useState({
+    ar:{
+    username:'اسم المستخدم',
+    password:'الرقم السري',
+    submit:'دخول'}
+  });
 
   const { educatorId, token, loading, error } = useSelector((state) => state.auth);
   useEffect(() => {
@@ -23,8 +29,6 @@ const LoginView = () => {
     dispatch(clearAllAuthAction())
   }, [])
   const onSubmit = async () => {
-    console.log('username', username, 'password', password);
-
     dispatch(setLoadingAction(true));
     dispatch(loginAction({ username: username, password: password }));
   };
@@ -63,7 +67,7 @@ const LoginView = () => {
           <CardContainer width="80%" padding={30}>
             <Form style={{ display: 'flex', flexDirection: 'column' }}>
               <Form.Group controlId="formBasicEmail">
-                <Form.Label>Username</Form.Label>
+                <Form.Label>{lang.ar.username}</Form.Label>
                 <Form.Control
                   type="text"
                   placeholder="Enter username"
@@ -76,7 +80,7 @@ const LoginView = () => {
                 />
               </Form.Group>
               <Form.Group controlId="formBasicPassword">
-                <Form.Label>Password</Form.Label>
+                <Form.Label>{lang.ar.password}</Form.Label>
                 <Form.Control
                   type="password"
                   placeholder="Password"
@@ -95,11 +99,11 @@ const LoginView = () => {
                 />
               ) : null}
               <Button variant="primary" onClick={onSubmit}>
-                Submit
+                {lang.ar.submit}
               </Button>
               {
                 error ?
-              <Form.Label style={{color:'red'}}>The Username or Password is incorrect</Form.Label>
+              <Form.Label style={{color:'red'}}>{error}</Form.Label>
               : ''
               }
             </Form>

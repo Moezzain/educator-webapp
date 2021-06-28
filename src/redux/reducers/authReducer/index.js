@@ -18,20 +18,25 @@ export const loginAction = createAsyncThunk(
             password: encryptedPassword
         }
         return axios.post(`${url}/login`, data).then((res) => {
-            const {educatorId, appointments, chats} = res.data;
+            if(res.data.educator){
 
-            const educator = JSON.parse(res.data.educator)
-            const tokens = educator.token;
-
-            auths.token = tokens[tokens.length -1];
-            auths.educatorId = educatorId
-            auths.appointments = appointments
-            auths.chats = chats
-            
-            return auths
+                const {educatorId, appointments, chats} = res.data;
+                    rejectWithValue()
+                const educator = JSON.parse(res.data.educator)
+                const tokens = educator.token;
+    
+                auths.token = tokens[tokens.length -1];
+                auths.educatorId = educatorId
+                auths.appointments = appointments
+                auths.chats = chats
+                
+                return auths
+            }
+            else 
+                return rejectWithValue('credintials')
         }).catch((e) => {
             console.log('error',e);
-            return rejectWithValue(true)
+            return rejectWithValue('network')
         })
         
         
@@ -80,7 +85,10 @@ const authReducer = createSlice({
           state.loading = true
       },
       [loginAction.rejected]: (state, action) => {
-          state.error = action.payload
+          if(action.payload === 'network')
+          state.error = 'There\'s a Network issue' 
+          else if(action.payload === 'credintials')
+          state.error = 'The Username or Password is incorrect'
           state.loading = false
       }
   },
