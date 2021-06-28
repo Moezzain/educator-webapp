@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { Component, useContext, useEffect } from 'react';
 import logo from '../assets/logo-dark-notext.png';
 import { Navbar, Spinner, Nav } from 'react-bootstrap';
