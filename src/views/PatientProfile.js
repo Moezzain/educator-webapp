@@ -16,7 +16,7 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import RenderCard from '../components/ProfileCard'
+import RenderCard from '../components/ProfileCard';
 import {
   LineChart,
   Line,
@@ -70,7 +70,7 @@ const PatientProfile = () => {
   const [outSideLink, setOutSideLink] = useState('');
   const [topics, setTopics] = useState([]);
   const [diet, setDiet] = useState('');
-
+  const [educators, setEeducators] = useState([]);
   const { darkMode } = useSelector((state) => state.auth);
   const { patients } = useSelector((state) => state.educators);
   const { patientProfile, loading } = useSelector((state) => state.patient);
@@ -101,7 +101,18 @@ const PatientProfile = () => {
       console.log(e);
     }
   }, [patientProfile]);
-
+  useEffect(() => {
+    setEeducators(
+      Object.values(patients)
+        .filter((patient) => {
+          return patient?.patientId === patientProfile?.patientId;
+        })[0]
+        ?.educators.map((educator) => ({
+          id: educator.id,
+          name: educator.name,
+        }))
+    );
+  }, [patients, patientProfile]);
   function createData(date, weight, height) {
     return { date, weight, height };
   }
@@ -134,13 +145,6 @@ const PatientProfile = () => {
             </YAxis>
             <Tooltip />
             <Legend />
-            {/* <Line
-              type="monotone"
-              name={text}
-              dataKey="weight"
-              stroke={theme.palette.primary.main}
-              dot={false}
-            /> */}
             <Line
               type="monotone"
               dataKey="weight"
@@ -156,56 +160,100 @@ const PatientProfile = () => {
   const goToEducator = (educatorId) => {
     dispatch(setFetchedEducatorIdReducer(educatorId));
   };
-  const renderEducators = (style) => {
+  const renderEducators = () => {
     return (
-      <Card color style={style}>
+      <Card color style={styles.rightSideCard}>
         <CardContent>
           <Typography style={styles.text} variant="h5" component="h2">
             Educators
           </Typography>
           <div style={styles.educatorsDiv}>
-            {Object.values(patients)
-              .filter((patient) => {
-                return patient?.patientId === patientProfile?.patientId;
-              })[0]
-              ?.educators.map((educator) => (
-                <Button
-                  variant="contained"
-                  onClick={() => {
-                    goToEducator(educator.id);
-                  }}
-                  style={styles.educatorsButton}
-                >
-                  <text>{educator.name}</text>
-                </Button>
-              ))}
+            {educators.map((educator) => (
+              <Button
+                variant="contained"
+                onClick={() => {
+                  goToEducator(educator.id);
+                }}
+                style={styles.educatorsButton}
+              >
+                <text>{educator.name}</text>
+              </Button>
+            ))}
           </div>
         </CardContent>
       </Card>
     );
   };
 
+  const {
+    dateAffectedText,
+    name,
+    dateBirthText,
+    dietText,
+    diseaseText,
+    medicinesText,
+    otherDiseaseText,
+    outSideLinkText,
+    sexText,
+    surgeryText,
+    whoIsPatientText,
+    Hba1CText,
+  } = lang.ar;
   const renderContent = () => {
     return (
       <div style={{ flex: 1 }}>
         <Card style={styles.patientName}>
           <div style={styles.text}>
-            {patientName} :{lang.ar.name}
+            {patientName} :{name}
           </div>
         </Card>
 
         <div style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
           <div style={{ width: '50%', marginRight: 15 }}>
-            <RenderCard text={dateAffected} description={lang.ar.dateAffectedText} style={styles.leftSideCard}/>
-            <RenderCard text={dateBirth} description={lang.ar.dateBirthText} style={styles.leftSideCard}/>
-            <RenderCard text={diseaseType} description={lang.ar.diseaseText} style={styles.leftSideCard}/>
-            <RenderCard text={sex} description={lang.ar.sexText} style={styles.leftSideCard}/>
+            <RenderCard
+              text={dateAffected}
+              description={dateAffectedText}
+              style={styles.leftSideCard}
+            />
+            <RenderCard
+              text={dateBirth}
+              description={dateBirthText}
+              style={styles.leftSideCard}
+            />
+            <RenderCard
+              text={diseaseType}
+              description={diseaseText}
+              style={styles.leftSideCard}
+            />
+            <RenderCard
+              text={sex}
+              description={sexText}
+              style={styles.leftSideCard}
+            />
           </div>
           <div style={{ width: '50%', marginRight: 20 }}>
-            {<RenderCard text={whoIsPatient} description={lang.ar.whoIsPatientText} style={styles.leftSideCard}/>}
-            <RenderCard text={surgery} description={lang.ar.surgeryText}  style={styles.leftSideCard}/>
-            <RenderCard text={otherDisease} description={lang.ar.otherDiseaseText} style={styles.leftSideCard}/>
-            <RenderCard text={outSideLink} description={lang.ar.outSideLinkText} style={styles.leftSideCard}/>
+            {
+              <RenderCard
+                text={whoIsPatient}
+                description={whoIsPatientText}
+                style={styles.leftSideCard}
+              />
+            }
+            <RenderCard
+              text={surgery}
+              description={surgeryText}
+              style={styles.leftSideCard}
+            />
+            <RenderCard
+              text={otherDisease}
+              description={otherDiseaseText}
+              style={styles.leftSideCard}
+            />
+            <RenderCard
+              text={outSideLink}
+              description={outSideLinkText}
+              style={styles.leftSideCard}
+            />
           </div>
         </div>
       </div>
@@ -222,17 +270,26 @@ const PatientProfile = () => {
             <Card style={styles.chartWrapper}>{renderChart()}</Card>
           </div>
 
-          <div
-            style={styles.rightBottomRightDiv}
-          >
+          <div style={styles.rightBottomRightDiv}>
             <div style={styles.rightSideLeftColumn}>
-              <RenderCard text={medicines} description={lang.ar.medicinesText} style={styles.rightSideCard}/>
-              <RenderCard text={diet} description={lang.ar.dietText}  style={styles.rightSideCard}/>
+              <RenderCard
+                text={medicines}
+                description={medicinesText}
+                style={styles.rightSideCard}
+              />
+              <RenderCard
+                text={diet}
+                description={dietText}
+                style={styles.rightSideCard}
+              />
             </div>
             <div style={styles.rightSideRightColumn}>
-              {renderEducators( styles.rightSideCard)}
-              <RenderCard text={hba1cs}  description={lang.ar.Hba1CText} style={styles.rightSideCard}/>
-              
+              {renderEducators()}
+              <RenderCard
+                text={hba1cs}
+                description={Hba1CText}
+                style={styles.rightSideCard}
+              />
             </div>
           </div>
         </div>
