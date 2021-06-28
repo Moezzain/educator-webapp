@@ -1,21 +1,87 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getAllEducatorsAndPatients } from '../../../API/apiEducator';
+import { isCaseHandler, getEducatorIds,getEducatorData } from '../../../API/apiEducator';
 import { commonState } from '../../../helpers/commonReducerState';
-
+import url from '../../../config/apiConfig'
 export const getEducatorsAndPatients = createAsyncThunk(
   'educators/getEducatorsAndPatients',
   async ({ educatorId, token },{rejectWithValue}) => {
+    
+    try {
+      const caseHandler = await isCaseHandler(educatorId,token)
+      if(caseHandler){
+        
+      
+      const educators = await getEducatorIds(educatorId, token);
+      
+      let patients = {}
+      for (var i in educators) {
+        let educator = educators[i]
+        let {chats, appointments}= await getEducatorData(educator.id, token)
+        
+        if (chats) {
+          educator.chats = chats
+          educator.count = chats.length
+          chats.forEach((chat) => {
+            let patient = patients[chat.patientId]
+            if (!patient) {
+              patients[chat.patientId] = chat
+              patient= patients[chat.patientId]
+            }
+            if (patient && patient.educators) {
+              patient.educators.push({id: educator.id, name: educator.name})
+            }
+            else {
+              patient.educators = [{id: educator.id, name: educator.name}]
+            }
+          })
+          // break;
+  
+        }
+        if (appointments) {
+          educators[i].appointments = appointments
+        }
+      
+      }
+      return {educators, patients};
+  }
+  else{
+    let patients = {}
+    let {chats, appointments, educator}= await getEducatorData(educatorId, token)
+    
+    if (chats) {
+      educator[0].chats = chats
+      educator[0].count = chats.length
+      chats.forEach((chat) => {
+        let patient = patients[chat.patientId]
+        if (!patient) {
+          patients[chat.patientId] = chat
+          patient= patients[chat.patientId]
+        }
+        if (patient && patient.educators) {
+          patient.educators.push({id: educator.id, name: educator.name})
+        }
+        else {
+          patient.educators = [{id: educator.id, name: educator.name}]
+        }
+      })
+      
 
-    return await getAllEducatorsAndPatients(educatorId, token).then((data) => {
-        if(data)
-        return data
-    }).catch((e) => {
-        console.log('error',e);
-        return rejectWithValue(e)
-    });
+    }
+    if (appointments) {
+      educator[0].appointments = appointments
+    }
+    const educators = educator
+    
+    return {educators,patients}
+  }
+
+}
+    catch (error) {
+      console.log(' Error getAllEducatorsAndPatients', error);
+      rejectWithValue(error)
+    }
   }
 );
-
 const initialState = {
   educators: [],
   patients: [],
@@ -38,7 +104,6 @@ const educatorsReducer = createSlice({
 
   extraReducers: {
       [getEducatorsAndPatients.fulfilled]: (state, action) => {
-          
           state.educators = action.payload.educators
           state.patients = action.payload.patients
           state.loading = false
