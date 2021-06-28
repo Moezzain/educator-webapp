@@ -22,7 +22,7 @@ export const darkTheme = {
   secondary: {
     lightBlue: '#B8CFD6',
     mainBlue: '#337C92',
-    darkBlue: '#053945',
+    darkBlue: '#003B52',
     orange: '#BC8E26',
     lightGrey: '#CBCBCB',
   },

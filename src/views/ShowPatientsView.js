@@ -333,7 +333,7 @@ const ShowPatientsView = () => {
         </IconButton>
         <IconButton
           aria-label="darkmode"
-          style={{ left: '50vw' }}
+          style={{ left: '56vw' }}
           onClick={() => {
             dispatch(setDarkModeAction(!darkMode));
           }}
