@@ -81,14 +81,11 @@ export const getEducatorData = async (educatorId, token) => {
     if(result.data) {
       
       const {data} = result;
+      const educator = JSON.parse(data.educator)
       delete data.educator
       let parsedData = parseObjectOfArrays(data);
-      const educator = parsedData.educators.filter((educator) => {
-        return educator.id === educatorId
-      })
-      
       const { appointments, chats } = parsedData;
-      return { chats, appointments, educator };
+      return { chats, appointments, educator};
     }
   } catch (error) {
     console.log('getEducatorData Error', error);

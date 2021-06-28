@@ -49,8 +49,8 @@ export const getEducatorsAndPatients = createAsyncThunk(
     let {chats, appointments, educator}= await getEducatorData(educatorId, token)
     
     if (chats) {
-      educator[0].chats = chats
-      educator[0].count = chats.length
+      educator.chats = chats
+      educator.count = chats.length
       chats.forEach((chat) => {
         let patient = patients[chat.patientId]
         if (!patient) {
@@ -68,16 +68,16 @@ export const getEducatorsAndPatients = createAsyncThunk(
 
     }
     if (appointments) {
-      educator[0].appointments = appointments
+      educator.appointments = appointments
     }
-    const educators = educator
+    const educators = [educator]
     
     return {educators,patients}
   }
 
 }
     catch (error) {
-      console.log(' Error getAllEducatorsAndPatients', error);
+      console.log(' Error getEducatorsAndPatients', error);
       rejectWithValue(error)
     }
   }
