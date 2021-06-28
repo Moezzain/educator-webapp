@@ -78,7 +78,7 @@ export const getEducatorsAndPatients = createAsyncThunk(
 }
     catch (error) {
       console.log(' Error getEducatorsAndPatients', error);
-      rejectWithValue(error)
+      return rejectWithValue(error)
     }
   }
 );
