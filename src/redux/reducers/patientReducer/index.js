@@ -9,7 +9,6 @@ export const getPatientAction = createAsyncThunk(
   async ({ educatorId, token, patientId }, { rejectWithValue }) => {
     return await getPatient(educatorId, token, patientId)
       .then((patientData) => {
-        console.log('patient: ', patientData);
         return patientData?.patientProfile;
       })
       .catch((e) => {
@@ -39,7 +38,6 @@ const patientReducer = createSlice({
       state.loading = false
     },
     [getPatientAction.rejeceted]: (state, action) => {
-      console.log(action.payload);
       state.error = action.payload;
       state.loading = false
     },
