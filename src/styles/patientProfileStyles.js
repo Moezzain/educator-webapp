@@ -7,7 +7,6 @@ export const lightStyles = {
     display: 'flex',
     flexDirection: 'row',
   },
-  elevation: 3,
   flex1: {
     flex: 1,
   },
@@ -18,7 +17,7 @@ export const lightStyles = {
   },
   chartDiv: {
     width: '100%',
-    height: '52.6%',
+    height: '30.4%',
   },
   rightLowerCorner: {
     width: '30vw',
@@ -104,7 +103,7 @@ export const lightStyles = {
     height: '5vh',
   },
   textColor: {
-    color:'black'
+    color: 'black',
   },
   educatorsDiv: {
     display: 'flex',
@@ -124,7 +123,7 @@ export const lightStyles = {
   rightBottomRightDiv: {
     display: 'flex',
     flexDirection: 'row',
-    flex: 1,
+    // flex: 1,
     height: '50%',
   },
   rightSideLeftColumn: {
@@ -133,6 +132,7 @@ export const lightStyles = {
   },
   rightSideRightColumn: {
     width: '50%',
+    height: '85%',
   },
 };
 export const darkStyles = {
@@ -142,7 +142,6 @@ export const darkStyles = {
     display: 'flex',
     flexDirection: 'row',
   },
-  elevation: 3,
   flex1: {
     flex: 1,
   },
@@ -154,7 +153,7 @@ export const darkStyles = {
   },
   chartDiv: {
     width: '100%',
-    height: '52.6%',
+    height: '30.4%',
   },
   rightLowerCorner: {
     width: '30vw',
@@ -242,7 +241,7 @@ export const darkStyles = {
     margin: 10,
     height: '5vh',
   },
-  textColor: {color:darkTheme.secondary.lightGrey,},
+  textColor: { color: darkTheme.secondary.lightGrey },
   educatorsDiv: {
     display: 'flex',
     width: '100%',
@@ -261,7 +260,7 @@ export const darkStyles = {
   rightBottomRightDiv: {
     display: 'flex',
     flexDirection: 'row',
-    flex: 1,
+    // flex: 1,
     height: '50%',
   },
   rightSideLeftColumn: {
@@ -270,5 +269,6 @@ export const darkStyles = {
   },
   rightSideRightColumn: {
     width: '50%',
+    height: '85%',
   },
 };

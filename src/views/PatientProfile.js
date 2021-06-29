@@ -17,6 +17,8 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import RenderCard from '../components/ProfileCard';
+import PatientAppointments from '../components/PatientAppointments';
+
 import {
   LineChart,
   Line,
@@ -70,9 +72,10 @@ const PatientProfile = () => {
   const [outSideLink, setOutSideLink] = useState('');
   const [topics, setTopics] = useState([]);
   const [diet, setDiet] = useState('');
-  const [educators, setEeducators] = useState([]);
+  const [localEducators, setLocalEducators] = useState([]);
+  const [filteredEducators, setFilteredEducators] = useState([]);
   const { darkMode } = useSelector((state) => state.auth);
-  const { patients } = useSelector((state) => state.educators);
+  const { patients, educators } = useSelector((state) => state.educators);
   const { patientProfile, loading } = useSelector((state) => state.patient);
 
   const styles = !darkMode ? lightStyles : darkStyles;
@@ -87,7 +90,6 @@ const PatientProfile = () => {
         setHba1cs(concatProfile(patientProfile, 'hba1cs'));
 
         setMedicines(concatProfile(patientProfile, 'medicines'));
-        setPatientName(patientProfile?.realPatientName);
         setNotes(patientProfile?.notes);
         setDiseaseType(patientProfile?.diseaseType);
         setWhoIsPatient(patientProfile?.whoIsPatient);
@@ -102,17 +104,29 @@ const PatientProfile = () => {
     }
   }, [patientProfile]);
   useEffect(() => {
-    setEeducators(
-      Object.values(patients)
-        .filter((patient) => {
-          return patient?.patientId === patientProfile?.patientId;
-        })[0]
-        ?.educators.map((educator) => ({
-          id: educator.id,
-          name: educator.name,
-        }))
+    const patient = Object.values(patients).filter((patient) => {
+      return patient?.patientId === patientProfile?.patientId;
+    })[0];
+
+    setPatientName(patient?.patientName);
+    setLocalEducators(
+      patient?.educators.map((educator) => ({
+        id: educator.id,
+        name: educator.name,
+      }))
     );
   }, [patients, patientProfile]);
+  useEffect(() => {
+    const educatorsIds = [];
+    localEducators.forEach((educator) => {
+      educatorsIds.push(educator.id);
+    });
+    const filteredEducators = Object.values(educators).filter((educator) => {
+      return educatorsIds.includes(educator.id);
+    });
+    setFilteredEducators(filteredEducators);
+  }, [localEducators]);
+
   function createData(date, weight, height) {
     return { date, weight, height };
   }
@@ -168,7 +182,7 @@ const PatientProfile = () => {
             Educators
           </Typography>
           <div style={styles.educatorsDiv}>
-            {educators.map((educator) => (
+            {localEducators?.map((educator) => (
               <Button
                 variant="contained"
                 onClick={() => {
@@ -232,13 +246,12 @@ const PatientProfile = () => {
             />
           </div>
           <div style={{ width: '50%', marginRight: 20 }}>
-            {
-              <RenderCard
-                text={whoIsPatient}
-                description={whoIsPatientText}
-                style={styles.leftSideCard}
-              />
-            }
+            <RenderCard
+              text={whoIsPatient}
+              description={whoIsPatientText}
+              style={styles.leftSideCard}
+            />
+
             <RenderCard
               text={surgery}
               description={surgeryText}
@@ -249,11 +262,21 @@ const PatientProfile = () => {
               description={otherDiseaseText}
               style={styles.leftSideCard}
             />
-            <RenderCard
-              text={outSideLink}
-              description={outSideLinkText}
-              style={styles.leftSideCard}
-            />
+            <Card color style={styles.leftSideCard}>
+              <CardContent>
+                <Typography style={styles.text} variant="h5" component="h2">
+                  {outSideLinkText}
+                </Typography>
+                <a
+                  href={outSideLink}
+                  target="_blank"
+                  style={styles.textColor}
+                  rel="noreferrer"
+                >
+                  {outSideLink}
+                </a>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
@@ -269,6 +292,7 @@ const PatientProfile = () => {
           <div style={styles.chartDiv}>
             <Card style={styles.chartWrapper}>{renderChart()}</Card>
           </div>
+          {/* {renderAppointments()} */}
 
           <div style={styles.rightBottomRightDiv}>
             <div style={styles.rightSideLeftColumn}>
@@ -282,13 +306,18 @@ const PatientProfile = () => {
                 description={dietText}
                 style={styles.rightSideCard}
               />
-            </div>
-            <div style={styles.rightSideRightColumn}>
-              {renderEducators()}
               <RenderCard
                 text={hba1cs}
                 description={Hba1CText}
                 style={styles.rightSideCard}
+              />
+            </div>
+            <div style={styles.rightSideRightColumn}>
+              {renderEducators()}
+              <PatientAppointments
+                patientId={patientProfile.patientId}
+                educators={filteredEducators}
+                darkMode={darkMode}
               />
             </div>
           </div>
