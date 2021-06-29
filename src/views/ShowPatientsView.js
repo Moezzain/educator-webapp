@@ -150,7 +150,7 @@ const ShowPatientsView = () => {
     }
     return (
       <div>
-        <ConversationList style={{ height: '73vh' }}>
+        <div style={{ height: '76vh', overflow: 'auto' }}>
           {localPatients.map((patient) => (
             <Conversation
               onClick={() => activateChat(patient.id, patient.patientId)}
@@ -174,7 +174,7 @@ const ShowPatientsView = () => {
               </Conversation.Content>
             </Conversation>
           ))}
-        </ConversationList>
+        </div>
       </div>
     );
   };
