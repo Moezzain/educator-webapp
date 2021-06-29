@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import url from '../../../config/apiConfig';
-import { getPatient } from '../../../API/apiPatient';
+import { getPatient, getAppointments } from '../../../API/apiPatient';
 import { commonState } from '../../../helpers/commonReducerState';
 
 export const getPatientAction = createAsyncThunk(
@@ -17,9 +17,24 @@ export const getPatientAction = createAsyncThunk(
       });
   }
 );
+export const getAppointmentsAction = createAsyncThunk(
+  'patinet/getAppointmentsAction',
+  async ({educatorId,token,patientId},{rejectWithValue}) => {
+    return await getAppointments(patientId,token,educatorId).then((data) => {
+      if(data)
+      return data
+
+
+    }).catch((e) => {
+      console.log(e);
+      rejectWithValue(e)
+    })
+  }
+)
 const initialState = {
   patientProfile: null,
   patientId: null,
+  appointments: null,
   ...commonState
 };
 const patientReducer = createSlice({
@@ -44,6 +59,9 @@ const patientReducer = createSlice({
     [getPatientAction.pending]: (state, action) => {
       state.loading = true;
     },
+    [getAppointmentsAction.fulfilled]: (state, action) => {
+      state.appointments = action.payload
+    }
   },
 });
 
