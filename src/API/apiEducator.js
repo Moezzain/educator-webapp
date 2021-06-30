@@ -12,13 +12,14 @@ export const getMessages = async (chatId, educatorId, token) => {
       return result.data
     }
   } catch (error) {
+      console.log('error',error);
+      
       return error
   }
 }
 
 export const getEducatorIds = async (educatorId, token) => {
   try {
-
     const result = await axios.get(`${url}/educator?get=all&id=${educatorId}&educatorId=${educatorId}`, {headers: {
       Authorization: `Bearer ${token}`
     }})
@@ -69,45 +70,6 @@ export const getChats = async (educatorId, token) => {
   }
 }
 
-export const getAllEducatorsAndPatients = async (educatorId, token) => {
-  try {
-    const educators = await getEducatorIds(educatorId, token);
-    let patients = {}
-    for (var i in educators) {
-      let educator = educators[i]
-      let {chats, appointments}= await getEducatorData(educator.id, token)
-
-      if (chats) {
-        educator.chats = chats
-        educator.count = chats.length
-        chats.forEach((chat) => {
-          let patient = patients[chat.patientId]
-          if (!patient) {
-            patients[chat.patientId] = chat
-            patient= patients[chat.patientId]
-          }
-          if (patient && patient.educators) {
-            patient.educators.push({id: educator.id, name: educator.name})
-          }
-          else {
-            patient.educators = [{id: educator.id, name: educator.name}]
-          }
-        })
-        // break;
-
-      }
-      if (appointments) {
-        educators[i].appointments = appointments
-      }
-    // }
-    }
-
-    return {educators, patients};
-  }
-  catch (error) {
-    console.log(' Error getAllEducatorsAndPatients', error);
-  }
-}
 
 
 export const getEducatorData = async (educatorId, token) => {
@@ -117,28 +79,46 @@ export const getEducatorData = async (educatorId, token) => {
       Authorization: `Bearer ${token}`
     }})
     if(result.data) {
+      
       const {data} = result;
+      const educator = JSON.parse(data.educator)
       delete data.educator
       let parsedData = parseObjectOfArrays(data);
       const { appointments, chats } = parsedData;
-      return { chats, appointments };
+      return { chats, appointments, educator};
     }
   } catch (error) {
     console.log('getEducatorData Error', error);
   }
 }
 
-export const getPatient = async (educatorId, token, patientId) => {
-  try {
-    const result = await axios.get(`${url}/patient?patientId=${patientId}&educatorId=${educatorId}`, {headers: {
-      Authorization: `Bearer ${token}`
-    }})
-    if(result.data) {
-      const {patient: unparsedPatient, patientProfile} = result.data;
-        const patient = JSON.parse(unparsedPatient);
-        return {patient, patientProfile};
-    }
-  } catch (error) {
-    console.log('getPatient Error', error);
-  }
+
+
+export const isCaseHandler = async (educatorId, token) => {
+  
+  return axios.get(`${url}/educator?id=${educatorId}&get=educator&educatorId=${educatorId}`, {headers: {
+    Authorization: `Bearer ${token}`
+  }}).then((result) => {
+    
+    return result?.data?.isCaseHandler 
+    
+  }).catch((e) => {
+    console.log('isCaseHandler error ',e);
+    
+  })
 }
+
+export const logout = async (educatorId, token) => {
+  const body = {
+    educatorId,
+    notificationToken:" "
+  }
+  const result =  await axios.patch(`${url}/logout`,body,{headers: {
+    Authorization: `Bearer ${token}`}}).then((res) => {
+      
+    }).catch((e) => {
+      console.log('error ',e);
+      
+    })
+    return result
+} 
