@@ -11,21 +11,23 @@ export const concatProfile = (patientProfile, profileValue) => {
 };
 export const getAppointmentsEducators = (educators, appointments) => {
   const tempAppointments = [];
-  educators?.forEach((educator) => {
-    tempAppointments.push(
-      appointments
-        .filter((appointment) => {
-          return educator.id === appointment.educatorId;
-        })
-        .map((appointment) => {
-          return {
-            date: appointment.date,
-            educatorId: appointment.educatorId,
-            name: educator.name,
-          };
-        })
-    );
-  });
+  if (educators) {
+    educators.forEach((educator) => {
+      tempAppointments.push(
+        appointments
+          .filter((appointment) => {
+            return educator.id === appointment.educatorId;
+          })
+          .map((appointment) => {
+            return {
+              date: appointment.date,
+              educatorId: appointment.educatorId,
+              name: educator.name,
+            };
+          })
+      );
+    });
+  }
 
   return tempAppointments.flat();
 };
