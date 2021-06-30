@@ -118,13 +118,16 @@ const PatientProfile = () => {
   }, [patients, patientProfile]);
   useEffect(() => {
     const educatorsIds = [];
-    localEducators?.forEach((educator) => {
-      educatorsIds.push(educator.id);
-    });
-    const filteredEducators = Object.values(educators).filter((educator) => {
-      return educatorsIds.includes(educator.id);
-    });
-    setFilteredEducators(filteredEducators);
+    if(localEducators){
+
+      localEducators.forEach((educator) => {
+        educatorsIds.push(educator.id);
+      });
+      const filteredEducators = Object.values(educators).filter((educator) => {
+        return educatorsIds.includes(educator.id);
+      });
+      setFilteredEducators(filteredEducators);
+    }
   }, [localEducators]);
 
   function createData(date, weight, height) {
@@ -225,12 +228,12 @@ const PatientProfile = () => {
         <div style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
           <div style={{ width: '50%', marginRight: 15 }}>
             <RenderCard
-              text={dateAffected}
+              text={new Date(dateAffected).toLocaleDateString()}
               description={dateAffectedText}
               style={styles.leftSideCard}
             />
             <RenderCard
-              text={dateBirth}
+              text={new Date(dateBirth).toLocaleDateString()}
               description={dateBirthText}
               style={styles.leftSideCard}
             />
@@ -315,7 +318,7 @@ const PatientProfile = () => {
             <div style={styles.rightSideRightColumn}>
               {renderEducators()}
               <PatientAppointments
-                patientId={patientProfile.patientId}
+                patientId={patientProfile?.patientId}
                 educators={filteredEducators}
                 darkMode={darkMode}
               />
