@@ -1,301 +1,386 @@
-import React from "react";
-import {
-  Button,
-  ListGroup,
-  Container,
-  Tab, Tabs,
-  Table,
-} from "react-bootstrap";
-import CardContainer from "../components/CardContainer";
-import { DataContext } from "../stateManagement/context";
-import { parseArray } from "../helpers/Converters";
+import React, { useState, useEffect } from 'react';
+import CardContainer from '../components/CardContainer';
+import { parseArray } from '../helpers/Converters';
 
-import MyNav from "../components/MyNav";
-import Footer from "../components/Footer";
-import Chat from '../components/Chat';
+// Components
+import MyNav from '../components/MyNav';
+import Footer from '../components/Footer';
+import Chat from './Chat';
 import PatientProfile from './PatientProfile';
-import PatientEducators from './PatientEducators';
+import PatientNotes from './PatientNotes';
+import PatientSummaries from './patientSummaries';
+import {
+  Conversation,
+} from '@chatscope/chat-ui-kit-react';
+import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 
-class ShowPatientsView extends React.Component {
-  static contextType = DataContext;
+// Redux
+import { useSelector, useDispatch } from 'react-redux';
+import { setChatsAction } from '../redux/reducers/authReducer';
+import {
+  setCurrentChatAction,
+  clearAllChatsAction,
+} from '../redux/reducers/chatsReducer';
+import {
+  setPatientIdAction,
+  getPatientAction,
+} from '../redux/reducers/patientReducer';
+import { setCurrentEducatorAction } from '../redux//reducers/educatorsReducer';
+import { setDarkModeAction } from '../redux//reducers/authReducer';
 
-  state = {
-    username: "",
-    password: "",
-    activeList: '',
-    lang: {
-      ar: {
-        chat: 'المحادثة', 
-        profile: 'البروفايل',
-        educators: 'المتابعين'
-      }
-    }
-  };
+// ui libraries
+import IconButton from '@material-ui/core/IconButton';
+import PersonIcon from '@material-ui/icons/Person';
+import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
+import NoteIcon from '@material-ui/icons/Note';
+import Button from '@material-ui/core/Button';
+import Popover from '@material-ui/core/Popover';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import ShortTextIcon from '@material-ui/icons/ShortText';
+import Brightness4Icon from '@material-ui/icons/Brightness4';
+import Container from '@material-ui/core/Container';
 
-  componentWillMount() {
-    if (this.context.educatorId == "") {
-      this.props.history.goBack();
-      // console.log(this.props)
-    }
-  }
-  componentDidMount() {
-    let { chats, educators } = this.context
+import '../App.css';
+import { lightStyles, darkStyles } from '../styles/showPatientsViewStyles';
+import { useHistory } from 'react-router-dom';
+
+const ShowPatientsView = () => {
+  const history = useHistory();
+  const dispatch = useDispatch();
+
+  const [activeList, setActiveList] = useState('');
+  const [localPatients, setLocalPatients] = useState([]);
+  const [currentPage, setCurrentPage] = useState('');
+  const [appointmentAnchorEl, setAppointmentAnchorEl] = useState('');
+  const [currentAppointment, setCurrentAppointment] = useState('');
+  const [disableIcons, setDisableIcons] = useState(true);
+  const [lang, setLang] = useState({
+    ar: {
+      chat: 'المحادثة',
+      profile: 'البروفايل',
+      educators: 'المتابعين',
+      patientName: 'اسم المريض',
+      goToPatient: 'اذهب للمريض',
+      time: 'الوقت',
+    },
+  });
+
+  const { chats, token, educatorId, darkMode } = useSelector(
+    (state) => state.auth
+  );
+  const {
+    fetchedEducatorId,
+    patients,
+    educators,
+    currentEducator,
+  } = useSelector((state) => state.educators);
+  const { patientId } = useSelector((state) => state.patient);
+
+  const openAppointment = Boolean(appointmentAnchorEl);
+
+  const localStyles = !darkMode ? lightStyles : darkStyles;
+  useEffect(() => {
+    if (!token) history.replace('/');
+  }, [token]);
+  useEffect(() => {
     try {
-      if (this.context?.chats?.length && !this.context.chats[0].id) {
-        chats = parseArray(this.context.chats);
-        this.context.setChats(chats)
+      if (chats?.length && !chats[0].id) {
+        let tempChats = parseArray(chats);
+        dispatch(setChatsAction(tempChats));
       }
-
-      let paths = []
-      for (var i in educators) {
-        let educator = educators[i]
-        paths.push({})
-      }
-    } catch(err) {
+    } catch (err) {
       console.log('error setting chats:', err);
     }
-  }
-
-  renderChat() {
-    let { chats, showPatient, activeChat, token, educatorId } = this.context;
-    console.log('rendering chat', typeof chats, '\nactivated', activeChat);
-
-    if (!chats) {
-      return null
+  }, [chats, dispatch]);
+  useEffect(() => {
+    let tempEducator;
+    tempEducator = Object.values(educators).filter((educator) => {
+      return fetchedEducatorId === educator.id;
+    });
+    if (tempEducator.length !== 0) {
+      setLocalPatients(tempEducator[0].chats);
     }
-    return chats.map(chat => {
-      return (
-        <Tab.Pane key={chat.id} eventKey={chat.id} style={{ marginTop: 20 }}>
-          {/* <div>
-            <a style={{ color: '#3581b8' }} onClick={() => showPatient()}>مشاهدة البروفايل</a>
-          </div> */}
-          {activeChat == chat.id ?
-            <Chat chatId={chat.id} token={token} educatorId={educatorId} />
-            : null}
-        </Tab.Pane>
-      )
-    })
-  }
+    dispatch(setCurrentEducatorAction(tempEducator[0]));
+    dispatch(clearAllChatsAction());
+  }, [
+    dispatch,
+    educatorId,
+    educators,
+    fetchedEducatorId,
+    localPatients,
+    patients,
+  ]);
+  useEffect(() => {
+    if (patientId) {
+      setDisableIcons(false);
+    }
+  }, [patientId]);
+  useEffect(() => {
+    dispatch(getPatientAction({ educatorId, token, patientId }));
+  }, [dispatch, educatorId, patientId, token]);
+  const renderChat = () => {
+    if (!localPatients.length) {
+      return null;
+    }
 
-  renderAppointments() {
-    const { appointments } = this.context;
-    // let appointments = {
-    //   '2020-11-28':
-    //     [{ date: '2020-11-28T17:00:00.000Z', name: 'W3', time: '20:00:00' },
-    //     { date: '2020-11-28T17:00:00.000Z', name: 'W1', time: '08:00:00' }],
-    //   '2020-11-29': [{ date: '2020-11-29T17:00:00.000Z', name: 'W2', time: '16:00:00' }]
-    // }
+    return (
+      <Chat
+        style={{ width: 1000, backgroundColor: 'green' }}
+        chatId={5634}
+        tokxen={token}
+        educatorId={educatorId}
+      />
+    );
+  };
+
+  const activateChat = (chatId, patientId) => {
+    dispatch(setPatientIdAction(patientId));
+    dispatch(setCurrentChatAction(chatId));
+  };
+
+  const renderPatientsList = () => {
+    if (!localPatients.length) {
+      return null;
+    }
+    return (
+      <div>
+        <div style={{ height: '76vh', overflow: 'auto' }}>
+          {localPatients.map((patient) => (
+            <Conversation
+            key={patient.id}
+            active={patientId === patient.patientId}
+              onClick={() => activateChat(patient.id, patient.patientId)}
+            >
+              <Conversation.Content>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}
+                >
+                  <AccountCircleIcon
+                    fontSize="large"
+                    style={{ marginRight: 5 }}
+                  ></AccountCircleIcon>
+                  <div style={localStyles.patientListName}>
+                    {patient.patientName}
+                  </div>
+                </div>
+              </Conversation.Content>
+            </Conversation>
+          ))}
+        </div>
+      </div>
+    );
+  };
+  const renderListHeader = () => {
+    return (
+      <div style={localStyles.listHeaderDiv}>
+        <Button
+          variant="contained"
+          onClick={() => setActiveList('patients')}
+          style={localStyles.buttonsText}
+        >
+          المحادثات
+        </Button>
+        <Button
+          style={localStyles.buttonsText}
+          variant="contained"
+          onClick={() => setActiveList('appointments')}
+        >
+          المواعيد
+        </Button>
+      </div>
+    );
+  };
+
+  const renderAppointmentsList = () => {
+    let appointments = [];
+    if (currentEducator) {
+      const educatorAppointments = currentEducator.appointments;
+      educatorAppointments.forEach((appointment) => {
+        appointments.push({
+          appointmentId: appointment.appointmentId,
+          date: new Date( appointment.date.split('T')[0]),
+          name: appointment.name,
+          time: appointment.time,
+          patientId: appointment.patientId,
+        });
+      });
+    }
+
     if (!appointments || (appointments && !Object.keys(appointments).length)) {
       return null;
     }
-    console.log('rendering appointments');
 
-    return Object.keys(appointments).map(appointmentDate => {
-      let appointmentsInDay = appointments[appointmentDate]
-
-      return (
-        <Tab.Pane key={appointmentDate} eventKey={appointmentDate}>
-          <div style={{ width: '100vh', maxHeight: '80vh', }}>
-            <div style={{ fontWeight: '600', marginBottom: 10, textAlign: 'center', fontSize: 20 }}>{appointmentDate}</div>
-            <Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th>Time</th>
-                  <th>Patient Name</th>
-                </tr>
-              </thead>
-              <tbody>
-                {appointmentsInDay.map(({ appointmentId, time, name }) => {
-                  let hours = parseInt(time.split(':')[0])
-                  let minutes = time.split(':')[1]
-                  let displayTime = hours > 12 ? `${hours - 12}:${minutes}` : `${hours}:${minutes}`
-                  return (
-                    <tr key={appointmentId}>
-                      <td>{displayTime}</td>
-                      <td>{name}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </Table>
-          </div>
-        </Tab.Pane>
-      )
-    })
-  }
-
-  renderAppointmentsList() {
-    const { appointments, showAppointments } = this.context;
-    // let appointments = {
-    //   '2020-11-28':
-    //     [{ date: '2020-11-28T17:00:00.000Z', name: 'W3', time: '20:00:00' },
-    //     { date: '2020-11-28T17:00:00.000Z', name: 'W1', time: '08:00:00' }],
-    //   '2020-11-29': [{ date: '2020-11-29T17:00:00.000Z', name: 'W2', time: '16:00:00' }]
-    // }
-    console.log('appointments render:', appointments);
-
-    if (!appointments || (appointments && !Object.keys(appointments).length)) {
-      return null
-    }
-
-    return Object.keys(appointments).map(appointmentDate => {
-      return (
-        <ListGroup.Item key={appointmentDate} eventKey={appointmentDate} onClick={() => showAppointments()}>
-          {appointmentDate}
-        </ListGroup.Item>
-
-      );
-    });
-  }
-
-  renderPatientsList() {
-    const { chats, setActiveChat } = this.context;
-    if (!chats) {
-      return null
-    }
-    return chats.map(chat => {
-      return (
-        <ListGroup.Item key={chat.id} eventKey={chat.id} onClick={() => setActiveChat(chat.id)}>
-          {chat.patientName}
-        </ListGroup.Item>
-
-      );
-    });
-  }
-
-  setActiveList = (type) => {
-    this.setState({
-      activeList: type,
-    })
-
-  }
-
-  closeWindows = () => {
-    this.setState({
-      activeAppointment: '',
-    })
-    this.context.setActiveChat('')
-    this.context.hidePatient();
-    this.context.hideAppointments();
-  }
-
-  renderListHeader() {
-    let { activeList } = this.state;
-    let patientsStyle, appointmentStyle;
-    if (activeList == 'appointments') {
-      patientsStyle = 'dark'
-      appointmentStyle = 'primary'
-    } else {
-      patientsStyle = 'primary'
-      appointmentStyle = 'dark'
-    }
     return (
-      <div style={{
-        display: 'block',
-        backgroundColor: 'white',
-        textAlign: 'center',
-        padding: 10
-      }}>
-        <Button variant={patientsStyle} onClick={() => this.setActiveList('patients')} style={{ marginRight: 5 }}>المحادثات</Button>
-        <Button variant={appointmentStyle} onClick={() => this.setActiveList('appointments')} >المواعيد</Button>
-
-      </div>
-    )
-  }
-
-  renderCircle() {
-    return (
-      <div style={styles.circle} onClick={() => this.closeWindows()}>
-        X
-      </div>
-    )
-  }
-
-  renderUpperTabs() {
-    const {chat, profile, educators} = this.state.lang.ar;
-    return (
-      <div >
-        <Tabs defaultActiveKey="chat" id="noanim-tab-example" mountOnEnter >
-          <Tab eventKey="chat" title={chat}>
-            {this.renderChat()}
-          </Tab>
-          <Tab eventKey="profile" title={profile}>
-            <PatientProfile />
-          </Tab>
-          <Tab eventKey="educators" title={educators} >
-            <PatientEducators />
-          </Tab>
-        </Tabs>
+      <div
+        style={{ overflow: 'auto', height: '80vh' }}
+      >
+        {Object.values(appointments).sort((a,b)=> b.date - a.date).map((appointment) => {
+          return (
+            <Button
+              variant="contained"
+              style={{ width: '100%' }}
+              key={appointment.appointmentId}
+              onClick={(e) => showAppointment(e, appointment)}
+            >
+              {new Date(appointment.date).toDateString()}
+            </Button>
+          );
+        })}
       </div>
     );
-  }
-
-  render() {
-    let { activeList  } = this.state
-    let { patientsVisible, appointmentsVisible, educatorsVisible , activeChat } = this.context
-
+  };
+  const appointmentPopover = () => {
     return (
-      <>
-        <MyNav />
-        <Container
-          fluid
-          style={styles.container}>
-          <CardContainer width="95%" direction="row" padding={10} marginT={10} marginB={10}>
-            <Tab.Container >
-              <div className="left-col">
-                {this.renderListHeader()}
-                {activeList == 'appointments' ?
-                  <ListGroup >{this.renderAppointmentsList()}</ListGroup>
-                  : <ListGroup >{this.renderPatientsList()}</ListGroup>
-                }
-              </div>
-              <div className="right-col">
-
-                <Tab.Content style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
-                  {this.renderCircle()}
-                  {activeList == 'appointments' && appointmentsVisible ?
-                    this.renderAppointments()
-                    : activeChat ?
-                      this.renderUpperTabs()
-                      : null
-                  }
-                </Tab.Content>
-              </div>
-            </Tab.Container>
-          </CardContainer>
-        </Container>
-        <Footer />
-      </>
+      <Popover
+        open={openAppointment}
+        anchorEl={appointmentAnchorEl}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        onClose={handleAppointmentPopoverClose}
+        disableRestoreFocus
+      >
+        <div style={{ height: '10vh', width: '10vw' }}>
+          <h6 style={{ textAlign: 'center' }}>
+            {currentAppointment.name} :{lang.ar.patientName}
+          </h6>
+          <h6 style={{ textAlign: 'center' }}>
+            {currentAppointment.time} :{lang.ar.time}
+          </h6>
+          <Button
+          variant="contained"
+            style={localStyles.goToPatientButton}
+            onClick={() => goToPatient(currentAppointment.patientId)}
+          >
+            {lang.ar.goToPatient}
+          </Button>
+        </div>
+      </Popover>
     );
-  }
+  };
+  const goToPatient = (patientId) => {
+    setCurrentPage('profile');
+    dispatch(getPatientAction({ fetchedEducatorId, token, patientId }));
+  };
+  const handleAppointmentPopoverOpen = (e) => {
+    setAppointmentAnchorEl(e.currentTarget);
+  };
 
-}
+  const handleAppointmentPopoverClose = () => {
+    setAppointmentAnchorEl(null);
+  };
+  const showAppointment = (e, appointment) => {
+    setCurrentAppointment(appointment);
+    handleAppointmentPopoverOpen(e);
+    setCurrentPage('appointment');
+  };
+  const renderIcons = () => {
+    return (
+      <div>
+        <IconButton
+          aria-label="chat"
+          onClick={() => setValueCurrentPage('chat')}
+        >
+          <ChatBubbleIcon style={localStyles.icons} fontSize="large" />
+        </IconButton>
+        <IconButton
+          aria-label="chat"
+          onClick={() => {
+            setValueCurrentPage('profile');
+          }}
+        >
+          <PersonIcon style={localStyles.icons} fontSize="large" />
+        </IconButton>
+        <IconButton
+          aria-label="notes"
+          onClick={() => {
+            setValueCurrentPage('notes');
+          }}
+        >
+          <NoteIcon style={localStyles.icons} fontSize="large"></NoteIcon>
+        </IconButton>
+        <IconButton
+          aria-label="summary"
+          onClick={() => {
+            setValueCurrentPage('summaries');
+          }}
+        >
+          <ShortTextIcon
+            style={localStyles.icons}
+            fontSize="large"
+          ></ShortTextIcon>
+        </IconButton>
+        <IconButton
+          aria-label="darkmode"
+          style={{ left: '56vw' }}
+          onClick={() => {
+            dispatch(setDarkModeAction(!darkMode));
+          }}
+        >
+          <Brightness4Icon
+            style={localStyles.icons}
+            fontSize="large"
+          ></Brightness4Icon>
+        </IconButton>
+      </div>
+    );
+  };
+  const setValueCurrentPage = (page) => {
+    if (!disableIcons) setCurrentPage(page);
+  };
+  return (
+    <>
+      <MyNav />
+      <Container maxWidth={false}  style={localStyles.container}>
+        <CardContainer
+          width="95%"
+          display='flex'
+          direction="row"
+          padding={10}
+          marginT={10}
+          marginB={10}
+          backgroundColor={localStyles.cardContainer}
+        >
+            <div style={localStyles.listDev}>
+              {renderListHeader()}
+              {activeList === 'appointments' ? (
+                <div>{renderAppointmentsList()}</div>
+              ) : (
+                <div>{renderPatientsList()}</div>
+              )}
+            </div>
+            <div style={localStyles.rightColumn}>
+              <div style={localStyles.mianDev}>
+                <div style={localStyles.iconsDev}>
+                  {renderIcons()}
+                  {currentPage === 'profile' ? (
+                    <PatientProfile />
+                  ) : currentPage === 'notes' ? (
+                    <PatientNotes />
+                  ) : currentPage === 'appointment' ? (
+                    appointmentPopover()
+                  ) : currentPage === 'summaries' ? (
+                    <PatientSummaries />
+                  ) : (
+                    renderChat()
+                  )}
+                </div>
+              </div>
+            </div>
+        </CardContainer>
+      </Container>
+      <Footer />
+    </>
+  );
+};
 
 export default ShowPatientsView;
-
-const styles = {
-  container: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    height: "100vh",
-    backgroundColor: "#0a122a"
-  },
-  circle: {
-    width: 30,
-    height: 30,
-    borderWidth: 0,
-    textAlign: 'center',
-    borderStyle: 'solid',
-    borderColor: '#000',
-    color: '#000',
-    borderRadius: 80,
-    alignItems: 'center',
-    display: 'flex',
-    justifyContent: 'center',
-    position: 'absolute',
-    right: 20,
-    top: 20,
-    boxShadow: "0px 2px 5px 4px rgba(0,0,0,0.1)"
-  }
-}

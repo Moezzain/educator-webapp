@@ -1,59 +1,38 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
-import { Tab, Col, OverlayTrigger, Popover, Form, Button, Spinner, Row } from 'react-bootstrap'
-import { DataContext } from "../stateManagement/context";
+import React, { useEffect, useState } from 'react';
 
-/*
-canBookAppointment: false
-challenge: ""
-createdOn: "2021-03-28T14:57:37.289Z"
-dateAffected: null
-dateBirth: null
-diet: null
-diseaseId: "7a365d41-2c88-494d-98dd-f52da0a2a28e"
-diseaseType: "T1D"
-hba1cs: [
-  {hba1c: '5'},
-  {hba1c: '5.5'},
-  {hba1c: '10.0'}
-]
-height: null
-infoNeeded: null
-medicines: []
-needPayment: null
-notes: []
-otherDisease: null
-outSideLink: null
-patientId: "92dbbccb-a9c7-4c9f-b696-26b69eaaff77"
-patientProfilesId: "5d059d12-323a-4d39-8d83-22a58995c6f3"
-realPatientName: null
-sex: null
-subType: null
-summaries: []
-surgery: null
-topics: null
-weights: []
-whoIsPatient: "Patient"
-*/
+import { concatProfile } from '../helpers';
+// redux
+import { useSelector, useDispatch } from 'react-redux';
+import { setFetchedEducatorIdReducer } from '../redux/reducers/educatorsReducer';
+// ui
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Paper from '@material-ui/core/Paper';
+import '../App.css';
+import Popover from '@material-ui/core/Popover';
+import { useTheme } from '@material-ui/core/styles';
+import { lightStyles, darkStyles } from '../styles/patientProfileStyles';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import RenderCard from '../components/ProfileCard';
+import PatientAppointments from '../components/PatientAppointments';
 
-const defaultProfile = {
-  dateAffected: '',
-  dateBirth: '',
-  weight: '',
-  height: '',
-  hba1c: '',
-  medications: '',
-  patientName: '',
-  notes: '',
-  disease: '',
-  sex: '',
-  whoIsPatient: '',
-  surgery: '',
-  otherDisease: '',
-  diet: '',
-}
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  ResponsiveContainer,
+  Label,
+  Tooltip,
+  Legend,
+} from 'recharts';
 
 const lang = {
   ar: {
+    name: 'الاسم',
     dateAffectedText: 'مصاب منذ',
     dateBirthText: 'سنة الميلاد',
     dietText: 'النظام الغذائي المتبع',
@@ -65,352 +44,290 @@ const lang = {
     sexText: 'الجنس',
     surgeryText: 'العمليات الجراحية',
     otherDiseaseText: 'الأمراض الأخرى',
-    whoIsPatientText: 'من المتلقي؟',
+    whoIsPatientText: 'من المتلقي',
     outSideLinkText: 'رابط ملف خارجي',
     topicsText: 'المواضيع',
-    saveText: 'حفظ'
-
-  }
-}
-
+    saveText: 'حفظ',
+  },
+};
 
 const PatientProfile = () => {
-  let { chats, hidePatient, showEducators, activeChat, getPatient } = useContext(DataContext)
-  const [loading, setLoading] = useState(false);
-  const [patientId, setPatientId] = useState('');
-  const [currentChat, setCurrentChat] = useState({});
-  const [patientProfile, setPatientProfile] = useState(defaultProfile);
-  const [editPatient, setEditPatient] = useState({
-    medicalProfile: {
-      ...defaultProfile
-    }
-  });
+  const theme = useTheme();
 
-  // componentDidMount(){
-  //   // call a get for patient profile??
-  //   // then set it
-  // }
-  const getPatientAction = useCallback(async () => {
-    if (patientId) {
-      setLoading(true);
-      const patientData = await getPatient(patientId)
-      setLoading(false);
-      if (patientData?.patientProfile) {
-        setPatientProfile(patientData.patientProfile);
-        console.log(patientData.patientProfile);
-      }
-    }
-  }, [getPatient, patientId]);
+  const dispatch = useDispatch();
+
+  const [dateAffected, setDateAffected] = useState('');
+  const [dateBirth, setDateBirth] = useState('');
+  const [weights, setWeights] = useState([]);
+  const [heights, setHeights] = useState([]);
+  const [hba1cs, setHba1cs] = useState([]);
+  const [medicines, setMedicines] = useState([]);
+  const [patientName, setPatientName] = useState('');
+  const [notes, setNotes] = useState([]);
+  const [diseaseType, setDiseaseType] = useState('');
+  const [sex, setSex] = useState('');
+  const [whoIsPatient, setWhoIsPatient] = useState('');
+  const [surgery, setSurgery] = useState('');
+  const [otherDisease, setOtherDisease] = useState('');
+  const [outSideLink, setOutSideLink] = useState('');
+  const [topics, setTopics] = useState([]);
+  const [diet, setDiet] = useState('');
+  const [localEducators, setLocalEducators] = useState([]);
+  const [filteredEducators, setFilteredEducators] = useState([]);
+  const { darkMode } = useSelector((state) => state.auth);
+  const { patients, educators } = useSelector((state) => state.educators);
+  const { patientProfile, loading } = useSelector((state) => state.patient);
+
+  const styles = !darkMode ? lightStyles : darkStyles;
 
   useEffect(() => {
-    if (activeChat) {
-      const chat = chats?.find((c) => c.id === activeChat)
-      if (chat) {
-        setCurrentChat(chat);
-        setPatientId(chat?.patientId)
-        getPatientAction();
+    try {
+      if (patientProfile) {
+        setDateAffected(patientProfile?.dateAffected);
+        setDateBirth(patientProfile?.dateBirth);
+        setWeights(patientProfile?.weights);
+        setHeights(patientProfile?.height);
+        setHba1cs(concatProfile(patientProfile, 'hba1cs'));
+
+        setMedicines(concatProfile(patientProfile, 'medicines'));
+        setNotes(patientProfile?.notes);
+        setDiseaseType(patientProfile?.diseaseType);
+        setWhoIsPatient(patientProfile?.whoIsPatient);
+        setSurgery(patientProfile?.surgery);
+        setOtherDisease(patientProfile?.otherDisease);
+        setOutSideLink(patientProfile?.outSideLink);
+        setTopics(patientProfile?.topics);
+        setDiet(patientProfile?.diet);
       }
+    } catch (e) {
+      console.log(e);
     }
-  }, [activeChat, chats, getPatientAction]);
+  }, [patientProfile]);
+  useEffect(() => {
+    const patient = Object.values(patients).filter((patient) => {
+      return patient?.patientId === patientProfile?.patientId;
+    })[0];
 
-  // useEffect(() => {
-  //   const profile = {
-  //     canBookAppointment: false,
-  //     challenge: "",
-  //     createdOn: "2021-03-28T14:57:37.289Z",
-  //     dateAffected: null,
-  //     dateBirth: null,
-  //     diet: null,
-  //     diseaseId: "7a365d41-2c88-494d-98dd-f52da0a2a28e",
-  //     diseaseType: "T1D",
-  //     hba1cs: [
-  //       { hba1c: '5' },
-  //       { hba1c: '5.5' },
-  //       { hba1c: '10.0' },
-  //     ],
-  //     height: null,
-  //     infoNeeded: null,
-  //     medicines: [],
-  //     needPayment: null,
-  //     notes: [],
-  //     otherDisease: null,
-  //     outSideLink: null,
-  //     patientId: "92dbbccb-a9c7-4c9f-b696-26b69eaaff77",
-  //     patientProfilesId: "5d059d12-323a-4d39-8d83-22a58995c6f3",
-  //     realPatientName: null,
-  //     sex: null,
-  //     subType: null,
-  //     summaries: [],
-  //     surgery: null,
-  //     topics: null,
-  //     weights: [],
-  //     whoIsPatient: "Patient",
-  //   }
-  //   setPatientProfile(profile);
-  // }, []);
+    setPatientName(patient?.patientName);
+    setLocalEducators(
+      patient?.educators.map((educator) => ({
+        id: educator.id,
+        name: educator.name,
+      }))
+    );
+  }, [patients, patientProfile]);
+  useEffect(() => {
+    const educatorsIds = [];
+    if(localEducators){
 
-  // setEditPatient = prop => {
-  //   let { editPatient } = this.state;
-  //   editPatient.medicalProfile = { ...editPatient.medicalProfile, ...prop };
-  //   this.setState({
-  //     editPatient,
-  //   });
-  // };
+      localEducators.forEach((educator) => {
+        educatorsIds.push(educator.id);
+      });
+      const filteredEducators = Object.values(educators).filter((educator) => {
+        return educatorsIds.includes(educator.id);
+      });
+      setFilteredEducators(filteredEducators);
+    }
+  }, [localEducators]);
 
-
-  if (!chats) {
-    return null
+  function createData(date, weight, height) {
+    return { date, weight, height };
   }
-  console.log('rendering profile');
-  const { dateAffectedText, dietText, dateBirthText, diseaseText, weightText, heightText, Hba1CText, medicinesText, sexText, surgeryText, otherDiseaseText, whoIsPatientText, outSideLinkText, topicsText, saveText } = lang.ar;
-  return chats.map(chat => {
-    // if (!chat.medicalProfile) {
-    //   chat.medicalProfile = defaultProfile
-    // }
-    let {
-      dateAffected,
-      dateBirth,
-      weights,
-      heights,
-      hba1cs,
-      medicines,
-      patientName,
-      notes,
-      diseaseType,
-      sex,
-      whoIsPatient,
-      surgery,
-      otherDisease,
-      diet,
-      outSideLink,
-      topics,
-    } = patientProfile;
-    console.log('patientName:', chat.patientName);
 
-    if (chat.id !== activeChat) {
-      return null;
-    }
+  const data = [];
 
-    const hba1cPopover = (
-      <Popover id="popover-basic">
-        <Popover.Title as="h3">{Hba1CText}</Popover.Title>
-        <Popover.Content style={{width:'100%', padding: 0}}>
-          {hba1cs?.map((hba1c) => (
-            <div style={{border: '1px solid black', width: '100%', textAlign: 'center'}}>{hba1c?.hba1c}</div>
-          ))}
-        </Popover.Content>
-      </Popover>
-    );
-    const weightsPopover = (
-      <Popover id="popover-basic">
-        <Popover.Title as="h3">{weightText}</Popover.Title>
-        <Popover.Content style={{width:'100%', padding: 0}}>
-          {weights?.map((weight) => (
-            <div style={{border: '1px solid black', width: '100%', textAlign: 'center'}}>{weight?.weight}</div>
-          ))}
-        </Popover.Content>
-      </Popover>
-    );
-    const heightsPopover = (
-      <Popover id="popover-basic">
-        <Popover.Title as="h3">{heightText}</Popover.Title>
-        <Popover.Content style={{width:'100%', padding: 0}}>
-          {heights?.map((height) => (
-            <div style={{border: '1px solid black', width: '100%', textAlign: 'center'}}>{height?.height}</div>
-          ))}
-        </Popover.Content>
-      </Popover>
-    );
-    const medicinesPopover = (
-      <Popover id="popover-basic">
-        <Popover.Title as="h3">{medicinesText}</Popover.Title>
-        <Popover.Content style={{width:'100%', padding: 0}}>
-          {medicines?.map((medicine) => (
-            <div style={{border: '1px solid black', width: '100%', textAlign: 'center'}}>{medicine?.medicine}</div>
-          ))}
-        </Popover.Content>
-      </Popover>
-    );
-    const topicsPopover = (
-      <Popover id="popover-basic">
-        <Popover.Title as="h3">{topicsText}</Popover.Title>
-        <Popover.Content style={{width:'100%', padding: 0}}>
-          {topics?.map((topic) => (
-            <div style={{border: '1px solid black', width: '100%', textAlign: 'center'}}>{topic}</div>
-          ))}
-        </Popover.Content>
-      </Popover>
-    );
+  const renderChart = (text) => {
+    weights.forEach((weight) => {
+      data.push(
+        createData(weight.createdOn.split('T')[0], weight.weight, heights)
+      );
+    });
 
     return (
-      <Tab.Pane key={chat.id} eventKey={chat.id}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "column"
-          }}
-        >
-          <h3>{chat.id}</h3>
-          {loading ? <Spinner animation="border" /> : null}
-          <Form style={{ width: '100vh', maxHeight: '75vh', overflowY: 'scroll', overflowX: 'hidden' }}>
-            <Form.Row>
-              <Form.Group as={Col}>
-                <Form.Label column sm="10">
-                  {diseaseText}
-                </Form.Label>
-                <Col sm="10">
-                  <Form.Control type="text" defaultValue={diseaseType} />
-                </Col>
-              </Form.Group>
-              <Form.Group as={Col}>
-                <Form.Label column sm="10">
-                  {dateAffectedText}
-                </Form.Label>
-                <Col sm="10">
-                  <Form.Control type="text" defaultValue={dateAffected} />
-                </Col>
-              </Form.Group>
-            </Form.Row>
-            <Form.Row>
-              <Form.Group as={Col}>
-                <Form.Label column sm="10">
-                  {Hba1CText}
-                  <OverlayTrigger trigger="click" placement="right" overlay={hba1cPopover}>
-                    <Button variant='link' style={{ padding: '2px 2px', alignSelf: 'center', marginLeft: 5, marginBottom: 3}}>{">"}</Button>
-                  </OverlayTrigger>
-                </Form.Label>
-                <Col sm="10">
-                  <Form.Control type="text" defaultValue={hba1cs ? hba1cs[0]?.hba1c : ''} />
-                </Col>
-              </Form.Group>
-              <Form.Group as={Col}>
-                <Form.Label column sm="10">
-                  {dateBirthText}
-                </Form.Label>
-                <Col sm="10">
-                  <Form.Control type="text" defaultValue={dateBirth} />
-                </Col>
-              </Form.Group>
-            </Form.Row>
-            <Form.Row>
-              <Form.Group as={Col}>
-                <Form.Label column sm="10">
-                  {sexText}
-                </Form.Label>
-                <Col sm="10">
-                  <Form.Control type="text" defaultValue={sex} />
-                </Col>
-              </Form.Group>
-              <Form.Group as={Col}>
-                <Form.Label column sm="10">
-                  {whoIsPatientText}
-                </Form.Label>
-                <Col sm="10">
-                  <Form.Control type="text" defaultValue={whoIsPatient} />
-                </Col>
-              </Form.Group>
-            </Form.Row>
-            <Form.Row>
-              <Form.Group as={Col}>
-                <Form.Label column sm="10">
-                  {medicinesText}
-                  <OverlayTrigger trigger="click" placement="right" overlay={medicinesPopover}>
-                    <Button variant='link' style={{ padding: '2px 2px', alignSelf: 'center', marginLeft: 5, marginBottom: 3}}>{">"}</Button>
-                  </OverlayTrigger>
-                </Form.Label>
-                <Col sm="10">
-                  <Form.Control type="text" defaultValue={medicines ? medicines[0]?.medicine : null} />
-                </Col>
-              </Form.Group>
-              <Form.Group as={Col}>
-                <Form.Label column sm="10">
-                  {otherDiseaseText}
-                </Form.Label>
-                <Col sm="10">
-                  <Form.Control type="text" defaultValue={otherDisease} />
-                </Col>
-              </Form.Group>
-            </Form.Row>
-            <Form.Row>
-              <Form.Group as={Col}>
-                <Form.Label column sm="10">
-                  {weightText}
-                  <OverlayTrigger trigger="click" placement="right" overlay={weightsPopover}>
-                    <Button variant='link' style={{ padding: '2px 2px', alignSelf: 'center', marginLeft: 5, marginBottom: 3}}>{">"}</Button>
-                  </OverlayTrigger>
-                </Form.Label>
-                <Col sm="10">
-                  <Form.Control type="text" defaultValue={weights ? weights[0]?.weight : ''} />
-                </Col>
-              </Form.Group>
-              <Form.Group as={Col}>
-                <Form.Label column sm="10">
-                  {heightText}
-                  <OverlayTrigger trigger="click" placement="right" overlay={heightsPopover}>
-                    <Button variant='link' style={{ padding: '2px 2px', alignSelf: 'center', marginLeft: 5, marginBottom: 3}}>{">"}</Button>
-                  </OverlayTrigger>
-                </Form.Label>
-                <Col sm="10">
-                  <Form.Control type="text" defaultValue={heights ? heights[0]?.height : ''} />
-                </Col>
-              </Form.Group>
-            </Form.Row>
-            <Form.Row>
-
-              <Form.Group as={Col}>
-                <Form.Label column sm="10">
-                  {dietText}
-                </Form.Label>
-                <Col sm="10">
-                  <Form.Control type="text" defaultValue={diet} />
-                </Col>
-              </Form.Group>
-              <Form.Group as={Col}>
-                <Form.Label column sm="10">
-                  {surgeryText}
-                </Form.Label>
-                <Col sm="10">
-                  <Form.Control type="text" defaultValue={surgery} />
-                </Col>
-              </Form.Group>
-            </Form.Row>
-            <Form.Row>
-              <Form.Group as={Col}>
-                <Form.Label column sm="10">
-                  {topicsText}
-                  <OverlayTrigger trigger="click" placement="right" overlay={topicsPopover}>
-                    <Button variant='link' style={{ padding: '2px 2px', alignSelf: 'center', marginLeft: 5, marginBottom: 3}}>{">"}</Button>
-                  </OverlayTrigger>
-                </Form.Label>
-                <Col sm="10">
-                  <Form.Control type="text" defaultValue={topics ? topics[0]?.text : ''} />
-                </Col>
-              </Form.Group>
-              <Form.Group as={Col}>
-                <Form.Label column sm="10">
-                  {outSideLinkText}
-                </Form.Label>
-                <Col sm="10">
-                  <Form.Control type="text" defaultValue={outSideLink} />
-                </Col>
-              </Form.Group>
-            </Form.Row>
-            {/* <Form.Group as={Row}>
-                <Form.Label column sm="10">
-                  Notes
-              </Form.Label>
-                <Col sm="10">
-                  <Form.Control as="textarea" defaultValue={notes} />
-                </Col>
-              </Form.Group> */}
-          </Form>
-          {/* <Button variant="success" onClick={() => console.log('clicked')}>{saveText}</Button> */}
-        </div>
-      </Tab.Pane>
+      <React.Fragment>
+        <ResponsiveContainer>
+          <LineChart data={data} margin={styles.chartMargin}>
+            <XAxis dataKey="date" stroke={theme.palette.text.secondary} />
+            <YAxis stroke={theme.palette.text.secondary}>
+              <Label
+                angle={270}
+                position="left"
+                style={{
+                  textAnchor: 'middle',
+                  fill: theme.palette.text.primary,
+                }}
+              >
+                {text}
+              </Label>
+            </YAxis>
+            <Tooltip />
+            <Legend />
+            <Line
+              type="monotone"
+              dataKey="weight"
+              stroke="#8884d8"
+              activeDot={{ r: 8 }}
+            />
+            <Line type="monotone" dataKey="height" stroke="#82ca9d" />
+          </LineChart>
+        </ResponsiveContainer>
+      </React.Fragment>
     );
-  });
-}
+  };
+  const goToEducator = (educatorId) => {
+    dispatch(setFetchedEducatorIdReducer(educatorId));
+  };
+  const renderEducators = () => {
+    return (
+      <Card color style={styles.rightSideCard}>
+        <CardContent>
+          <Typography style={styles.text} variant="h5" component="h2">
+            Educators
+          </Typography>
+          <div style={styles.educatorsDiv}>
+            {localEducators?.map((educator) => (
+              <Button
+                variant="contained"
+                onClick={() => {
+                  goToEducator(educator.id);
+                }}
+                style={styles.educatorsButton}
+              >
+                <text>{educator.name}</text>
+              </Button>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
 
-export default PatientProfile
+  const {
+    dateAffectedText,
+    name,
+    dateBirthText,
+    dietText,
+    diseaseText,
+    medicinesText,
+    otherDiseaseText,
+    outSideLinkText,
+    sexText,
+    surgeryText,
+    whoIsPatientText,
+    Hba1CText,
+  } = lang.ar;
+  const renderContent = () => {
+    return (
+      <div style={{ flex: 1 }}>
+        <Card style={styles.patientName}>
+          <div style={styles.text}>
+            {patientName} :{name}
+          </div>
+        </Card>
+
+        <div style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
+          <div style={{ width: '50%', marginRight: 15 }}>
+            <RenderCard
+              text={new Date(dateAffected).toLocaleDateString()}
+              description={dateAffectedText}
+              style={styles.leftSideCard}
+            />
+            <RenderCard
+              text={new Date(dateBirth).toLocaleDateString()}
+              description={dateBirthText}
+              style={styles.leftSideCard}
+            />
+            <RenderCard
+              text={diseaseType}
+              description={diseaseText}
+              style={styles.leftSideCard}
+            />
+            <RenderCard
+              text={sex}
+              description={sexText}
+              style={styles.leftSideCard}
+            />
+          </div>
+          <div style={{ width: '50%', marginRight: 20 }}>
+            <RenderCard
+              text={whoIsPatient}
+              description={whoIsPatientText}
+              style={styles.leftSideCard}
+            />
+
+            <RenderCard
+              text={surgery}
+              description={surgeryText}
+              style={styles.leftSideCard}
+            />
+            <RenderCard
+              text={otherDisease}
+              description={otherDiseaseText}
+              style={styles.leftSideCard}
+            />
+            <Card color style={styles.leftSideCard}>
+              <CardContent>
+                <Typography style={styles.text} variant="h5" component="h2">
+                  {outSideLinkText}
+                </Typography>
+                <a
+                  href={outSideLink}
+                  target="_blank"
+                  style={styles.textColor}
+                  rel="noreferrer"
+                >
+                  {outSideLink}
+                </a>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
+  };
+  return (
+    <div style={styles.flex1}>
+      {loading ? <CircularProgress animation="border" /> : ''}
+      <div style={styles.root}>
+        <div style={styles.contentWrapper}>{renderContent()}</div>
+
+        <div style={styles.rightSideDiv}>
+          <div style={styles.chartDiv}>
+            <Card style={styles.chartWrapper}>{renderChart()}</Card>
+          </div>
+          {/* {renderAppointments()} */}
+
+          <div style={styles.rightBottomRightDiv}>
+            <div style={styles.rightSideLeftColumn}>
+              <RenderCard
+                text={medicines}
+                description={medicinesText}
+                style={styles.rightSideCard}
+              />
+              <RenderCard
+                text={diet}
+                description={dietText}
+                style={styles.rightSideCard}
+              />
+              <RenderCard
+                text={hba1cs}
+                description={Hba1CText}
+                style={styles.rightSideCard}
+              />
+            </div>
+            <div style={styles.rightSideRightColumn}>
+              {renderEducators()}
+              <PatientAppointments
+                patientId={patientProfile?.patientId}
+                educators={filteredEducators}
+                darkMode={darkMode}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default PatientProfile;
