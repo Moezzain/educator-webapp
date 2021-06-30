@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Spinner } from 'react-bootstrap';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { Message } from '@chatscope/chat-ui-kit-react';
 import ReactAudioPlayer from 'react-audio-player';
@@ -59,7 +59,7 @@ const Chat = (props) => {
   return (
     <div style={localStyles.root}>
       {loading ? (
-        <Spinner animation="border" />
+        <CircularProgress animation="border" />
       ) : !localMessages.length ? (
         <div style={localStyles.emptyMessages}>{lang.ar.emptyConvo} </div>
       ) : null}
@@ -70,7 +70,7 @@ const Chat = (props) => {
       <div style={localStyles.chatDiv}>
         <div style={localStyles.chatScrollDiv}>
           {localMessages.map((message) => (
-            <div>
+            <div key={message.id}>
               {message.message?.date && (
                 <CustomSeparator
                   date={message.message.date}
@@ -89,7 +89,6 @@ const Chat = (props) => {
                 <Message
                   model={{
                     message: message.message.text,
-                    sentTime: message.message.createdOn,
                     direction: message.userId,
                   }}
                 >
@@ -104,28 +103,27 @@ const Chat = (props) => {
                     </a>
                   </Message.CustomContent>
                   <Message.Footer>
-                    <text style={localStyles.messageFooter}>
-                      {message.message.createdOn[1].split('.')[0]}
-                    </text>
+                    <div style={localStyles.messageFooter}>
+                      {new Date(Date.parse(message.message.createdOn)).toLocaleTimeString()}
+                    </div>
                   </Message.Footer>
                 </Message>
               ) : (
                 <Message
                   model={{
                     message: message.message.text,
-                    sentTime: message.message.createdOn,
                     direction: message.userId,
                   }}
                 >
                   <Message.CustomContent>
-                    <text style={localStyles.customMessage}>
+                    <div style={localStyles.customMessage}>
                       {message.message.text}
-                    </text>
+                    </div>
                   </Message.CustomContent>
                   <Message.Footer>
-                    <text style={localStyles.messageFooter}>
-                      {message.message.createdOn[1].split('.')[0]}
-                    </text>
+                    <div style={localStyles.messageFooter}>
+                      {new Date(Date.parse(message.message.createdOn)).toLocaleTimeString()}
+                    </div>
                   </Message.Footer>
                 </Message>
               )}

@@ -1,11 +1,10 @@
 import React, { Component } from "react";
-import {Card,} from 'react-bootstrap'
-
+import Card from '@material-ui/core/Card';
 class CardContainer extends Component {
   render() {
     return (
       <Card  style={{ width: this.props.width, 
-       
+       display:this.props.display,
      flexDirection: this.props.direction,
       backgroundColor: "rgba(247,247,247,1)",
       padding: this.props.padding,

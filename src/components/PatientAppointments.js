@@ -33,13 +33,14 @@ const RenderAppointments = ({ patientId, educators, darkMode }) => {
           {localAppointments?.map((appointment) => {
             return (
               <Button
+              key={appointment.id}
                 variant="contained"
                 onClick={() => goToEducator(appointment.educatorId)}
                 style={styles.button}
               >
-                <text>
+                <div key={appointment.id}>
                   {appointment.date.split('T')[0]} {appointment.name}
-                </text>
+                </div>
               </Button>
             );
           })}

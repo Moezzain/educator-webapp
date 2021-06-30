@@ -76,7 +76,7 @@ const PatientNotes = () => {
   };
   return (
     <div style={styles.mainDev}>
-      <div class="grid-container">
+      <div className="grid-container">
         {currentPage === 'notes' ? (
           renderCard()
         ) : (

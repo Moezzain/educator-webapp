@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ListGroup, Tab, Tabs, Table } from 'react-bootstrap';
 import CardContainer from '../components/CardContainer';
-import { DataContext } from '../stateManagement/context';
 import { parseArray } from '../helpers/Converters';
 
 // Components
@@ -12,9 +10,7 @@ import PatientProfile from './PatientProfile';
 import PatientNotes from './PatientNotes';
 import PatientSummaries from './patientSummaries';
 import {
-  ConversationList,
   Conversation,
-  Avatar,
 } from '@chatscope/chat-ui-kit-react';
 import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 
@@ -41,12 +37,10 @@ import Button from '@material-ui/core/Button';
 import Popover from '@material-ui/core/Popover';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ShortTextIcon from '@material-ui/icons/ShortText';
-import VisibilityIcon from '@material-ui/icons/Visibility';
 import Brightness4Icon from '@material-ui/icons/Brightness4';
 import Container from '@material-ui/core/Container';
 
 import '../App.css';
-import { mainTheme, darkTheme } from '../styles/themes';
 import { lightStyles, darkStyles } from '../styles/showPatientsViewStyles';
 import { useHistory } from 'react-router-dom';
 
@@ -153,6 +147,8 @@ const ShowPatientsView = () => {
         <div style={{ height: '76vh', overflow: 'auto' }}>
           {localPatients.map((patient) => (
             <Conversation
+            key={patient.id}
+            active={patientId === patient.patientId}
               onClick={() => activateChat(patient.id, patient.patientId)}
             >
               <Conversation.Content>
@@ -179,18 +175,10 @@ const ShowPatientsView = () => {
     );
   };
   const renderListHeader = () => {
-    let patientsStyle, appointmentStyle;
-    if (activeList == 'appointments') {
-      patientsStyle = 'dark';
-      appointmentStyle = 'primary';
-    } else {
-      patientsStyle = 'primary';
-      appointmentStyle = 'dark';
-    }
     return (
       <div style={localStyles.listHeaderDiv}>
         <Button
-          variant={patientsStyle}
+          variant="contained"
           onClick={() => setActiveList('patients')}
           style={localStyles.buttonsText}
         >
@@ -198,7 +186,7 @@ const ShowPatientsView = () => {
         </Button>
         <Button
           style={localStyles.buttonsText}
-          variant={appointmentStyle}
+          variant="contained"
           onClick={() => setActiveList('appointments')}
         >
           المواعيد
@@ -214,7 +202,7 @@ const ShowPatientsView = () => {
       educatorAppointments.forEach((appointment) => {
         appointments.push({
           appointmentId: appointment.appointmentId,
-          date: appointment.date.split('T')[0],
+          date: new Date( appointment.date.split('T')[0]),
           name: appointment.name,
           time: appointment.time,
           patientId: appointment.patientId,
@@ -228,18 +216,17 @@ const ShowPatientsView = () => {
 
     return (
       <div
-        style={{ overflow: 'auto', height: '75vh', backgroundColor: 'green' }}
+        style={{ overflow: 'auto', height: '75vh' }}
       >
-        {Object.values(appointments).map((appointment) => {
+        {Object.values(appointments).sort((a,b)=> b.date - a.date).map((appointment) => {
           return (
             <Button
               variant="contained"
-              color="white"
               style={{ width: '100%' }}
               key={appointment.appointmentId}
               onClick={(e) => showAppointment(e, appointment)}
             >
-              {appointment.date}
+              {new Date(appointment.date).toDateString()}
             </Button>
           );
         })}
@@ -270,6 +257,7 @@ const ShowPatientsView = () => {
             {currentAppointment.time} :{lang.ar.time}
           </h6>
           <Button
+          variant="contained"
             style={localStyles.goToPatientButton}
             onClick={() => goToPatient(currentAppointment.patientId)}
           >
@@ -352,26 +340,26 @@ const ShowPatientsView = () => {
   return (
     <>
       <MyNav />
-      <Container maxWidth={false} fluid style={localStyles.container}>
+      <Container maxWidth={false}  style={localStyles.container}>
         <CardContainer
           width="95%"
+          display='flex'
           direction="row"
           padding={10}
           marginT={10}
           marginB={10}
           backgroundColor={localStyles.cardContainer}
         >
-          <Tab.Container>
             <div style={localStyles.listDev}>
               {renderListHeader()}
               {activeList === 'appointments' ? (
-                <ListGroup>{renderAppointmentsList()}</ListGroup>
+                <div>{renderAppointmentsList()}</div>
               ) : (
-                <ListGroup>{renderPatientsList()}</ListGroup>
+                <div>{renderPatientsList()}</div>
               )}
             </div>
             <div style={localStyles.rightColumn}>
-              <Tab.Content style={localStyles.mianDev}>
+              <div style={localStyles.mianDev}>
                 <div style={localStyles.iconsDev}>
                   {renderIcons()}
                   {currentPage === 'profile' ? (
@@ -386,9 +374,8 @@ const ShowPatientsView = () => {
                     renderChat()
                   )}
                 </div>
-              </Tab.Content>
+              </div>
             </div>
-          </Tab.Container>
         </CardContainer>
       </Container>
       <Footer />

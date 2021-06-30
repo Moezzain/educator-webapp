@@ -5,7 +5,7 @@ import { concatProfile } from '../helpers';
 import { useSelector, useDispatch } from 'react-redux';
 import { setFetchedEducatorIdReducer } from '../redux/reducers/educatorsReducer';
 // ui
-import { Spinner } from 'react-bootstrap';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Paper from '@material-ui/core/Paper';
 import '../App.css';
 import Popover from '@material-ui/core/Popover';
@@ -118,7 +118,7 @@ const PatientProfile = () => {
   }, [patients, patientProfile]);
   useEffect(() => {
     const educatorsIds = [];
-    localEducators.forEach((educator) => {
+    localEducators?.forEach((educator) => {
       educatorsIds.push(educator.id);
     });
     const filteredEducators = Object.values(educators).filter((educator) => {
@@ -284,7 +284,7 @@ const PatientProfile = () => {
   };
   return (
     <div style={styles.flex1}>
-      {loading ? <Spinner animation="border" /> : ''}
+      {loading ? <CircularProgress animation="border" /> : ''}
       <div style={styles.root}>
         <div style={styles.contentWrapper}>{renderContent()}</div>
 

@@ -75,7 +75,7 @@ const PatientSummaries = () => {
   };
   return (
     <div style={styles.mainDev}>
-      <div class="grid-container">
+      <div className="grid-container">
         {currentPage === 'notes'
           ? renderCard()
           : <ReadMore currentNote={currentNote}  setNotes={renderNotes}/>}
