@@ -124,7 +124,7 @@ export const lightStyles = {
     display: 'flex',
     flexDirection: 'row',
     // flex: 1,
-    height: '50%',
+    height: '50.8%',
   },
   rightSideLeftColumn: {
     width: '50%',

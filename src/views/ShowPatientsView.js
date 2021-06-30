@@ -216,7 +216,7 @@ const ShowPatientsView = () => {
 
     return (
       <div
-        style={{ overflow: 'auto', height: '75vh' }}
+        style={{ overflow: 'auto', height: '80vh' }}
       >
         {Object.values(appointments).sort((a,b)=> b.date - a.date).map((appointment) => {
           return (
