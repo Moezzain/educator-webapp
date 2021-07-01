@@ -228,12 +228,12 @@ const PatientProfile = () => {
         <div style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
           <div style={{ width: '50%', marginRight: 15 }}>
             <RenderCard
-              text={new Date(dateAffected).toLocaleDateString()}
+              text={dateAffected ? new Date(dateAffected).toLocaleDateString() : ''}
               description={dateAffectedText}
               style={styles.leftSideCard}
             />
             <RenderCard
-              text={new Date(dateBirth).toLocaleDateString()}
+              text={dateBirth ? new Date(dateBirth).toLocaleDateString() : ''}
               description={dateBirthText}
               style={styles.leftSideCard}
             />
