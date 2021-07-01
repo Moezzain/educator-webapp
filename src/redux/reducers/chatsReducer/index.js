@@ -19,7 +19,7 @@ export const getChatsAction = createAsyncThunk(
       );
       if (result?.data) {
 
-        return result.data;
+        return result.data.reverse();
       }
     } catch (error) {
       console.log('error', error);
