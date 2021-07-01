@@ -40,21 +40,23 @@ const Chat = (props) => {
     );
   }, [currentChat]);
   useEffect(() => {
-    setLocalMessages(formatMessages(messages));
+    const messagesAndDuration = formatMessages(messages)
+    setLocalMessages(messagesAndDuration.formatedMessages.reverse());
+    setDuration(messagesAndDuration.duration)
   }, [messages]);
-  useEffect(() => {
-    calcDuration(localMessages);
-  }, [localMessages]);
+  // useEffect(() => {
+  //   calcDuration(localMessages);
+  // }, [localMessages]);
 
-  const calcDuration = (messages = []) => {
-    if (messages && messages.length > 0) {
-      let first = new Date(messages[0].message.createdOn);
-      let last = new Date(messages[messages.length - 1].message.createdOn);
-      const diffTime = Math.abs(last - first);
-      const duration = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      setDuration(duration);
-    }
-  };
+  // const calcDuration = (messages = []) => {
+  //   if (messages && messages.length > 0) {
+  //     let first = new Date(messages[0].message.createdOn);
+  //     let last = new Date(messages[messages.length - 1].message.createdOn);
+  //     const diffTime = Math.abs(last - first);
+  //     const duration = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  //     setDuration(duration);
+  //   }
+  // };
 
   return (
     <div style={localStyles.root}>
