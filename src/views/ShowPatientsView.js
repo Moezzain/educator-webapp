@@ -268,10 +268,10 @@ const ShowPatientsView = () => {
   const goToPatient = (patientId) => {
     setCurrentPage('profile');
     dispatch(getPatientAction({ fetchedEducatorId, token, patientId }));
-    const currentChat = currentEducator?.chats?.filter((chat) => {
+    const currentChat = currentEducator?.chats?.find((chat) => {
       return chat?.patientId === patientId;
-    })?.[0]?.id;
-    if (currentChat) dispatch(setCurrentChatAction(currentChat));
+    }) 
+    if (currentChat) dispatch(setCurrentChatAction(currentChat?.id));
   };
   const handleAppointmentPopoverOpen = (e) => {
     setAppointmentAnchorEl(e.currentTarget);
