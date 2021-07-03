@@ -11,7 +11,7 @@ import Linkify from 'react-linkify';
 import { getChatsAction } from '../../redux/reducers/chatsReducer';
 import { useSelector, useDispatch } from 'react-redux';
 
-const Chat = (props) => {
+const Chat = () => {
   const dispatch = useDispatch();
   const [localMessages, setLocalMessages] = useState([]);
   const [duration, setDuration] = useState(0);
