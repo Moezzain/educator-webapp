@@ -12,7 +12,7 @@ import {
 import { lightStyles as styles } from '../styles/patientProfileStyles';
 import { useTheme } from '@material-ui/core/styles';
 import { useState } from 'react';
-const Chart = ({ text, hba1cs, weights, height }) => {
+const ProfileChart = ({ text, hba1cs, weights, height }) => {
   const theme = useTheme();
   function createData(date, hba1c, weight, height) {
     return { date, hba1c, weight, height };
@@ -71,4 +71,4 @@ const Chart = ({ text, hba1cs, weights, height }) => {
     </React.Fragment>
   );
 };
-export default Chart;
+export default ProfileChart;
