@@ -222,7 +222,7 @@ const ShowPatientsView = () => {
           return (
             <Button
               variant="contained"
-              style={{ width: '100%' }}
+              style={localStyles.listAppointemntsButton}
               key={appointment.appointmentId}
               onClick={(e) => showAppointment(e, appointment)}
             >
@@ -249,7 +249,7 @@ const ShowPatientsView = () => {
         onClose={handleAppointmentPopoverClose}
         disableRestoreFocus
       >
-        <div style={{ height: '10vh', width: '10vw' }}>
+        <div style={localStyles.popUpDiv}>
           <h6 style={{ textAlign: 'center' }}>
             {currentAppointment.name} :{lang.ar.patientName}
           </h6>

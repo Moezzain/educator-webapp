@@ -18,8 +18,6 @@ export const formatMessages = (messages = []) => {
       var isAudio = audioTypes.includes(fileExtension.split('?')[0]);
       if (isImg) {
         if (date !== message.createdOn.split('T')[0]) {
-          console.log('date: ', date);
-
           duration++;
           message.message = { image: message.media };
           message.message.date = message.createdOn.split('T')[0];
@@ -44,16 +42,12 @@ export const formatMessages = (messages = []) => {
       }
     } else if (message.text) {
       if (date !== message.createdOn.split('T')[0]) {
-        console.log('date: ', date);
         duration++;
         message.message = { text: message.text };
         message.message.date = message.createdOn.split('T')[0];
         date = message.createdOn.split('T')[0];
-        console.log('date after: ', date);
-        console.log('message date: ', message);
       } else {
         message.message = { text: message.text };
-        console.log('message date: ', message);
       }
     } else {
       message.message = { text: '' };
