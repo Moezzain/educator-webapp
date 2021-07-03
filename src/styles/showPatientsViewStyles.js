@@ -50,9 +50,11 @@ export const lightStyles = {
     textAlign: 'center',
     padding: 10,
   },
-  patientListName:{
-    color:'black'
-  }
+  patientListName: {
+    color: 'black',
+  },
+  listAppointemntsButton: { width: '100%', backgroundColor: theme.primary.bluishWhite },
+  popUpDiv: { height: '10vh', width: '10vw', backgroundColor:'white' }
 };
 export const darkStyles = {
   container: {
@@ -75,7 +77,7 @@ export const darkStyles = {
   goToPatientButton: {
     width: '6vw',
     marginLeft: '2vw',
-    backgroundColor: '#6D9DC5',
+    backgroundColor: darkTheme.secondary.lightBlue,
   },
   mianDev: {
     marginLeft: 20,
@@ -106,4 +108,6 @@ export const darkStyles = {
   patientListName: {
     color: darkTheme.secondary.lightGrey,
   },
+  listAppointemntsButton: { width: '100%', backgroundColor: darkTheme.secondary.mainBlue },
+  popUpDiv: { height: '10vh', width: '10vw', backgroundColor: darkTheme.secondary.mainBlue }
 };

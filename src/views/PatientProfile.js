@@ -6,19 +6,17 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setFetchedEducatorIdReducer } from '../redux/reducers/educatorsReducer';
 // ui
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Paper from '@material-ui/core/Paper';
 import '../App.css';
-import Popover from '@material-ui/core/Popover';
 import { useTheme } from '@material-ui/core/styles';
 import { lightStyles, darkStyles } from '../styles/patientProfileStyles';
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import RenderCard from '../components/ProfileCard';
 import PatientAppointments from '../components/PatientAppointments';
-
+import Chart from '../components/Chart';
+import PatientEducators from '../components/PatientEducators';
 import {
   LineChart,
   Line,
@@ -48,6 +46,7 @@ const lang = {
     outSideLinkText: 'رابط ملف خارجي',
     topicsText: 'المواضيع',
     saveText: 'حفظ',
+    needPayment: 'بحاجه للدفع',
   },
 };
 
@@ -87,8 +86,7 @@ const PatientProfile = () => {
         setDateBirth(patientProfile?.dateBirth);
         setWeights(patientProfile?.weights);
         setHeights(patientProfile?.height);
-        setHba1cs(concatProfile(patientProfile, 'hba1cs'));
-
+        setHba1cs(patientProfile?.hba1cs);
         setMedicines(concatProfile(patientProfile, 'medicines'));
         setNotes(patientProfile?.notes);
         setDiseaseType(patientProfile?.diseaseType);
@@ -118,8 +116,7 @@ const PatientProfile = () => {
   }, [patients, patientProfile]);
   useEffect(() => {
     const educatorsIds = [];
-    if(localEducators){
-
+    if (localEducators) {
       localEducators.forEach((educator) => {
         educatorsIds.push(educator.id);
       });
@@ -130,77 +127,6 @@ const PatientProfile = () => {
     }
   }, [localEducators]);
 
-  function createData(date, weight, height) {
-    return { date, weight, height };
-  }
-
-  const data = [];
-
-  const renderChart = (text) => {
-    weights.forEach((weight) => {
-      data.push(
-        createData(weight.createdOn.split('T')[0], weight.weight, heights)
-      );
-    });
-
-    return (
-      <React.Fragment>
-        <ResponsiveContainer>
-          <LineChart data={data} margin={styles.chartMargin}>
-            <XAxis dataKey="date" stroke={theme.palette.text.secondary} />
-            <YAxis stroke={theme.palette.text.secondary}>
-              <Label
-                angle={270}
-                position="left"
-                style={{
-                  textAnchor: 'middle',
-                  fill: theme.palette.text.primary,
-                }}
-              >
-                {text}
-              </Label>
-            </YAxis>
-            <Tooltip />
-            <Legend />
-            <Line
-              type="monotone"
-              dataKey="weight"
-              stroke="#8884d8"
-              activeDot={{ r: 8 }}
-            />
-            <Line type="monotone" dataKey="height" stroke="#82ca9d" />
-          </LineChart>
-        </ResponsiveContainer>
-      </React.Fragment>
-    );
-  };
-  const goToEducator = (educatorId) => {
-    dispatch(setFetchedEducatorIdReducer(educatorId));
-  };
-  const renderEducators = () => {
-    return (
-      <Card color style={styles.rightSideCard}>
-        <CardContent>
-          <Typography style={styles.text} variant="h5" component="h2">
-            Educators
-          </Typography>
-          <div style={styles.educatorsDiv}>
-            {localEducators?.map((educator) => (
-              <Button
-                variant="contained"
-                onClick={() => {
-                  goToEducator(educator.id);
-                }}
-                style={styles.educatorsButton}
-              >
-                <text>{educator.name}</text>
-              </Button>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-    );
-  };
 
   const {
     dateAffectedText,
@@ -215,6 +141,7 @@ const PatientProfile = () => {
     surgeryText,
     whoIsPatientText,
     Hba1CText,
+    needPayment
   } = lang.ar;
   const renderContent = () => {
     return (
@@ -228,7 +155,9 @@ const PatientProfile = () => {
         <div style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
           <div style={{ width: '50%', marginRight: 15 }}>
             <RenderCard
-              text={dateAffected ? new Date(dateAffected).toLocaleDateString() : ''}
+              text={
+                dateAffected ? new Date(dateAffected).toLocaleDateString() : ''
+              }
               description={dateAffectedText}
               style={styles.leftSideCard}
             />
@@ -293,9 +222,17 @@ const PatientProfile = () => {
 
         <div style={styles.rightSideDiv}>
           <div style={styles.chartDiv}>
-            <Card style={styles.chartWrapper}>{renderChart()}</Card>
+            <Card style={styles.chartWrapper}>
+              {
+                <Chart
+                  text={'unit'}
+                  hba1cs={hba1cs}
+                  weights={weights}
+                  height={heights}
+                />
+              }
+            </Card>
           </div>
-          {/* {renderAppointments()} */}
 
           <div style={styles.rightBottomRightDiv}>
             <div style={styles.rightSideLeftColumn}>
@@ -310,13 +247,13 @@ const PatientProfile = () => {
                 style={styles.rightSideCard}
               />
               <RenderCard
-                text={hba1cs}
-                description={Hba1CText}
+                text={patientProfile?.needPayment ? 'نعم' : 'لا'}
+                description={needPayment}
                 style={styles.rightSideCard}
               />
             </div>
             <div style={styles.rightSideRightColumn}>
-              {renderEducators()}
+            <PatientEducators localEducators={localEducators} darkMode={darkMode}/>
               <PatientAppointments
                 patientId={patientProfile?.patientId}
                 educators={filteredEducators}
