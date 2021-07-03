@@ -54,7 +54,31 @@ export const lightStyles = {
     color: 'black',
   },
   listAppointemntsButton: { width: '100%', backgroundColor: theme.primary.bluishWhite },
-  popUpDiv: { height: '10vh', width: '10vw', backgroundColor:'white' }
+  popUpDiv: { height: '10vh', width: '10vw', backgroundColor:'white' },
+  calendarMainDiv:{ flex: 1 },
+  headerListDiv:{ width: '20%', height: '10%' },
+  calendarContentDiv:{ width: '100%', height: '90%' },
+  calendarCardDiv:{ flex: 1, display: 'flex', justifyContent: 'center' },
+  calendarCard:{
+    display: 'flex',
+    // flexDirection:'column',
+    height: '100%',
+    width: '100%',
+    marginLeft:'15%',
+    marginRight:'15%',
+    alignContent: 'center',
+    alignItems: 'center',
+    backgroundColor:theme.secondary.lightBlue
+  },
+  calendarDiv:{
+    display: 'flex',
+    flexDirection:'column',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  calendar:{ height: 700, width: '90%',marginTop:'5%',marginBottom:'5%'  }
+
 };
 export const darkStyles = {
   container: {
@@ -109,5 +133,26 @@ export const darkStyles = {
     color: darkTheme.secondary.lightGrey,
   },
   listAppointemntsButton: { width: '100%', backgroundColor: darkTheme.secondary.mainBlue },
-  popUpDiv: { height: '10vh', width: '10vw', backgroundColor: darkTheme.secondary.mainBlue }
+  popUpDiv: { height: '10vh', width: '10vw', backgroundColor: darkTheme.secondary.mainBlue },
+  calendarMainDiv:{ flex: 1 },
+  headerListDiv:{ width: '20%', height: '10%' },
+  calendarContentDiv:{ width: '100%', height: '90%' },
+  calendarCardDiv:{ flex: 1, display: 'flex', justifyContent: 'center' },
+  calendarCard:{
+    display: 'flex',
+    height: '100%',
+    width: '100%',
+    marginLeft:'15%',
+    marginRight:'15%',
+    alignContent: 'center',
+    alignItems: 'center',
+    backgroundColor:theme.primary.black
+  },
+  calendarDiv:{
+    display: 'flex',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  calendar:{ height: 700, width: '90%',marginTop:'5%',marginBottom:'5%' }
 };
