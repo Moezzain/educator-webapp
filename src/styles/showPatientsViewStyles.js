@@ -7,7 +7,7 @@ export const lightStyles = {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
-    height: '89.3vh',
+    height: '88.3vh',
     width: '100%',
     backgroundColor: theme.primary.black,
   },
@@ -62,7 +62,7 @@ export const lightStyles = {
   calendarCard:{
     display: 'flex',
     // flexDirection:'column',
-    height: '100%',
+    height: '60%',
     width: '100%',
     marginLeft:'15%',
     marginRight:'15%',
@@ -77,7 +77,7 @@ export const lightStyles = {
     justifyContent: 'center',
     alignItems: 'center',
   },
-  calendar:{ height: 700, width: '90%',marginTop:'5%',marginBottom:'5%'  }
+  calendar:{ height: 600, width: '90%',marginTop:'5%',marginBottom:'5%'  }
 
 };
 export const darkStyles = {
@@ -85,7 +85,7 @@ export const darkStyles = {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
-    height: '90.8vh',
+    height: '88.3vhvh',
     width: '100%',
     backgroundColor: darkTheme.primary.black,
   },
@@ -150,9 +150,10 @@ export const darkStyles = {
   },
   calendarDiv:{
     display: 'flex',
+    flexDirection:'column',
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  calendar:{ height: 700, width: '90%',marginTop:'5%',marginBottom:'5%' }
+  calendar:{ height: 600, width: '90%',marginTop:'5%',marginBottom:'5%'  }
 };
