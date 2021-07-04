@@ -15,18 +15,8 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import RenderCard from '../components/ProfileCard';
 import PatientAppointments from '../components/PatientAppointments';
-import Chart from '../components/Chart';
+import ProfileChart from '../components/ProfileChart';
 import PatientEducators from '../components/PatientEducators';
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  ResponsiveContainer,
-  Label,
-  Tooltip,
-  Legend,
-} from 'recharts';
 
 const lang = {
   ar: {
@@ -127,7 +117,6 @@ const PatientProfile = () => {
     }
   }, [localEducators]);
 
-
   const {
     dateAffectedText,
     name,
@@ -141,7 +130,7 @@ const PatientProfile = () => {
     surgeryText,
     whoIsPatientText,
     Hba1CText,
-    needPayment
+    needPayment,
   } = lang.ar;
   const renderContent = () => {
     return (
@@ -223,14 +212,12 @@ const PatientProfile = () => {
         <div style={styles.rightSideDiv}>
           <div style={styles.chartDiv}>
             <Card style={styles.chartWrapper}>
-              {
-                <Chart
-                  text={'unit'}
-                  hba1cs={hba1cs}
-                  weights={weights}
-                  height={heights}
-                />
-              }
+              <ProfileChart
+                text={'unit'}
+                hba1cs={hba1cs}
+                weights={weights}
+                height={heights}
+              />
             </Card>
           </div>
 
@@ -253,7 +240,10 @@ const PatientProfile = () => {
               />
             </div>
             <div style={styles.rightSideRightColumn}>
-            <PatientEducators localEducators={localEducators} darkMode={darkMode}/>
+              <PatientEducators
+                localEducators={localEducators}
+                darkMode={darkMode}
+              />
               <PatientAppointments
                 patientId={patientProfile?.patientId}
                 educators={filteredEducators}

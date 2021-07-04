@@ -6,11 +6,12 @@ import ReactAudioPlayer from 'react-audio-player';
 import { darkStyles, lightStyles } from '../../styles/chatStyles';
 import { formatMessages } from './helpers';
 import CustomSeparator from '../../components/CustomSeparator';
+import Linkify from 'react-linkify';
 
 import { getChatsAction } from '../../redux/reducers/chatsReducer';
 import { useSelector, useDispatch } from 'react-redux';
 
-const Chat = (props) => {
+const Chat = () => {
   const dispatch = useDispatch();
   const [localMessages, setLocalMessages] = useState([]);
   const [duration, setDuration] = useState(0);
@@ -28,7 +29,11 @@ const Chat = (props) => {
   );
 
   const localStyles = !darkMode ? lightStyles : darkStyles;
-
+  const componentDecorator = (href, text, key) => (
+    <a href={href} key={key} target="_blank" rel="noopener noreferrer">
+        {text}
+    </a>
+);
   useEffect(() => {
     let chatId = currentChat;
     dispatch(
@@ -44,20 +49,6 @@ const Chat = (props) => {
     setLocalMessages(messagesAndDuration.formatedMessages.reverse());
     setDuration(messagesAndDuration.duration)
   }, [messages]);
-  // useEffect(() => {
-  //   calcDuration(localMessages);
-  // }, [localMessages]);
-
-  // const calcDuration = (messages = []) => {
-  //   if (messages && messages.length > 0) {
-  //     let first = new Date(messages[0].message.createdOn);
-  //     let last = new Date(messages[messages.length - 1].message.createdOn);
-  //     const diffTime = Math.abs(last - first);
-  //     const duration = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  //     setDuration(duration);
-  //   }
-  // };
-
   return (
     <div style={localStyles.root}>
       {loading ? (
@@ -119,7 +110,10 @@ const Chat = (props) => {
                 >
                   <Message.CustomContent>
                     <div style={localStyles.customMessage}>
+                      <Linkify componentDecorator={componentDecorator}>
                       {message.message.text}
+                      
+                      </Linkify>
                     </div>
                   </Message.CustomContent>
                   <Message.Footer>

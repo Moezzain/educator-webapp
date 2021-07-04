@@ -9,9 +9,7 @@ import Chat from './Chat';
 import PatientProfile from './PatientProfile';
 import PatientNotes from './PatientNotes';
 import PatientSummaries from './patientSummaries';
-import {
-  Conversation,
-} from '@chatscope/chat-ui-kit-react';
+import { Conversation } from '@chatscope/chat-ui-kit-react';
 import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 
 // Redux
@@ -147,8 +145,8 @@ const ShowPatientsView = () => {
         <div style={{ height: '76vh', overflow: 'auto' }}>
           {localPatients.map((patient) => (
             <Conversation
-            key={patient.id}
-            active={patientId === patient.patientId}
+              key={patient.id}
+              active={patientId === patient.patientId}
               onClick={() => activateChat(patient.id, patient.patientId)}
             >
               <Conversation.Content>
@@ -202,7 +200,7 @@ const ShowPatientsView = () => {
       educatorAppointments.forEach((appointment) => {
         appointments.push({
           appointmentId: appointment.appointmentId,
-          date: new Date( appointment.date.split('T')[0]),
+          date: new Date(appointment.date.split('T')[0]),
           name: appointment.name,
           time: appointment.time,
           patientId: appointment.patientId,
@@ -215,21 +213,21 @@ const ShowPatientsView = () => {
     }
 
     return (
-      <div
-        style={{ overflow: 'auto', height: '80vh' }}
-      >
-        {Object.values(appointments).sort((a,b)=> b.date - a.date).map((appointment) => {
-          return (
-            <Button
-              variant="contained"
-              style={localStyles.listAppointemntsButton}
-              key={appointment.appointmentId}
-              onClick={(e) => showAppointment(e, appointment)}
-            >
-              {new Date(appointment.date).toDateString()}
-            </Button>
-          );
-        })}
+      <div style={{ overflow: 'auto', height: '80vh' }}>
+        {Object.values(appointments)
+          .sort((a, b) => b.date - a.date)
+          .map((appointment) => {
+            return (
+              <Button
+                variant="contained"
+                style={localStyles.listAppointemntsButton}
+                key={appointment.appointmentId}
+                onClick={(e) => showAppointment(e, appointment)}
+              >
+                {new Date(appointment.date).toDateString()}
+              </Button>
+            );
+          })}
       </div>
     );
   };
@@ -257,7 +255,7 @@ const ShowPatientsView = () => {
             {currentAppointment.time} :{lang.ar.time}
           </h6>
           <Button
-          variant="contained"
+            variant="contained"
             style={localStyles.goToPatientButton}
             onClick={() => goToPatient(currentAppointment.patientId)}
           >
@@ -270,6 +268,10 @@ const ShowPatientsView = () => {
   const goToPatient = (patientId) => {
     setCurrentPage('profile');
     dispatch(getPatientAction({ fetchedEducatorId, token, patientId }));
+    const currentChat = currentEducator?.chats?.find((chat) => {
+      return chat?.patientId === patientId;
+    }) 
+    if (currentChat) dispatch(setCurrentChatAction(currentChat?.id));
   };
   const handleAppointmentPopoverOpen = (e) => {
     setAppointmentAnchorEl(e.currentTarget);
@@ -340,42 +342,42 @@ const ShowPatientsView = () => {
   return (
     <>
       <MyNav />
-      <Container maxWidth={false}  style={localStyles.container}>
+      <Container maxWidth={false} style={localStyles.container}>
         <CardContainer
           width="95%"
-          display='flex'
+          display="flex"
           direction="row"
           padding={10}
           marginT={10}
           marginB={10}
           backgroundColor={localStyles.cardContainer}
         >
-            <div style={localStyles.listDev}>
-              {renderListHeader()}
-              {activeList === 'appointments' ? (
-                <div>{renderAppointmentsList()}</div>
-              ) : (
-                <div>{renderPatientsList()}</div>
-              )}
-            </div>
-            <div style={localStyles.rightColumn}>
-              <div style={localStyles.mianDev}>
-                <div style={localStyles.iconsDev}>
-                  {renderIcons()}
-                  {currentPage === 'profile' ? (
-                    <PatientProfile />
-                  ) : currentPage === 'notes' ? (
-                    <PatientNotes />
-                  ) : currentPage === 'appointment' ? (
-                    appointmentPopover()
-                  ) : currentPage === 'summaries' ? (
-                    <PatientSummaries />
-                  ) : (
-                    renderChat()
-                  )}
-                </div>
+          <div style={localStyles.listDev}>
+            {renderListHeader()}
+            {activeList === 'appointments' ? (
+              <div>{renderAppointmentsList()}</div>
+            ) : (
+              <div>{renderPatientsList()}</div>
+            )}
+          </div>
+          <div style={localStyles.rightColumn}>
+            <div style={localStyles.mianDev}>
+              <div style={localStyles.iconsDev}>
+                {renderIcons()}
+                {currentPage === 'profile' ? (
+                  <PatientProfile />
+                ) : currentPage === 'notes' ? (
+                  <PatientNotes />
+                ) : currentPage === 'appointment' ? (
+                  appointmentPopover()
+                ) : currentPage === 'summaries' ? (
+                  <PatientSummaries />
+                ) : (
+                  renderChat()
+                )}
               </div>
             </div>
+          </div>
         </CardContainer>
       </Container>
       <Footer />

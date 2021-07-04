@@ -22,7 +22,7 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import AppBar from '@material-ui/core/AppBar';
-import {lightStyles, darkStyles} from '../styles/myNavStyles'
+import { lightStyles, darkStyles } from '../styles/myNavStyles';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
 const MyNav = () => {
@@ -33,13 +33,21 @@ const MyNav = () => {
     (state) => state.educators
   );
   const { educatorId, token, darkMode } = useSelector((state) => state.auth);
-  
-  const styles = !darkMode ? lightStyles : darkStyles
+
+  const styles = !darkMode ? lightStyles : darkStyles;
 
   useEffect(() => {
     dispatch(getEducatorsAndPatients({ educatorId, token }));
   }, []);
-
+  useEffect(() => {
+    let placeValue = 0;
+    if (educators) {
+      Object.values(educators).forEach((educator, index) => {
+        if (educator?.id === fetchedEducatorId) placeValue = index;
+      });
+      setValue(placeValue + 2);
+    }
+  }, [fetchedEducatorId]);
   const logout = () => {
     dispatch(clearAllAuthAction());
     dispatch(clearAllEducatorsAction());
@@ -55,14 +63,11 @@ const MyNav = () => {
   const [value, setValue] = useState(2);
 
   const handleChange = (event, newValue) => {
-    if(newValue > 1)
-    setValue(newValue);
+    if (newValue > 1) setValue(newValue);
   };
 
   return (
-    <div
-      style={styles.root}
-    >
+    <div style={styles.root}>
       <AppBar position="static" color="default">
         <Tabs
           value={value}
@@ -74,17 +79,13 @@ const MyNav = () => {
           style={styles.tabs}
         >
           <img
-          alt=""
-          src={logo}
-          width="80"
-          height="35"
-          style={styles.navLogo}
-        />
-          <Tab
-            label='Logout'
-            style={styles.tab}
-            onClick={() => logout()}
+            alt=""
+            src={logo}
+            width="80"
+            height="35"
+            style={styles.navLogo}
           />
+          <Tab label="Logout" style={styles.tab} onClick={() => logout()} />
           {Object.keys(educators).length
             ? Object.values(educators).map((educator) => {
                 return (
@@ -97,10 +98,7 @@ const MyNav = () => {
               })
             : ''}
         </Tabs>
-        {loading?
-        <LinearProgress/> : 
-        null
-        }
+        {loading ? <LinearProgress /> : null}
       </AppBar>
     </div>
   );
