@@ -7,7 +7,7 @@ export const lightStyles = {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
-    height: '90.8vh',
+    height: '89.3vh',
     width: '100%',
     backgroundColor: theme.primary.black,
   },

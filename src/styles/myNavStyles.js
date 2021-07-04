@@ -10,7 +10,7 @@ export const lightStyles = {
     backgroundColor: darkTheme.secondary.lightBlue,
     height: '100%',
   },
-  tab: { fontSize: 20, color: 'black', width: 30 },
+  tab: { fontSize: 20, color: 'black', width: 30, height:70 },
   footerAppBar: {
     top: 'auto',
     bottom: 0,

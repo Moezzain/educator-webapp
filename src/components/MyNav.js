@@ -1,7 +1,6 @@
-import React, { Component, useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import logo from '../assets/logo-dark-notext.png';
-import { useHistory, Link } from 'react-router-dom';
-import { DataContext } from '../stateManagement/context';
+import { useHistory } from 'react-router-dom';
 
 //redux
 import { useSelector, useDispatch } from 'react-redux';
@@ -19,15 +18,17 @@ import { clearAllPatientAction } from '../redux/reducers/patientReducer';
 
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
 import AppBar from '@material-ui/core/AppBar';
 import { lightStyles, darkStyles } from '../styles/myNavStyles';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import PanToolIcon from '@material-ui/icons/PanTool';
+import MenuBookIcon from '@material-ui/icons/MenuBook';
 
 const MyNav = () => {
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const [localEducators, setLocalEducators] = useState([]);
 
   const { educators, loading, fetchedEducatorId } = useSelector(
     (state) => state.educators
@@ -40,9 +41,24 @@ const MyNav = () => {
     dispatch(getEducatorsAndPatients({ educatorId, token }));
   }, []);
   useEffect(() => {
-    let placeValue = 0;
+    //sort educators first casehandlers then the rest
     if (educators) {
-      Object.values(educators).forEach((educator, index) => {
+      setLocalEducators(
+        Object.values(educators).sort(function (x, y) {
+          return x?.isCaseHandler === y?.isCaseHandler
+            ? 0
+            : x?.isCaseHandler
+            ? -1
+            : 1;
+        })
+      );
+    }
+  }, [educators]);
+
+  useEffect(() => {
+    let placeValue = 0;
+    if (localEducators) {
+      Object.values(localEducators).forEach((educator, index) => {
         if (educator?.id === fetchedEducatorId) placeValue = index;
       });
       setValue(placeValue + 2);
@@ -86,13 +102,15 @@ const MyNav = () => {
             style={styles.navLogo}
           />
           <Tab label="Logout" style={styles.tab} onClick={() => logout()} />
-          {Object.keys(educators).length
-            ? Object.values(educators).map((educator) => {
+          {Object.keys(localEducators).length
+            ? Object.values(localEducators).map((educator) => {
+              
                 return (
                   <Tab
                     label={educator.name}
                     style={styles.tab}
                     onClick={() => RenderEducator(educator.id)}
+                    icon={educator?.isCaseHandler ? <MenuBookIcon/> : <PanToolIcon/>}
                   />
                 );
               })
