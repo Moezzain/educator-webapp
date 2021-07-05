@@ -9,7 +9,8 @@ import Chat from './Chat';
 import PatientProfile from './PatientProfile';
 import PatientNotes from './PatientNotes';
 import PatientSummaries from './patientSummaries';
-import CalendarView from './CalendarView'
+import CalendarView from './CalendarView';
+import PatientList from '../components/PatientList';
 
 // Redux
 import { useSelector, useDispatch } from 'react-redux';
@@ -17,6 +18,7 @@ import { setChatsAction } from '../redux/reducers/authReducer';
 import {
   setCurrentChatAction,
   clearAllChatsAction,
+  getAllChats,
 } from '../redux/reducers/chatsReducer';
 import { setPatientIdAction } from '../redux/reducers/patientReducer';
 import { setCurrentEducatorAction } from '../redux//reducers/educatorsReducer';
@@ -69,6 +71,7 @@ const ShowPatientsView = () => {
     currentEducator,
   } = useSelector((state) => state.educators);
   const { patientId } = useSelector((state) => state.patient);
+  const { allChats, allChatsLoading} = useSelector((state) => state.chats);
 
   const styles = !darkMode ? lightStyles : darkStyles;
   useEffect(() => {
@@ -85,21 +88,22 @@ const ShowPatientsView = () => {
     }
   }, [chats, dispatch]);
   useEffect(() => {
-    let tempEducator;
-    tempEducator = Object.values(educators).filter((educator) => {
-      return fetchedEducatorId === educator.id;
-    });
-    if (tempEducator.length !== 0) {
-      setLocalPatients(tempEducator[0].chats);
-    }
-    dispatch(setCurrentEducatorAction(tempEducator[0]));
-    dispatch(clearAllChatsAction());
+      let tempEducator;
+      tempEducator = Object.values(educators).filter((educator) => {
+        return fetchedEducatorId === educator.id;
+      });
+      if (tempEducator.length !== 0) {
+        setLocalPatients(tempEducator[0].chats);
+      }
+      setSearchTerm('')
+      dispatch(setCurrentEducatorAction(tempEducator[0]));
+      dispatch(clearAllChatsAction());
+    
   }, [
     dispatch,
     educatorId,
     educators,
     fetchedEducatorId,
-    localPatients,
     patients,
   ]);
   useEffect(() => {
@@ -107,6 +111,11 @@ const ShowPatientsView = () => {
       setDisableIcons(false);
     }
   }, [patientId]);
+  useEffect(() => {
+    if (allChats?.length) {
+      setLocalPatients(allChats);
+    }
+  }, [allChats]);
   const renderChat = () => {
     if (!localPatients.length) {
       return null;
@@ -126,56 +135,8 @@ const ShowPatientsView = () => {
     dispatch(setPatientIdAction(patientId));
     dispatch(setCurrentChatAction(chatId));
   };
-
-  const renderPatientsList = () => {
-    if (!localPatients.length) {
-      return null;
-    }
-    let queriedPatient;
-    searchTerm === ''
-      ? (queriedPatient = localPatients)
-      : (queriedPatient = localPatients?.filter((patient) => {
-          return (
-            patient?.patientName?.toLowerCase().includes(searchTerm) ||
-            patient?.id?.includes(searchTerm)
-          );
-        }));
-    return (
-      <div>
-        <div style={{ height: '76vh', overflow: 'auto' }}>
-          <Input
-            placeholder="Search name"
-            style={{ width: '100%' }}
-            onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
-          />
-          {queriedPatient?.map((patient) => (
-            <Conversation
-              key={patient.id}
-              active={patientId === patient.patientId}
-              onClick={() => activateChat(patient.id, patient.patientId)}
-            >
-              <Conversation.Content>
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                  }}
-                >
-                  <AccountCircleIcon
-                    fontSize="large"
-                    style={{ marginRight: 5 }}
-                  ></AccountCircleIcon>
-                  <div style={styles.patientListName}>
-                    {patient.patientName}
-                  </div>
-                </div>
-              </Conversation.Content>
-            </Conversation>
-          ))}
-        </div>
-      </div>
-    );
+  const allPateints = () => {
+    dispatch(getAllChats({ educatorId, token }));
   };
   const renderListHeader = () => {
     return (
@@ -197,70 +158,6 @@ const ShowPatientsView = () => {
       </div>
     );
   };
-  // const localizer = momentLocalizer(moment);
-  // const renderAppointmentsList = () => {
-  //   let appointments = [];
-  //   if (currentEducator) {
-  //     const educatorAppointments = currentEducator.appointments;
-  //     educatorAppointments.forEach((appointment) => {
-  //       appointments.push({
-  //         appointmentId: appointment.appointmentId,
-  //         date: new Date(appointment.date.split('T')[0]),
-  //         name: appointment.name,
-  //         time: appointment.time,
-  //         patientId: appointment.patientId,
-  //       });
-  //     });
-  //   }
-
-  //   if (!appointments || (appointments && !Object.keys(appointments).length)) {
-  //     return null;
-  //   }
-  //   let upComing = 0;
-  //   const calendarAppointments = appointments.map((appointment) => {
-  //     let date = new Date(appointment.date);
-  //     if (date > Date.now()) upComing++;
-  //     date.setHours(appointment.time.split(':')[0]);
-
-  //     return {
-  //       id: appointment.appointmentId,
-  //       title: appointment.name,
-  //       allDay: false,
-  //       start: date,
-  //       end: date,
-  //       patinetId: appointment.patientId,
-  //     };
-  //   });
-
-  //   return (
-  //     <div style={styles.calendarCardDiv}>
-  //       <Card elevation={5} style={styles.calendarCard}>
-  //         <div style={styles.calendarDiv}>
-  //           <div
-  //             style={{
-  //               alignSelf: 'start',
-  //               marginLeft: 10,
-  //               marginTop: 5,
-  //               fontSize: 20,
-  //             }}
-  //           >
-  //             Upcoming Appointments: {upComing}
-  //           </div>
-  //           <Calendar
-  //             localizer={localizer}
-  //             events={calendarAppointments}
-  //             startAccessor="start"
-  //             endAccessor="end"
-  //             style={styles.calendar}
-  //             onSelectEvent={(e) => {
-  //               goToPatient(e?.patinetId);
-  //             }}
-  //           />
-  //         </div>
-  //       </Card>
-  //     </div>
-  //   );
-  // };
   const goToPatient = (patientId) => {
     setCurrentPage('profile');
     setActiveList('');
@@ -301,11 +198,11 @@ const ShowPatientsView = () => {
             setValueCurrentPage('summaries');
           }}
         >
-          <ShortTextIcon style={styles.icons} fontSize="large"></ShortTextIcon>
+          <ShortTextIcon style={styles.icons} fontSize="large" />
         </IconButton>
         <IconButton
           aria-label="darkmode"
-          style={{ left: '56vw' }}
+          style={{ right: 85,position:'absolute' }}
           onClick={() => {
             dispatch(setDarkModeAction(!darkMode));
           }}
@@ -338,14 +235,29 @@ const ShowPatientsView = () => {
             <div style={styles.calendarMainDiv}>
               <div style={styles.headerListDiv}>{renderListHeader()}</div>
               <div style={styles.calendarContentDiv}>
-                <CalendarView currentEducator={currentEducator} darkMode={darkMode} goToPatient={goToPatient}/>
+                <CalendarView
+                  currentEducator={currentEducator}
+                  darkMode={darkMode}
+                  goToPatient={goToPatient}
+                />
               </div>
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
               <div style={styles.listDev}>
                 {renderListHeader()}
-                  <div>{renderPatientsList()}</div>
+                <div>
+                  <PatientList
+                    localPatients={localPatients}
+                    allPateints={allPateints}
+                    activateChat={activateChat}
+                    patientId={patientId}
+                    darkMode={darkMode}
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
+                    allChatsLoading={allChatsLoading}
+                  />
+                </div>
               </div>
               <div style={styles.rightColumn}>
                 <div style={styles.mianDev}>
