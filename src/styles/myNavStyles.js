@@ -4,35 +4,55 @@ export const lightStyles = {
   root: {
     flexGrow: 1,
     width: '100%',
-    height:'10%'
+    height: 50,
   },
   tabs: {
     backgroundColor: darkTheme.secondary.lightBlue,
-    height: '100%',
+    height: 50,
   },
-  tab: { fontSize: 20, color: 'black', width: 30, height:70 },
+  tab: { fontSize: 20, color: 'black', width: 30, height: 50 },
   footerAppBar: {
     top: 'auto',
     bottom: 0,
     width: '100%',
     height: '5%',
     backgroundColor: darkTheme.secondary.lightBlue,
-    alignItems:'center'
+    alignItems: 'center',
   },
-  navLogo:{
-  marginTop: 5
+  navLogo: {
+    marginTop: 5,
   },
-  footerLogo:{
-      marginTop:5,
-      marginBottom:10
-  }
+  footerLogo: {
+    marginTop: 5,
+    marginBottom: 10,
+  },
+  customTabDiv: {
+    width: 200,
+    height: 50,
+    fontSize: 25,
+    display:'flex',
+    justifyContent: 'center',
+    alignItems:'center',
+    verticalAlign: 'center',
+  },
+  text: {
+    textAlign: 'center',
+    verticalAlign: 'center',
+    top: 0,
+    position: 'relative',
+    marginTop: 10,
+    fontSize: 20,
+    flexDirection: 'row',
+    display: 'flex',
+    marginBottom: 15,
+  },
+  icon: { marginRight: 10 },
 };
 export const darkStyles = {
   root: {
     flexGrow: 1,
     width: '100%',
     backgroundColor: theme.secondary.darkBlue,
-
   },
   tabs: {
     backgroundColor: theme.secondary.darkBlue,
@@ -45,13 +65,13 @@ export const darkStyles = {
     width: '100%',
     height: '5%',
     backgroundColor: theme.secondary.darkBlue,
-    alignItems:'center'
+    alignItems: 'center',
   },
-  navLogo:{
-    marginTop: 5
-    },
-    footerLogo:{
-      marginTop:5,
-      marginBottom:10
-  }
+  navLogo: {
+    marginTop: 5,
+  },
+  footerLogo: {
+    marginTop: 5,
+    marginBottom: 10,
+  },
 };
