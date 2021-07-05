@@ -52,13 +52,14 @@ export const darkStyles = {
   root: {
     flexGrow: 1,
     width: '100%',
+    height: 50,
     backgroundColor: theme.secondary.darkBlue,
   },
   tabs: {
     backgroundColor: theme.secondary.darkBlue,
-    height: '100%',
+    height: 50,
   },
-  tab: { fontSize: 20, color: 'black', width: 30 },
+  tab: { fontSize: 20, color: 'black', width: 30, height: 50 },
   footerAppBar: {
     top: 'auto',
     bottom: 0,
@@ -74,4 +75,25 @@ export const darkStyles = {
     marginTop: 5,
     marginBottom: 10,
   },
+  customTabDiv: {
+    width: 200,
+    height: 50,
+    fontSize: 25,
+    display:'flex',
+    justifyContent: 'center',
+    alignItems:'center',
+    verticalAlign: 'center',
+  },
+  text: {
+    textAlign: 'center',
+    verticalAlign: 'center',
+    top: 0,
+    position: 'relative',
+    marginTop: 10,
+    fontSize: 20,
+    flexDirection: 'row',
+    display: 'flex',
+    marginBottom: 15,
+  },
+  icon: { marginRight: 10 },
 };
