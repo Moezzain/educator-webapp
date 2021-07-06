@@ -37,6 +37,7 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ShortTextIcon from '@material-ui/icons/ShortText';
 import Brightness4Icon from '@material-ui/icons/Brightness4';
 import Container from '@material-ui/core/Container';
+import Input from '@material-ui/core/Input';
 
 import '../App.css';
 import { lightStyles, darkStyles } from '../styles/showPatientsViewStyles';
@@ -52,6 +53,7 @@ const ShowPatientsView = () => {
   const [appointmentAnchorEl, setAppointmentAnchorEl] = useState('');
   const [currentAppointment, setCurrentAppointment] = useState('');
   const [disableIcons, setDisableIcons] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
   const [lang, setLang] = useState({
     ar: {
       chat: 'المحادثة',
@@ -140,10 +142,21 @@ const ShowPatientsView = () => {
     if (!localPatients.length) {
       return null;
     }
+    let queriedPatient;
+    searchTerm === ''
+      ? (queriedPatient = localPatients)
+      : (queriedPatient = localPatients?.filter((patinet) => {
+          return patinet?.patientName?.toLowerCase().includes(searchTerm);
+        }));
     return (
       <div>
         <div style={{ height: '76vh', overflow: 'auto' }}>
-          {localPatients.map((patient) => (
+          <Input
+            placeholder="Search name"
+            style={{ width: '100%' }}
+            onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
+          />
+          {queriedPatient?.map((patient) => (
             <Conversation
               key={patient.id}
               active={patientId === patient.patientId}
@@ -270,7 +283,7 @@ const ShowPatientsView = () => {
     dispatch(getPatientAction({ fetchedEducatorId, token, patientId }));
     const currentChat = currentEducator?.chats?.find((chat) => {
       return chat?.patientId === patientId;
-    }) 
+    });
     if (currentChat) dispatch(setCurrentChatAction(currentChat?.id));
   };
   const handleAppointmentPopoverOpen = (e) => {
