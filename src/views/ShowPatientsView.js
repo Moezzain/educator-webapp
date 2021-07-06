@@ -30,12 +30,9 @@ import PersonIcon from '@material-ui/icons/Person';
 import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
 import NoteIcon from '@material-ui/icons/Note';
 import Button from '@material-ui/core/Button';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ShortTextIcon from '@material-ui/icons/ShortText';
 import Brightness4Icon from '@material-ui/icons/Brightness4';
 import Container from '@material-ui/core/Container';
-import Input from '@material-ui/core/Input';
-import { Conversation } from '@chatscope/chat-ui-kit-react';
 
 import '../App.css';
 import { lightStyles, darkStyles } from '../styles/showPatientsViewStyles';
@@ -89,15 +86,18 @@ const ShowPatientsView = () => {
   }, [chats, dispatch]);
   useEffect(() => {
       let tempEducator;
-      tempEducator = Object.values(educators).filter((educator) => {
-        return fetchedEducatorId === educator.id;
-      });
-      if (tempEducator.length !== 0) {
-        setLocalPatients(tempEducator[0].chats);
+      if(educators){
+
+        tempEducator = Object.values(educators).filter((educator) => {
+          return fetchedEducatorId === educator.id;
+        });
+        if (tempEducator.length !== 0) {
+          setLocalPatients(tempEducator[0].chats);
+        }
+        setSearchTerm('')
+        dispatch(setCurrentEducatorAction(tempEducator[0]));
+        dispatch(clearAllChatsAction());
       }
-      setSearchTerm('')
-      dispatch(setCurrentEducatorAction(tempEducator[0]));
-      dispatch(clearAllChatsAction());
     
   }, [
     dispatch,

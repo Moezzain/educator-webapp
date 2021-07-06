@@ -24,6 +24,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import PanToolIcon from '@material-ui/icons/PanTool';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
 import { Typography } from '@material-ui/core';
+import Button from '@material-ui/core/Button';
 
 const MyNav = () => {
   const dispatch = useDispatch();
@@ -106,11 +107,11 @@ const MyNav = () => {
           {Object.keys(localEducators).length
             ? Object.values(localEducators).map((educator) => {
                 return (
-                  <div
+                  <Button
                     style={styles.customTabDiv}
                     onClick={() => RenderEducator(educator.id)}
                   >
-                    <Typography style={styles.text}>
+                    <Typography  style={styles.text}>
                       <div style={styles.icon}>
                         {educator?.isCaseHandler ? (
                           <PanToolIcon />
@@ -120,7 +121,7 @@ const MyNav = () => {
                       </div>
                       {educator.name}
                     </Typography>
-                  </div>
+                  </Button>
                 );
               })
             : ''}

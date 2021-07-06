@@ -48,6 +48,7 @@ export const getEducatorsAndPatients = createAsyncThunk(
       return {tempEducators, patients};
   }
   else{
+    
     let patients = {}
     let {chats, appointments, educator}= await getEducatorData(educatorId, token)
     
@@ -70,12 +71,13 @@ export const getEducatorsAndPatients = createAsyncThunk(
       
 
     }
+    
     if (appointments) {
       educator.appointments = appointments
     }
-    const educators = [educator]
+    const tempEducators = [educator]
     
-    return {educators,patients}
+    return {tempEducators,patients}
   }
 
 }
