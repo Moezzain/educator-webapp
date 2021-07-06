@@ -21,8 +21,8 @@ import Tab from '@material-ui/core/Tab';
 import AppBar from '@material-ui/core/AppBar';
 import { lightStyles, darkStyles } from '../styles/myNavStyles';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import PanToolIcon from '@material-ui/icons/PanTool';
-import MenuBookIcon from '@material-ui/icons/MenuBook';
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd'; 
+import PersonIcon from '@material-ui/icons/Person';
 import { Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 
@@ -114,9 +114,9 @@ const MyNav = () => {
                     <Typography  style={styles.text}>
                       <div style={styles.icon}>
                         {educator?.isCaseHandler ? (
-                          <PanToolIcon />
+                          <AssignmentIndIcon />
                         ) : (
-                          <MenuBookIcon />
+                          <PersonIcon />
                         )}
                       </div>
                       {educator.name}
