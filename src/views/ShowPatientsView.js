@@ -9,8 +9,8 @@ import Chat from './Chat';
 import PatientProfile from './PatientProfile';
 import PatientNotes from './PatientNotes';
 import PatientSummaries from './patientSummaries';
-import { Conversation } from '@chatscope/chat-ui-kit-react';
-import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
+import CalendarView from './CalendarView';
+import PatientList from '../components/PatientList';
 
 // Redux
 import { useSelector, useDispatch } from 'react-redux';
@@ -18,11 +18,9 @@ import { setChatsAction } from '../redux/reducers/authReducer';
 import {
   setCurrentChatAction,
   clearAllChatsAction,
+  getAllChats,
 } from '../redux/reducers/chatsReducer';
-import {
-  setPatientIdAction,
-  getPatientAction,
-} from '../redux/reducers/patientReducer';
+import { setPatientIdAction } from '../redux/reducers/patientReducer';
 import { setCurrentEducatorAction } from '../redux//reducers/educatorsReducer';
 import { setDarkModeAction } from '../redux//reducers/authReducer';
 
@@ -32,12 +30,9 @@ import PersonIcon from '@material-ui/icons/Person';
 import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
 import NoteIcon from '@material-ui/icons/Note';
 import Button from '@material-ui/core/Button';
-import Popover from '@material-ui/core/Popover';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ShortTextIcon from '@material-ui/icons/ShortText';
 import Brightness4Icon from '@material-ui/icons/Brightness4';
 import Container from '@material-ui/core/Container';
-import Input from '@material-ui/core/Input';
 
 import '../App.css';
 import { lightStyles, darkStyles } from '../styles/showPatientsViewStyles';
@@ -50,8 +45,6 @@ const ShowPatientsView = () => {
   const [activeList, setActiveList] = useState('');
   const [localPatients, setLocalPatients] = useState([]);
   const [currentPage, setCurrentPage] = useState('');
-  const [appointmentAnchorEl, setAppointmentAnchorEl] = useState('');
-  const [currentAppointment, setCurrentAppointment] = useState('');
   const [disableIcons, setDisableIcons] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [lang, setLang] = useState({
@@ -75,10 +68,9 @@ const ShowPatientsView = () => {
     currentEducator,
   } = useSelector((state) => state.educators);
   const { patientId } = useSelector((state) => state.patient);
+  const { allChats, allChatsLoading} = useSelector((state) => state.chats);
 
-  const openAppointment = Boolean(appointmentAnchorEl);
-
-  const localStyles = !darkMode ? lightStyles : darkStyles;
+  const styles = !darkMode ? lightStyles : darkStyles;
   useEffect(() => {
     if (!token) history.replace('/');
   }, [token]);
@@ -93,21 +85,25 @@ const ShowPatientsView = () => {
     }
   }, [chats, dispatch]);
   useEffect(() => {
-    let tempEducator;
-    tempEducator = Object.values(educators).filter((educator) => {
-      return fetchedEducatorId === educator.id;
-    });
-    if (tempEducator.length !== 0) {
-      setLocalPatients(tempEducator[0].chats);
-    }
-    dispatch(setCurrentEducatorAction(tempEducator[0]));
-    dispatch(clearAllChatsAction());
+      let tempEducator;
+      if(educators){
+
+        tempEducator = Object.values(educators).filter((educator) => {
+          return fetchedEducatorId === educator.id;
+        });
+        if (tempEducator.length !== 0) {
+          setLocalPatients(tempEducator[0].chats);
+        }
+        setSearchTerm('')
+        dispatch(setCurrentEducatorAction(tempEducator[0]));
+        dispatch(clearAllChatsAction());
+      }
+    
   }, [
     dispatch,
     educatorId,
     educators,
     fetchedEducatorId,
-    localPatients,
     patients,
   ]);
   useEffect(() => {
@@ -116,8 +112,10 @@ const ShowPatientsView = () => {
     }
   }, [patientId]);
   useEffect(() => {
-    dispatch(getPatientAction({ educatorId, token, patientId }));
-  }, [dispatch, educatorId, patientId, token]);
+    if (allChats?.length) {
+      setLocalPatients(allChats);
+    }
+  }, [allChats]);
   const renderChat = () => {
     if (!localPatients.length) {
       return null;
@@ -137,66 +135,21 @@ const ShowPatientsView = () => {
     dispatch(setPatientIdAction(patientId));
     dispatch(setCurrentChatAction(chatId));
   };
-
-  const renderPatientsList = () => {
-    if (!localPatients.length) {
-      return null;
-    }
-    let queriedPatient;
-    searchTerm === ''
-      ? (queriedPatient = localPatients)
-      : (queriedPatient = localPatients?.filter((patinet) => {
-          return patinet?.patientName?.toLowerCase().includes(searchTerm);
-        }));
-    return (
-      <div>
-        <div style={{ height: '76vh', overflow: 'auto' }}>
-          <Input
-            placeholder="Search name"
-            style={{ width: '100%' }}
-            onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
-          />
-          {queriedPatient?.map((patient) => (
-            <Conversation
-              key={patient.id}
-              active={patientId === patient.patientId}
-              onClick={() => activateChat(patient.id, patient.patientId)}
-            >
-              <Conversation.Content>
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                  }}
-                >
-                  <AccountCircleIcon
-                    fontSize="large"
-                    style={{ marginRight: 5 }}
-                  ></AccountCircleIcon>
-                  <div style={localStyles.patientListName}>
-                    {patient.patientName}
-                  </div>
-                </div>
-              </Conversation.Content>
-            </Conversation>
-          ))}
-        </div>
-      </div>
-    );
+  const allPateints = () => {
+    dispatch(getAllChats({ educatorId, token }));
   };
   const renderListHeader = () => {
     return (
-      <div style={localStyles.listHeaderDiv}>
+      <div style={styles.listHeaderDiv}>
         <Button
           variant="contained"
           onClick={() => setActiveList('patients')}
-          style={localStyles.buttonsText}
+          style={styles.buttonsText}
         >
           المحادثات
         </Button>
         <Button
-          style={localStyles.buttonsText}
+          style={styles.buttonsText}
           variant="contained"
           onClick={() => setActiveList('appointments')}
         >
@@ -205,98 +158,14 @@ const ShowPatientsView = () => {
       </div>
     );
   };
-
-  const renderAppointmentsList = () => {
-    let appointments = [];
-    if (currentEducator) {
-      const educatorAppointments = currentEducator.appointments;
-      educatorAppointments.forEach((appointment) => {
-        appointments.push({
-          appointmentId: appointment.appointmentId,
-          date: new Date(appointment.date.split('T')[0]),
-          name: appointment.name,
-          time: appointment.time,
-          patientId: appointment.patientId,
-        });
-      });
-    }
-
-    if (!appointments || (appointments && !Object.keys(appointments).length)) {
-      return null;
-    }
-
-    return (
-      <div style={{ overflow: 'auto', height: '80vh' }}>
-        {Object.values(appointments)
-          .sort((a, b) => b.date - a.date)
-          .map((appointment) => {
-            return (
-              <Button
-                variant="contained"
-                style={localStyles.listAppointemntsButton}
-                key={appointment.appointmentId}
-                onClick={(e) => showAppointment(e, appointment)}
-              >
-                {new Date(appointment.date).toDateString()}
-              </Button>
-            );
-          })}
-      </div>
-    );
-  };
-  const appointmentPopover = () => {
-    return (
-      <Popover
-        open={openAppointment}
-        anchorEl={appointmentAnchorEl}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-        onClose={handleAppointmentPopoverClose}
-        disableRestoreFocus
-      >
-        <div style={localStyles.popUpDiv}>
-          <h6 style={{ textAlign: 'center' }}>
-            {currentAppointment.name} :{lang.ar.patientName}
-          </h6>
-          <h6 style={{ textAlign: 'center' }}>
-            {currentAppointment.time} :{lang.ar.time}
-          </h6>
-          <Button
-            variant="contained"
-            style={localStyles.goToPatientButton}
-            onClick={() => goToPatient(currentAppointment.patientId)}
-          >
-            {lang.ar.goToPatient}
-          </Button>
-        </div>
-      </Popover>
-    );
-  };
   const goToPatient = (patientId) => {
     setCurrentPage('profile');
-    dispatch(getPatientAction({ fetchedEducatorId, token, patientId }));
+    setActiveList('');
+    if (patientId) dispatch(setPatientIdAction(patientId));
     const currentChat = currentEducator?.chats?.find((chat) => {
       return chat?.patientId === patientId;
     });
     if (currentChat) dispatch(setCurrentChatAction(currentChat?.id));
-  };
-  const handleAppointmentPopoverOpen = (e) => {
-    setAppointmentAnchorEl(e.currentTarget);
-  };
-
-  const handleAppointmentPopoverClose = () => {
-    setAppointmentAnchorEl(null);
-  };
-  const showAppointment = (e, appointment) => {
-    setCurrentAppointment(appointment);
-    handleAppointmentPopoverOpen(e);
-    setCurrentPage('appointment');
   };
   const renderIcons = () => {
     return (
@@ -305,7 +174,7 @@ const ShowPatientsView = () => {
           aria-label="chat"
           onClick={() => setValueCurrentPage('chat')}
         >
-          <ChatBubbleIcon style={localStyles.icons} fontSize="large" />
+          <ChatBubbleIcon style={styles.icons} fontSize="large" />
         </IconButton>
         <IconButton
           aria-label="chat"
@@ -313,7 +182,7 @@ const ShowPatientsView = () => {
             setValueCurrentPage('profile');
           }}
         >
-          <PersonIcon style={localStyles.icons} fontSize="large" />
+          <PersonIcon style={styles.icons} fontSize="large" />
         </IconButton>
         <IconButton
           aria-label="notes"
@@ -321,7 +190,7 @@ const ShowPatientsView = () => {
             setValueCurrentPage('notes');
           }}
         >
-          <NoteIcon style={localStyles.icons} fontSize="large"></NoteIcon>
+          <NoteIcon style={styles.icons} fontSize="large"></NoteIcon>
         </IconButton>
         <IconButton
           aria-label="summary"
@@ -329,20 +198,17 @@ const ShowPatientsView = () => {
             setValueCurrentPage('summaries');
           }}
         >
-          <ShortTextIcon
-            style={localStyles.icons}
-            fontSize="large"
-          ></ShortTextIcon>
+          <ShortTextIcon style={styles.icons} fontSize="large" />
         </IconButton>
         <IconButton
           aria-label="darkmode"
-          style={{ left: '56vw' }}
+          style={{ right: 85,position:'absolute' }}
           onClick={() => {
             dispatch(setDarkModeAction(!darkMode));
           }}
         >
           <Brightness4Icon
-            style={localStyles.icons}
+            style={styles.icons}
             fontSize="large"
           ></Brightness4Icon>
         </IconButton>
@@ -355,7 +221,7 @@ const ShowPatientsView = () => {
   return (
     <>
       <MyNav />
-      <Container maxWidth={false} style={localStyles.container}>
+      <Container maxWidth={false} style={styles.container}>
         <CardContainer
           width="95%"
           display="flex"
@@ -363,34 +229,54 @@ const ShowPatientsView = () => {
           padding={10}
           marginT={10}
           marginB={10}
-          backgroundColor={localStyles.cardContainer}
+          backgroundColor={styles.cardContainer}
         >
-          <div style={localStyles.listDev}>
-            {renderListHeader()}
-            {activeList === 'appointments' ? (
-              <div>{renderAppointmentsList()}</div>
-            ) : (
-              <div>{renderPatientsList()}</div>
-            )}
-          </div>
-          <div style={localStyles.rightColumn}>
-            <div style={localStyles.mianDev}>
-              <div style={localStyles.iconsDev}>
-                {renderIcons()}
-                {currentPage === 'profile' ? (
-                  <PatientProfile />
-                ) : currentPage === 'notes' ? (
-                  <PatientNotes />
-                ) : currentPage === 'appointment' ? (
-                  appointmentPopover()
-                ) : currentPage === 'summaries' ? (
-                  <PatientSummaries />
-                ) : (
-                  renderChat()
-                )}
+          {activeList === 'appointments' ? (
+            <div style={styles.calendarMainDiv}>
+              <div style={styles.headerListDiv}>{renderListHeader()}</div>
+              <div style={styles.calendarContentDiv}>
+                <CalendarView
+                  currentEducator={currentEducator}
+                  darkMode={darkMode}
+                  goToPatient={goToPatient}
+                />
               </div>
             </div>
-          </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
+              <div style={styles.listDev}>
+                {renderListHeader()}
+                <div>
+                  <PatientList
+                    localPatients={localPatients}
+                    allPateints={allPateints}
+                    activateChat={activateChat}
+                    patientId={patientId}
+                    darkMode={darkMode}
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
+                    allChatsLoading={allChatsLoading}
+                  />
+                </div>
+              </div>
+              <div style={styles.rightColumn}>
+                <div style={styles.mianDev}>
+                  <div style={styles.iconsDev}>
+                    {renderIcons()}
+                    {currentPage === 'profile' ? (
+                      <PatientProfile />
+                    ) : currentPage === 'notes' ? (
+                      <PatientNotes />
+                    ) : currentPage === 'summaries' ? (
+                      <PatientSummaries />
+                    ) : (
+                      renderChat()
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </CardContainer>
       </Container>
       <Footer />
