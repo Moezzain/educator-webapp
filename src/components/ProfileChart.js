@@ -24,9 +24,9 @@ const ProfileChart = ({ text, hba1cs, weights, height }) => {
 
       tempData.push(
         createData(
-          hba1c.createdOn.split('T')[0],
-          weights?.[0].weight,
-          hba1c.hba1c,
+          hba1c?.createdOn?.split('T')[0],
+          weights?.[0]?.weight,
+          hba1c?.hba1c,
           height
         )
       );
