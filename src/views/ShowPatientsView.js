@@ -15,13 +15,8 @@ import PatientList from '../components/PatientList';
 // Redux
 import { useSelector, useDispatch } from 'react-redux';
 import { setChatsAction } from '../redux/reducers/authReducer';
-import {
-  setCurrentChatAction,
-  clearAllChatsAction,
-  getAllChats,
-} from '../redux/reducers/chatsReducer';
+import { setCurrentChatAction } from '../redux/reducers/chatsReducer';
 import { setPatientIdAction } from '../redux/reducers/patientReducer';
-import { setCurrentEducatorAction } from '../redux//reducers/educatorsReducer';
 import { setDarkModeAction } from '../redux//reducers/authReducer';
 
 // ui libraries
@@ -43,10 +38,9 @@ const ShowPatientsView = () => {
   const dispatch = useDispatch();
 
   const [activeList, setActiveList] = useState('');
-  const [localPatients, setLocalPatients] = useState([]);
+
   const [currentPage, setCurrentPage] = useState('');
   const [disableIcons, setDisableIcons] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
   const [lang, setLang] = useState({
     ar: {
       chat: 'المحادثة',
@@ -62,13 +56,10 @@ const ShowPatientsView = () => {
     (state) => state.auth
   );
   const {
-    fetchedEducatorId,
-    patients,
-    educators,
     currentEducator,
   } = useSelector((state) => state.educators);
   const { patientId } = useSelector((state) => state.patient);
-  const { allChats, allChatsLoading} = useSelector((state) => state.chats);
+  const {  allChatsLoading } = useSelector((state) => state.chats);
 
   const styles = !darkMode ? lightStyles : darkStyles;
   useEffect(() => {
@@ -85,42 +76,11 @@ const ShowPatientsView = () => {
     }
   }, [chats, dispatch]);
   useEffect(() => {
-      let tempEducator;
-      if(educators){
-
-        tempEducator = Object.values(educators).filter((educator) => {
-          return fetchedEducatorId === educator.id;
-        });
-        if (tempEducator.length !== 0) {
-          setLocalPatients(tempEducator[0].chats);
-        }
-        setSearchTerm('')
-        dispatch(setCurrentEducatorAction(tempEducator[0]));
-        dispatch(clearAllChatsAction());
-      }
-    
-  }, [
-    dispatch,
-    educatorId,
-    educators,
-    fetchedEducatorId,
-    patients,
-  ]);
-  useEffect(() => {
     if (patientId) {
       setDisableIcons(false);
     }
   }, [patientId]);
-  useEffect(() => {
-    if (allChats?.length) {
-      setLocalPatients(allChats);
-    }
-  }, [allChats]);
   const renderChat = () => {
-    if (!localPatients.length) {
-      return null;
-    }
-
     return (
       <Chat
         style={{ width: 1000, backgroundColor: 'green' }}
@@ -135,8 +95,15 @@ const ShowPatientsView = () => {
     dispatch(setPatientIdAction(patientId));
     dispatch(setCurrentChatAction(chatId));
   };
-  const allPateints = () => {
-    dispatch(getAllChats({ educatorId, token }));
+
+  const goToPatient = (patientId) => {
+    setCurrentPage('profile');
+    setActiveList('');
+    if (patientId) dispatch(setPatientIdAction(patientId));
+    const currentChat = currentEducator?.chats?.find((chat) => {
+      return chat?.patientId === patientId;
+    });
+    if (currentChat) dispatch(setCurrentChatAction(currentChat?.id));
   };
   const renderListHeader = () => {
     return (
@@ -158,15 +125,7 @@ const ShowPatientsView = () => {
       </div>
     );
   };
-  const goToPatient = (patientId) => {
-    setCurrentPage('profile');
-    setActiveList('');
-    if (patientId) dispatch(setPatientIdAction(patientId));
-    const currentChat = currentEducator?.chats?.find((chat) => {
-      return chat?.patientId === patientId;
-    });
-    if (currentChat) dispatch(setCurrentChatAction(currentChat?.id));
-  };
+
   const renderIcons = () => {
     return (
       <div>
@@ -202,7 +161,7 @@ const ShowPatientsView = () => {
         </IconButton>
         <IconButton
           aria-label="darkmode"
-          style={{ right: 85,position:'absolute' }}
+          style={{ right: 85, position: 'absolute' }}
           onClick={() => {
             dispatch(setDarkModeAction(!darkMode));
           }}
@@ -222,15 +181,7 @@ const ShowPatientsView = () => {
     <>
       <MyNav />
       <Container maxWidth={false} style={styles.container}>
-        <CardContainer
-          width="95%"
-          display="flex"
-          direction="row"
-          padding={10}
-          marginT={10}
-          marginB={10}
-          backgroundColor={styles.cardContainer}
-        >
+        <CardContainer style={styles.cardContainer}>
           {activeList === 'appointments' ? (
             <div style={styles.calendarMainDiv}>
               <div style={styles.headerListDiv}>{renderListHeader()}</div>
@@ -248,13 +199,9 @@ const ShowPatientsView = () => {
                 {renderListHeader()}
                 <div>
                   <PatientList
-                    localPatients={localPatients}
-                    allPateints={allPateints}
                     activateChat={activateChat}
                     patientId={patientId}
                     darkMode={darkMode}
-                    searchTerm={searchTerm}
-                    setSearchTerm={setSearchTerm}
                     allChatsLoading={allChatsLoading}
                   />
                 </div>

@@ -50,7 +50,7 @@ const LoginView = () => {
         <div
           style={styles.formDiv}
         >
-          <CardContainer width="80%" padding={30}>
+          <CardContainer style={styles.cardContainer}>
             <form style={styles.form}>
               <TextField
                 type="username"

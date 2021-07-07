@@ -10,7 +10,14 @@ export const lightStyles = {
     backgroundColor: darkTheme.secondary.lightBlue,
     height: 50,
   },
-  tab: { fontSize: 20, color: 'black', width: 30, height: 50 },
+  logout: {
+    fontSize: 20,
+    color: 'black',
+    width: 30,
+    height: 50,
+    marginLeft:25,
+    transform: [{ rotate: '90deg' }],
+  },
   footerAppBar: {
     top: 'auto',
     bottom: 0,
@@ -28,25 +35,27 @@ export const lightStyles = {
   },
   customTabDiv: {
     width: 200,
+    minWidth:140,
     height: 50,
     fontSize: 25,
-    display:'flex',
+    display: 'flex',
     justifyContent: 'center',
-    alignItems:'center',
+    alignItems: 'center',
     verticalAlign: 'center',
+    textTransform: 'none'
   },
   text: {
     textAlign: 'center',
     verticalAlign: 'center',
     top: 0,
     position: 'relative',
-    marginTop: 10,
     fontSize: 20,
     flexDirection: 'row',
     display: 'flex',
-    marginBottom: 15,
+    marginBottom: -5,
   },
   icon: { marginRight: 10 },
+  tabDiv: { fontSize: 16, marginBottom: 2 },
 };
 export const darkStyles = {
   root: {
@@ -59,7 +68,14 @@ export const darkStyles = {
     backgroundColor: theme.secondary.darkBlue,
     height: 50,
   },
-  tab: { fontSize: 20, color: 'black', width: 30, height: 50 },
+  logout: {
+    fontSize: 20,
+    color: 'black',
+    width: 30,
+    height: 50,
+    marginLeft:25,
+    transform: [{ rotate: '90deg' }],
+  },
   footerAppBar: {
     top: 'auto',
     bottom: 0,
@@ -77,11 +93,12 @@ export const darkStyles = {
   },
   customTabDiv: {
     width: 200,
+    minWidth:140,
     height: 50,
     fontSize: 25,
-    display:'flex',
+    display: 'flex',
     justifyContent: 'center',
-    alignItems:'center',
+    alignItems: 'center',
     verticalAlign: 'center',
   },
   text: {
@@ -89,11 +106,12 @@ export const darkStyles = {
     verticalAlign: 'center',
     top: 0,
     position: 'relative',
-    marginTop: 10,
     fontSize: 20,
     flexDirection: 'row',
     display: 'flex',
-    marginBottom: 15,
+    marginBottom: -5,
+    color: darkTheme.secondary.lightGrey,
   },
   icon: { marginRight: 10 },
+  tabDiv: { fontSize: 16, marginBottom: 2, color: darkTheme.secondary.lightGrey, },
 };

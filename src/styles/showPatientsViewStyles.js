@@ -11,6 +11,17 @@ export const lightStyles = {
     width: '100%',
     backgroundColor: theme.primary.black,
   },
+  cardContainer: {
+    width: '95%',
+    height:'97%',
+    display: 'flex',
+    direction: 'row',
+    padding: 10,
+    marginTop: 10,
+    marginBottom: 10,
+    borderRadius: 10,
+    backgroundColor: theme.primary.white,
+  },
   buttonsText: {
     marginTop: 5,
     marginRight: 5,
@@ -43,7 +54,6 @@ export const lightStyles = {
     width: '80%',
     height: '100%',
   },
-  cardContainer: theme.primary.white,
   listHeaderDiv: {
     display: 'block',
     backgroundColor: theme.primary.white,
@@ -53,31 +63,33 @@ export const lightStyles = {
   patientListName: {
     color: 'black',
   },
-  listAppointemntsButton: { width: '100%', backgroundColor: theme.primary.bluishWhite },
-  popUpDiv: { height: '10vh', width: '10vw', backgroundColor:'white' },
-  calendarMainDiv:{ flex: 1 },
-  headerListDiv:{ width: '20%', height: '10%' },
-  calendarContentDiv:{ width: '100%', height: '90%' },
-  calendarCardDiv:{ flex: 1, display: 'flex', justifyContent: 'center' },
-  calendarCard:{
+  listAppointemntsButton: {
+    width: '100%',
+    backgroundColor: theme.primary.bluishWhite,
+  },
+  popUpDiv: { height: '10vh', width: '10vw', backgroundColor: 'white' },
+  calendarMainDiv: { flex: 1 },
+  headerListDiv: { width: '20%', height: '10%' },
+  calendarContentDiv: { width: '100%', height: '90%' },
+  calendarCardDiv: { flex: 1, display: 'flex', justifyContent: 'center' },
+  calendarCard: {
     display: 'flex',
     height: '60%',
     width: '100%',
-    marginLeft:'15%',
-    marginRight:'15%',
+    marginLeft: '15%',
+    marginRight: '15%',
     alignContent: 'center',
     alignItems: 'center',
-    backgroundColor:theme.secondary.lightBlue
+    backgroundColor: theme.secondary.lightBlue,
   },
-  calendarDiv:{
+  calendarDiv: {
     display: 'flex',
-    flexDirection:'column',
+    flexDirection: 'column',
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  calendar:{ height: 500, width: '90%',marginTop:'5%',marginBottom:'5%'  }
-
+  calendar: { height: 500, width: '90%', marginTop: '5%', marginBottom: '5%' },
 };
 export const darkStyles = {
   container: {
@@ -121,7 +133,17 @@ export const darkStyles = {
     width: '80%',
     height: '100%',
   },
-  cardContainer: darkTheme.secondary.darkBlue,
+  cardContainer: {
+    width: '95%',
+    height:'97%',
+    display: 'flex',
+    direction: 'row',
+    padding: 10,
+    marginTop: 10,
+    marginBottom: 10,
+    borderRadius: 10,
+    backgroundColor: darkTheme.secondary.darkBlue,
+  },
   listHeaderDiv: {
     display: 'block',
     backgroundColor: darkTheme.secondary.darkBlue,
@@ -131,28 +153,35 @@ export const darkStyles = {
   patientListName: {
     color: darkTheme.secondary.lightGrey,
   },
-  listAppointemntsButton: { width: '100%', backgroundColor: darkTheme.secondary.mainBlue },
-  popUpDiv: { height: '10vh', width: '10vw', backgroundColor: darkTheme.secondary.mainBlue },
-  calendarMainDiv:{ flex: 1 },
-  headerListDiv:{ width: '20%', height: '10%' },
-  calendarContentDiv:{ width: '100%', height: '90%' },
-  calendarCardDiv:{ flex: 1, display: 'flex', justifyContent: 'center' },
-  calendarCard:{
+  listAppointemntsButton: {
+    width: '100%',
+    backgroundColor: darkTheme.secondary.mainBlue,
+  },
+  popUpDiv: {
+    height: '10vh',
+    width: '10vw',
+    backgroundColor: darkTheme.secondary.mainBlue,
+  },
+  calendarMainDiv: { flex: 1 },
+  headerListDiv: { width: '20%', height: '10%' },
+  calendarContentDiv: { width: '100%', height: '90%' },
+  calendarCardDiv: { flex: 1, display: 'flex', justifyContent: 'center' },
+  calendarCard: {
     display: 'flex',
     height: '100%',
     width: '100%',
-    marginLeft:'15%',
-    marginRight:'15%',
+    marginLeft: '15%',
+    marginRight: '15%',
     alignContent: 'center',
     alignItems: 'center',
-    backgroundColor:theme.primary.black
+    backgroundColor: theme.primary.black,
   },
-  calendarDiv:{
+  calendarDiv: {
     display: 'flex',
-    flexDirection:'column',
+    flexDirection: 'column',
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  calendar:{ height: 600, width: '90%',marginTop:'5%',marginBottom:'5%'  }
+  calendar: { height: 600, width: '90%', marginTop: '5%', marginBottom: '5%' },
 };
