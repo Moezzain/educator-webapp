@@ -83,7 +83,7 @@ const PatientList = ({ activateChat, darkMode }) => {
           );
         }));
     setQueriedPatient(tempPatients);
-  }, [localPatients]);
+  }, [localPatients,searchTerm]);
 
   return (
     <div>
