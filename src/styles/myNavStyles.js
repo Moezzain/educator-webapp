@@ -100,6 +100,7 @@ export const darkStyles = {
     justifyContent: 'center',
     alignItems: 'center',
     verticalAlign: 'center',
+    textTransform: 'none'
   },
   text: {
     textAlign: 'center',

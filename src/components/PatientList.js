@@ -21,6 +21,7 @@ const PatientList = ({ activateChat, darkMode }) => {
   const [checkedAllChats, setCheckedAllChats] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [localPatients, setLocalPatients] = useState([]);
+  const [queriedPatient, setQueriedPatient] = useState([]);
   const lang = {
     ar: {
       searchHolder: 'ابحث',
@@ -63,34 +64,31 @@ const PatientList = ({ activateChat, darkMode }) => {
   }, [allChats]);
 
   useEffect(() => {
-    if (checkedAllChats) allPateints();
+    if (checkedAllChats) dispatch(getAllChats({ educatorId, token }));
   }, [checkedAllChats]);
-  const allPateints = () => {
-    dispatch(getAllChats({ educatorId, token }));
-  };
   const styles = !darkMode ? lightStyles : darkStyles;
-  if (!localPatients.length) {
-    return null;
-  }
-  let queriedPatient;
-  searchTerm === ''
-    ? (queriedPatient = localPatients)
-    : (queriedPatient = localPatients?.filter((patient) => {
-        return (
-          patient?.patientName?.toLowerCase().includes(searchTerm) ||
-          patient?.id?.includes(searchTerm)
-        );
-      }));
+
+  useEffect(() => {
+    if (!localPatients.length) {
+      setQueriedPatient([]);
+      return null;
+    }
+    let tempPatients;
+    searchTerm === ''
+      ? (tempPatients = localPatients)
+      : (tempPatients = localPatients?.filter((patient) => {
+          return (
+            patient?.patientName?.toLowerCase().includes(searchTerm) ||
+            patient?.id?.includes(searchTerm)
+          );
+        }));
+    setQueriedPatient(tempPatients);
+  }, [localPatients]);
+
   return (
     <div>
       <div style={styles.mainDiv}>
         <div style={styles.uperDiv}>
-          {/* <input
-            // type="text"
-            placeholder={lang.ar.searchHolder}
-            style={styles.input}
-            onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
-          /> */}
           <div style={styles.inputDiv} dir="rtl">
             <Input
               style={styles.input}

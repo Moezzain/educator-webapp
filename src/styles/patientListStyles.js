@@ -60,12 +60,26 @@ export const darkStyles = {
     flexDirection: 'row',
     alignItems: 'center',
   },
+  inputDiv:{
+    width:'70%'
+  },
+  switchDiv: {
+    width: '30%',
+    height: '100%',
+    alignItems: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+    marginBottom:10
+  },
   allChatsSwitch: {
     backgroundColor: theme.secondary.lightBlue,
-    margin: 2,
+    // margin: 2,
   },
   allChatsText: {
-    fontSize: 12,
+    marginBottom: -5,
+    fontSize: 16,
+    width: '100%',
+    textAlign: 'center',
   },
   accountIcon: { marginRight: 5 },
   patientListName: {
