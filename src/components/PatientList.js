@@ -18,7 +18,7 @@ const PatientList = ({localPatients,allPateints,activateChat,patientId,darkMode,
       ? (queriedPatient = localPatients)
       : (queriedPatient = localPatients?.filter((patient) => {
           return (
-            patient?.patientName?.toLowerCase().includes() ||
+            patient?.patientName?.toLowerCase().includes(searchTerm) ||
             patient?.id?.includes(searchTerm)
           );
         }));
