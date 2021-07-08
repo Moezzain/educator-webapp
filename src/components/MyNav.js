@@ -21,11 +21,12 @@ import Tab from '@material-ui/core/Tab';
 import AppBar from '@material-ui/core/AppBar';
 import { lightStyles, darkStyles } from '../styles/myNavStyles';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import AssignmentIndIcon from '@material-ui/icons/AssignmentInd'; 
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import PersonIcon from '@material-ui/icons/Person';
 import { Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
-
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import app from '../App.css';
 const MyNav = () => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -46,10 +47,10 @@ const MyNav = () => {
     //sort educators first casehandlers then the rest
     if (educators) {
       setLocalEducators(
-        Object.values(educators).sort((x, y) => {
-          if (x?.isCaseHandler === y?.isCaseHandler) return 0;
+        Object.values(educators).sort((first, second) => {
+          if (first?.isCaseHandler === second?.isCaseHandler) return 0;
           else {
-            if (x?.isCaseHandler) return -1;
+            if (first?.isCaseHandler) return -1;
             else return 1;
           }
         })
@@ -99,11 +100,13 @@ const MyNav = () => {
           <img
             alt=""
             src={logo}
-            width="80"
+            width="110"
             height="35"
             style={styles.navLogo}
           />
-          <Tab label="Logout" style={styles.tab} onClick={() => logout()} />
+          <Button style={styles.logout}>
+            <ExitToAppIcon className="logout" onClick={() => logout()} />
+          </Button>
           {Object.keys(localEducators).length
             ? Object.values(localEducators).map((educator) => {
                 return (
@@ -111,16 +114,19 @@ const MyNav = () => {
                     style={styles.customTabDiv}
                     onClick={() => RenderEducator(educator.id)}
                   >
-                    <Typography  style={styles.text}>
-                      <div style={styles.icon}>
-                        {educator?.isCaseHandler ? (
-                          <AssignmentIndIcon />
-                        ) : (
-                          <PersonIcon />
-                        )}
-                      </div>
-                      {educator.name}
-                    </Typography>
+                    <div style={styles.tabDiv}>
+                      <Typography style={styles.text}>
+                        <div style={styles.icon}>
+                          {educator?.isCaseHandler ? (
+                            <AssignmentIndIcon />
+                          ) : (
+                            <PersonIcon />
+                          )}
+                        </div>
+                        {educator.name}
+                      </Typography>
+                      <text>{educator?.specialty}</text>
+                    </div>
                   </Button>
                 );
               })
