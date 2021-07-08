@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import CardContainer from '../components/CardContainer';
 import { parseArray } from '../helpers/Converters';
 
 // Components
@@ -33,6 +32,7 @@ import Button from '@material-ui/core/Button';
 import ShortTextIcon from '@material-ui/icons/ShortText';
 import Brightness4Icon from '@material-ui/icons/Brightness4';
 import Container from '@material-ui/core/Container';
+import Card from '@material-ui/core/Card';
 
 import '../App.css';
 import { lightStyles, darkStyles } from '../styles/showPatientsViewStyles';
@@ -47,6 +47,7 @@ const ShowPatientsView = () => {
   const [currentPage, setCurrentPage] = useState('');
   const [disableIcons, setDisableIcons] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [checkedAllChats, setCheckedAllChats] = useState('');
   const [lang, setLang] = useState({
     ar: {
       chat: 'المحادثة',
@@ -68,7 +69,7 @@ const ShowPatientsView = () => {
     currentEducator,
   } = useSelector((state) => state.educators);
   const { patientId } = useSelector((state) => state.patient);
-  const { allChats, allChatsLoading} = useSelector((state) => state.chats);
+  const { allChats, allChatsLoading } = useSelector((state) => state.chats);
 
   const styles = !darkMode ? lightStyles : darkStyles;
   useEffect(() => {
@@ -85,27 +86,20 @@ const ShowPatientsView = () => {
     }
   }, [chats, dispatch]);
   useEffect(() => {
-      let tempEducator;
-      if(educators){
-
-        tempEducator = Object.values(educators).filter((educator) => {
-          return fetchedEducatorId === educator.id;
-        });
-        if (tempEducator.length !== 0) {
-          setLocalPatients(tempEducator[0].chats);
-        }
-        setSearchTerm('')
-        dispatch(setCurrentEducatorAction(tempEducator[0]));
-        dispatch(clearAllChatsAction());
+    let tempEducator;
+    if (educators) {
+      tempEducator = Object.values(educators).filter((educator) => {
+        return fetchedEducatorId === educator.id;
+      });
+      if (tempEducator.length !== 0) {
+        setLocalPatients(tempEducator[0].chats);
       }
-    
-  }, [
-    dispatch,
-    educatorId,
-    educators,
-    fetchedEducatorId,
-    patients,
-  ]);
+      setCheckedAllChats(false)
+      setSearchTerm('');
+      dispatch(setCurrentEducatorAction(tempEducator[0]));
+      dispatch(clearAllChatsAction());
+    }
+  }, [dispatch, educatorId, educators, fetchedEducatorId, patients]);
   useEffect(() => {
     if (patientId) {
       setDisableIcons(false);
@@ -116,18 +110,24 @@ const ShowPatientsView = () => {
       setLocalPatients(allChats);
     }
   }, [allChats]);
+  useEffect(() => {
+    let tempEducator
+    if(!checkedAllChats){
+      tempEducator = Object.values(educators).filter((educator) => {
+        return fetchedEducatorId === educator.id;
+      });
+      if (tempEducator.length !== 0) {
+        setLocalPatients(tempEducator[0].chats);
+      }
+    }
+  },[checkedAllChats])
   const renderChat = () => {
     if (!localPatients.length) {
       return null;
     }
 
     return (
-      <Chat
-        style={{ width: 1000, backgroundColor: 'green' }}
-        chatId={5634}
-        tokxen={token}
-        educatorId={educatorId}
-      />
+      <Chat/>
     );
   };
 
@@ -202,7 +202,7 @@ const ShowPatientsView = () => {
         </IconButton>
         <IconButton
           aria-label="darkmode"
-          style={{ right: 85,position:'absolute' }}
+          style={{ right: 85, position: 'absolute' }}
           onClick={() => {
             dispatch(setDarkModeAction(!darkMode));
           }}
@@ -219,17 +219,10 @@ const ShowPatientsView = () => {
     if (!disableIcons) setCurrentPage(page);
   };
   return (
-    <>
+    <div style={{height:'100vh'}}>
       <MyNav />
       <Container maxWidth={false} style={styles.container}>
-        <CardContainer
-          width="95%"
-          display="flex"
-          direction="row"
-          padding={10}
-          marginT={10}
-          marginB={10}
-          backgroundColor={styles.cardContainer}
+        <Card style={styles.card}
         >
           {activeList === 'appointments' ? (
             <div style={styles.calendarMainDiv}>
@@ -256,6 +249,8 @@ const ShowPatientsView = () => {
                     searchTerm={searchTerm}
                     setSearchTerm={setSearchTerm}
                     allChatsLoading={allChatsLoading}
+                    checkedAllChats={checkedAllChats}
+                    setCheckedAllChats={setCheckedAllChats}
                   />
                 </div>
               </div>
@@ -277,10 +272,10 @@ const ShowPatientsView = () => {
               </div>
             </div>
           )}
-        </CardContainer>
+        </Card>
       </Container>
       <Footer />
-    </>
+    </div >
   );
 };
 

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import CardContainer from '../components/CardContainer';
 import logo from '../assets/bright-no-bg.png';
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -13,6 +12,8 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import {styles} from '../styles/loginViewStyles'
+import Card from '@material-ui/core/Card';
+
 const LoginView = () => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -50,7 +51,7 @@ const LoginView = () => {
         <div
           style={styles.formDiv}
         >
-          <CardContainer width="80%" padding={30}>
+          <Card style={styles.card}>
             <form style={styles.form}>
               <TextField
                 type="username"
@@ -88,7 +89,7 @@ const LoginView = () => {
               {loading ? <LinearProgress /> : null}
               {error ? <text style={styles.error}>{error}</text> : ''}
             </form>
-          </CardContainer>
+          </Card>
         </div>
       </div>
     </Container>
