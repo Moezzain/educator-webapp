@@ -7,6 +7,11 @@ export const styles = {
     backgroundColor: '#0a122a',
     width: '100%',
   },
+  card: {
+    width: '80%',
+    padding: 30,
+    borderRadius:8
+  },
   root: { display: 'flex', flexDirection: 'row' },
   logo: { width: '30%', marginBottom: '15%' },
   formDiv: {
@@ -29,5 +34,5 @@ export const styles = {
     marginTop: 10,
     marginBottom: 10,
   },
-  error:{ color: 'red' }
+  error: { color: 'red' },
 };

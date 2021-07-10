@@ -17,9 +17,11 @@ export const getEducatorsAndPatients = createAsyncThunk(
       for (var i in tempEducators) {
         let educator = tempEducators[i]
         let {chats, appointments, educators}= await getEducatorData(educator.id, token)
-        const isCaseHandler = educators?.find((filterEducator) => {
+        const educatorData = educators?.find((filterEducator) => {
           return filterEducator?.id === educator?.id
-        }).isCaseHandler
+        })
+        tempEducators[i].specialty = educatorData?.specialty
+        const isCaseHandler = educatorData?.isCaseHandler
         educator.isCaseHandler = isCaseHandler
         if (chats) {
           educator.chats = chats
@@ -45,7 +47,7 @@ export const getEducatorsAndPatients = createAsyncThunk(
         }
       
       }
-      return {tempEducators, patients};
+      return {educators: tempEducators, patients};
   }
   else{
     
@@ -77,7 +79,7 @@ export const getEducatorsAndPatients = createAsyncThunk(
     }
     const tempEducators = [educator]
     
-    return {tempEducators,patients}
+    return {educators: tempEducators,patients}
   }
 
 }
@@ -109,7 +111,7 @@ const educatorsReducer = createSlice({
 
   extraReducers: {
       [getEducatorsAndPatients.fulfilled]: (state, action) => {
-          state.educators = action.payload.tempEducators
+          state.educators = action.payload.educators
           state.patients = action.payload.patients
           state.loading = false
       },

@@ -51,14 +51,17 @@ const Chat = () => {
   }, [messages]);
   return (
     <div style={localStyles.root}>
+      <div style={{display:'flex', flexDirection:'row'}}>
+
+      <div style={localStyles.statsDiv}>
+        {localMessages.length} :{lang.ar.messageCount} <br />
+        {lang.ar.usageDuration}: {duration} {'يوم'}
+      </div>
       {loading ? (
         <CircularProgress animation="border" />
       ) : !localMessages.length ? (
         <div style={localStyles.emptyMessages}>{lang.ar.emptyConvo} </div>
       ) : null}
-      <div style={localStyles.statsDiv}>
-        {localMessages.length} :{lang.ar.messageCount} <br />
-        {lang.ar.usageDuration}: {duration} {'يوم'}
       </div>
       <div style={localStyles.chatDiv}>
         <div style={localStyles.chatScrollDiv}>

@@ -50,7 +50,7 @@ export const lightStyles = {
   },
   chatScrollDiv: {
     overflow: 'auto',
-    height: '100%',
+    height: '65vh',
     width: '100%',
     display: 'flex',
     flexDirection: 'column-reverse',
