@@ -1,12 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import url from './../../../config/apiConfig';
-import {commonState} from '../../../helpers/commonReducerState'
-
+import { commonState } from '../../../helpers/commonReducerState';
+import {parseArray} from '../../../helpers/Converters'
 export const getChatsAction = createAsyncThunk(
   'chats/getChatsAction',
-  async ({chatId, educatorId, token},{rejectWithValue}) => {
-
+  async ({ chatId, educatorId, token }, { rejectWithValue }) => {
     try {
       let result = await axios.get(
         `${url}/message?chatId=${chatId}&educatorId=${educatorId}`,
@@ -18,7 +17,6 @@ export const getChatsAction = createAsyncThunk(
         }
       );
       if (result?.data) {
-
         return result.data.reverse();
       }
     } catch (error) {
@@ -28,10 +26,41 @@ export const getChatsAction = createAsyncThunk(
     }
   }
 );
+export const getAllChats = createAsyncThunk(
+  'chats/getAllChats',
+  async ({ educatorId, token }, { rejectWithValue }) => {
+    try {
+      let result = await axios.get(
+        `${url}/chats?educatorId=${educatorId}&filterDate=all`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          timeout: 10000,
+        }
+      );
+      if(result?.data){
+        const chats = parseArray(result.data?.chats)
+        const archivedChats = parseArray(result.data?.archivedChats)
+        const parsedData = {
+          chats,
+          archivedChats
+        }
+        return parsedData
+      }
+    } catch (error) {
+      console.log(error);
+      rejectWithValue(error);
+    }
+  }
+);
 const initialState = {
   messages: null,
-  currentChat:null,
-  ...commonState
+  currentChat: null,
+  allChats: [],
+  archivedChats: [],
+  allChatsLoading: false,
+  ...commonState,
 };
 const chatsReducer = createSlice({
   name: 'chats',
@@ -42,28 +71,41 @@ const chatsReducer = createSlice({
       state.chats = action.payload;
     },
     setCurrentChat: (state, action) => {
-        state.currentChat = action.payload
-    } 
+      state.currentChat = action.payload;
+    },
   },
 
   extraReducers: {
     [getChatsAction.fulfilled]: (state, action) => {
       state.messages = action.payload;
-      state.loading = false
+      state.loading = false;
     },
     [getChatsAction.pending]: (state, action) => {
-        state.loading = true
+      state.loading = true;
     },
     [getChatsAction.rejected]: (state, action) => {
-        state.error = action.payload
-    }
+      state.error = action.payload;
+    },
+    [getAllChats.pending]: (state, action) => {
+      state.allChatsLoading = true
+
+    },
+    [getAllChats.fulfilled]: (state, action) => {
+      state.allChats = action.payload.chats
+      state.archivedChats = action.payload.archivedChats
+      state.allChatsLoading = false
+    },
+    [getAllChats.rejected]: (state, action) => {
+      state.allChatsLoading = false
+      state.error = action.payload
+    },
   },
 });
 
-export const { 
-    setChats: setChatsAction,
-    setCurrentChat: setCurrentChatAction,
-    clearAll:clearAllChatsAction
+export const {
+  setChats: setChatsAction,
+  setCurrentChat: setCurrentChatAction,
+  clearAll: clearAllChatsAction,
 } = chatsReducer.actions;
 
 export default chatsReducer.reducer;

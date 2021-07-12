@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -10,9 +10,13 @@ import { lightStyles, darkStyles } from '../styles/patientNotesStyles';
 import '../App.css';
 import ReadMore from '../components/ReadMore';
 
+import {getPatientAction} from '../redux/reducers/patientReducer'
+
 const PatientSummaries = () => {
-  const { patientProfile } = useSelector((state) => state.patient);
-  const { darkMode } = useSelector((state) => state.auth);
+  const dispatch = useDispatch()
+
+  const { patientProfile, patientId } = useSelector((state) => state.patient);
+  const { darkMode, educatorId, token } = useSelector((state) => state.auth);
 
   const [currentPage, setCurrentPage] = useState('notes');
   const [currentNote, setCurrentNote] = useState(null);
@@ -25,10 +29,13 @@ const PatientSummaries = () => {
       goToPatient: 'اذهب للمريض',
       patientName: 'اسم المريض',
       learnMore: 'اقرا المزيد',
+      summaries: 'الملخصات',
     },
   };
   const styles = !darkMode ? lightStyles : darkStyles;
-
+  useEffect(() => {
+    dispatch(getPatientAction({ educatorId, token, patientId }));
+  }, [patientId]);
   const renderReadMore = (note) => {
     setCurrentNote(note);
     setCurrentPage('readmore');
@@ -75,10 +82,17 @@ const PatientSummaries = () => {
   };
   return (
     <div style={styles.mainDev}>
+      <div style={{ width: '100%' }}>
+        <div style={{ textAlign: 'center', marginRight: 50, fontSize: 25 }}>
+          {lang.ar.summaries}
+        </div>
+      </div>
       <div className="grid-container">
-        {currentPage === 'notes'
-          ? renderCard()
-          : <ReadMore currentNote={currentNote}  setNotes={renderNotes}/>}
+        {currentPage === 'notes' ? (
+          renderCard()
+        ) : (
+          <ReadMore currentNote={currentNote} setNotes={renderNotes} />
+        )}
       </div>
     </div>
   );

@@ -1,7 +1,6 @@
-import React, { Component, useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import logo from '../assets/logo-dark-notext.png';
-import { useHistory, Link } from 'react-router-dom';
-import { DataContext } from '../stateManagement/context';
+import { useHistory } from 'react-router-dom';
 
 //redux
 import { useSelector, useDispatch } from 'react-redux';
@@ -19,15 +18,20 @@ import { clearAllPatientAction } from '../redux/reducers/patientReducer';
 
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
 import AppBar from '@material-ui/core/AppBar';
 import { lightStyles, darkStyles } from '../styles/myNavStyles';
 import LinearProgress from '@material-ui/core/LinearProgress';
-
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
+import PersonIcon from '@material-ui/icons/Person';
+import { Typography } from '@material-ui/core';
+import Button from '@material-ui/core/Button';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import app from '../App.css';
 const MyNav = () => {
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const [localEducators, setLocalEducators] = useState([]);
 
   const { educators, loading, fetchedEducatorId } = useSelector(
     (state) => state.educators
@@ -40,9 +44,24 @@ const MyNav = () => {
     dispatch(getEducatorsAndPatients({ educatorId, token }));
   }, []);
   useEffect(() => {
-    let placeValue = 0;
+    //sort educators first casehandlers then the rest
     if (educators) {
-      Object.values(educators).forEach((educator, index) => {
+      setLocalEducators(
+        Object.values(educators).sort((first, second) => {
+          if (first?.isCaseHandler === second?.isCaseHandler) return 0;
+          else {
+            if (first?.isCaseHandler) return -1;
+            else return 1;
+          }
+        })
+      );
+    }
+  }, [educators]);
+
+  useEffect(() => {
+    let placeValue = 0;
+    if (localEducators) {
+      Object.values(localEducators).forEach((educator, index) => {
         if (educator?.id === fetchedEducatorId) placeValue = index;
       });
       setValue(placeValue + 2);
@@ -81,19 +100,34 @@ const MyNav = () => {
           <img
             alt=""
             src={logo}
-            width="80"
+            width="110"
             height="35"
             style={styles.navLogo}
           />
-          <Tab label="Logout" style={styles.tab} onClick={() => logout()} />
-          {Object.keys(educators).length
-            ? Object.values(educators).map((educator) => {
+          <Button style={styles.logout}>
+            <ExitToAppIcon className="logout" onClick={() => logout()} />
+          </Button>
+          {Object.keys(localEducators).length
+            ? Object.values(localEducators).map((educator) => {
                 return (
-                  <Tab
-                    label={educator.name}
-                    style={styles.tab}
+                  <Button
+                    style={styles.customTabDiv}
                     onClick={() => RenderEducator(educator.id)}
-                  />
+                  >
+                    <div style={styles.tabDiv}>
+                      <Typography style={styles.text}>
+                        <div style={styles.icon}>
+                          {educator?.isCaseHandler ? (
+                            <AssignmentIndIcon />
+                          ) : (
+                            <PersonIcon />
+                          )}
+                        </div>
+                        {educator.name}
+                      </Typography>
+                      <text>{educator?.specialty}</text>
+                    </div>
+                  </Button>
                 );
               })
             : ''}

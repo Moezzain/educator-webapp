@@ -4,6 +4,7 @@ import { concatProfile } from '../helpers';
 // redux
 import { useSelector, useDispatch } from 'react-redux';
 import { setFetchedEducatorIdReducer } from '../redux/reducers/educatorsReducer';
+import { getPatientAction } from '../redux/reducers/patientReducer';
 // ui
 import CircularProgress from '@material-ui/core/CircularProgress';
 import '../App.css';
@@ -63,9 +64,9 @@ const PatientProfile = () => {
   const [diet, setDiet] = useState('');
   const [localEducators, setLocalEducators] = useState([]);
   const [filteredEducators, setFilteredEducators] = useState([]);
-  const { darkMode } = useSelector((state) => state.auth);
+  const { darkMode, educatorId, token } = useSelector((state) => state.auth);
   const { patients, educators } = useSelector((state) => state.educators);
-  const { patientProfile, loading } = useSelector((state) => state.patient);
+  const { patientProfile, loading, patientId } = useSelector((state) => state.patient);
 
   const styles = !darkMode ? lightStyles : darkStyles;
 
@@ -116,7 +117,9 @@ const PatientProfile = () => {
       setFilteredEducators(filteredEducators);
     }
   }, [localEducators]);
-
+  useEffect(() => {
+    dispatch(getPatientAction({educatorId, token, patientId}))
+  },[patientId])
   const {
     dateAffectedText,
     name,

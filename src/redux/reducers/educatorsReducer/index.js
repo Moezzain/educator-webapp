@@ -11,13 +11,18 @@ export const getEducatorsAndPatients = createAsyncThunk(
       if(caseHandler){
         
       
-      const educators = await getEducatorIds(educatorId, token);
+      const tempEducators = await getEducatorIds(educatorId, token);
       
       let patients = {}
-      for (var i in educators) {
-        let educator = educators[i]
-        let {chats, appointments}= await getEducatorData(educator.id, token)
-        
+      for (var i in tempEducators) {
+        let educator = tempEducators[i]
+        let {chats, appointments, educators}= await getEducatorData(educator.id, token)
+        const educatorData = educators?.find((filterEducator) => {
+          return filterEducator?.id === educator?.id
+        })
+        tempEducators[i].specialty = educatorData?.specialty
+        const isCaseHandler = educatorData?.isCaseHandler
+        educator.isCaseHandler = isCaseHandler
         if (chats) {
           educator.chats = chats
           educator.count = chats.length
@@ -38,13 +43,14 @@ export const getEducatorsAndPatients = createAsyncThunk(
   
         }
         if (appointments) {
-          educators[i].appointments = appointments
+          tempEducators[i].appointments = appointments
         }
       
       }
-      return {educators, patients};
+      return {educators: tempEducators, patients};
   }
   else{
+    
     let patients = {}
     let {chats, appointments, educator}= await getEducatorData(educatorId, token)
     
@@ -67,12 +73,13 @@ export const getEducatorsAndPatients = createAsyncThunk(
       
 
     }
+    
     if (appointments) {
       educator.appointments = appointments
     }
-    const educators = [educator]
+    const tempEducators = [educator]
     
-    return {educators,patients}
+    return {educators: tempEducators,patients}
   }
 
 }
