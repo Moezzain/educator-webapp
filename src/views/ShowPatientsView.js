@@ -136,6 +136,7 @@ const ShowPatientsView = () => {
     dispatch(setCurrentChatAction(chatId));
   };
   const allPateints = () => {
+    if(fetchedEducatorId)
     dispatch(getAllChats({ educatorId: fetchedEducatorId, token }));
   };
   const renderListHeader = () => {
