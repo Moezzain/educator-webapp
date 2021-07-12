@@ -140,6 +140,17 @@ export const darkStyles = {
     textAlign: 'center',
     padding: 10,
   },
+  card: {
+    width: '95%',
+    display: 'flex',
+    direction: 'row',
+    padding: 10,
+    marginTop: 10,
+    marginBottom: 10,
+    backgroundColor: theme.primary.white,
+    borderRadius:10,
+    backgroundColor: darkTheme.secondary.darkBlue
+  },
   patientListName: {
     color: darkTheme.secondary.lightGrey,
   },
