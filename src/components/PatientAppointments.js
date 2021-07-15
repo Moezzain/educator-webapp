@@ -14,7 +14,7 @@ const RenderAppointments = ({ patientId, educators, darkMode }) => {
   const { appointments } = useSelector((state) => state.patient);
   useEffect(() => {
     dispatch(getAppointmentsAction({ educatorId, token, patientId }));
-  }, [educators, patientId]);
+  }, [patientId]);
   useEffect(() => {
     if (appointments)
       setLocalAppointments(getAppointmentsEducators(educators, appointments));
