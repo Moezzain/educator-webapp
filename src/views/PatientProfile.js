@@ -248,7 +248,7 @@ const PatientProfile = () => {
                 darkMode={darkMode}
               />
               <PatientAppointments
-                patientId={patientProfile?.patientId}
+                patientId={patientId}
                 educators={filteredEducators}
                 darkMode={darkMode}
               />
