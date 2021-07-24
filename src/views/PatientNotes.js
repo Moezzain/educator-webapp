@@ -16,7 +16,7 @@ const PatientNotes = () => {
   const dispatch = useDispatch()
 
   const { patientProfile, patientId } = useSelector((state) => state.patient);
-  const { darkMode, educatorId, token } = useSelector((state) => state.auth);
+  const { darkMode, educatorId, token, admin } = useSelector((state) => state.auth);
 
   const [currentPage, setCurrentPage] = useState('notes');
   const [currentNote, setCurrentNote] = useState(null);
@@ -35,7 +35,8 @@ const PatientNotes = () => {
   
   const styles = !darkMode ? lightStyles : darkStyles;
   useEffect(() => {
-    dispatch(getPatientAction({educatorId, token, patientId}))
+    if (admin) dispatch(getPatientAction({ adminId:educatorId, token, patientId }));
+    else dispatch(getPatientAction({ educatorId, token, patientId }));
   },[patientId])
   const setReadMore = (note) => {
     setCurrentNote(note);
