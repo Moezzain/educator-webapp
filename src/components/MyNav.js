@@ -22,7 +22,6 @@ import { clearAllPatientAction } from '../redux/reducers/patientReducer';
 import PopUpProfile from './PopUpProfile';
 
 import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 import AppBar from '@material-ui/core/AppBar';
 import { lightStyles, darkStyles } from '../styles/myNavStyles';
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -44,7 +43,7 @@ const MyNav = () => {
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordVerify, setNewPasswordVerify] = useState('');
-
+  const [value, setValue] = useState(2);
   const { educators, loading, fetchedEducatorId } = useSelector(
     (state) => state.educators
   );
@@ -53,7 +52,7 @@ const MyNav = () => {
   );
 
   const styles = !darkMode ? lightStyles : darkStyles;
-
+    
   useEffect(() => {
     if (admin) {
       dispatch(getAllEducators({ adminId: educatorId, token }));
@@ -82,7 +81,11 @@ const MyNav = () => {
       Object.values(localEducators).forEach((educator, index) => {
         if (educator?.id === fetchedEducatorId) placeValue = index;
       });
+      if(admin) 
+      setValue(placeValue + 3);
+      else
       setValue(placeValue + 2);
+
     }
   }, [fetchedEducatorId]);
   const logout = () => {
@@ -98,11 +101,8 @@ const MyNav = () => {
   const RenderEducator = (id) => {
     dispatch(setFetchedEducatorIdReducer(id));
   };
-  const [value, setValue] = useState(2);
+  
 
-  const handleChange = (event, newValue) => {
-    if (newValue > 1) setValue(newValue);
-  };
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -123,8 +123,7 @@ const MyNav = () => {
     <div style={styles.root}>
       <AppBar position="static" color="default">
         <Tabs
-          value={value}
-          onChange={handleChange}
+          value={value}   
           indicatorColor="primary"
           textColor="primary"
           variant="scrollable"
