@@ -7,17 +7,21 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   clearAllAuthAction,
   logoutAction,
+  resetPasswordAction,
+  setResetErrorAction
 } from '../redux/reducers/authReducer';
 import { clearAllChatsAction } from '../redux/reducers/chatsReducer';
 import {
   clearAllEducatorsAction,
   getEducatorsAndPatients,
   setFetchedEducatorIdReducer,
+  getAllEducators,
 } from '../redux/reducers/educatorsReducer';
 import { clearAllPatientAction } from '../redux/reducers/patientReducer';
 
+import PopUpProfile from './PopUpProfile';
+
 import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 import AppBar from '@material-ui/core/AppBar';
 import { lightStyles, darkStyles } from '../styles/myNavStyles';
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -26,22 +30,35 @@ import PersonIcon from '@material-ui/icons/Person';
 import { Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import PermIdentityIcon from '@material-ui/icons/PermIdentity';
+
 import app from '../App.css';
+
 const MyNav = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
   const [localEducators, setLocalEducators] = useState([]);
-
+  const [open, setOpen] = useState(false);
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [newPasswordVerify, setNewPasswordVerify] = useState('');
+  const [value, setValue] = useState(2);
   const { educators, loading, fetchedEducatorId } = useSelector(
     (state) => state.educators
   );
-  const { educatorId, token, darkMode } = useSelector((state) => state.auth);
+  const { educatorId, token, darkMode, admin, resetError } = useSelector(
+    (state) => state.auth
+  );
 
   const styles = !darkMode ? lightStyles : darkStyles;
-
+    
   useEffect(() => {
-    dispatch(getEducatorsAndPatients({ educatorId, token }));
+    if (admin) {
+      dispatch(getAllEducators({ adminId: educatorId, token }));
+    } else {
+      dispatch(getEducatorsAndPatients({ educatorId, token }));
+    }
   }, []);
   useEffect(() => {
     //sort educators first casehandlers then the rest
@@ -64,7 +81,11 @@ const MyNav = () => {
       Object.values(localEducators).forEach((educator, index) => {
         if (educator?.id === fetchedEducatorId) placeValue = index;
       });
+      if(admin) 
+      setValue(placeValue + 3);
+      else
       setValue(placeValue + 2);
+
     }
   }, [fetchedEducatorId]);
   const logout = () => {
@@ -72,25 +93,37 @@ const MyNav = () => {
     dispatch(clearAllEducatorsAction());
     dispatch(clearAllChatsAction());
     dispatch(clearAllPatientAction());
-    dispatch(logoutAction({ educatorId, token }));
+    if (admin) dispatch(logoutAction({ adminId: educatorId, token }));
+    else dispatch(logoutAction({ educatorId, token }));
     history.replace('/');
   };
 
   const RenderEducator = (id) => {
     dispatch(setFetchedEducatorIdReducer(id));
   };
-  const [value, setValue] = useState(2);
+  
 
-  const handleChange = (event, newValue) => {
-    if (newValue > 1) setValue(newValue);
+  const handleClickOpen = () => {
+    setOpen(true);
   };
-
+  const handleResetSubmit = () => {
+    if (newPassword === newPasswordVerify)
+      dispatch(
+        resetPasswordAction({
+          adminId: educatorId,
+          token,
+          oldPassword,
+          newPassword,
+        })
+      );
+      else 
+      dispatch(setResetErrorAction('Passwords don\'t match'))
+  };
   return (
     <div style={styles.root}>
       <AppBar position="static" color="default">
         <Tabs
-          value={value}
-          onChange={handleChange}
+          value={value}   
           indicatorColor="primary"
           textColor="primary"
           variant="scrollable"
@@ -104,6 +137,24 @@ const MyNav = () => {
             height="35"
             style={styles.navLogo}
           />
+          {admin ? 
+          <>
+
+            <Button onClick={handleClickOpen}>
+              <PermIdentityIcon />
+            </Button>
+            <PopUpProfile
+              open={open}
+              setOpen={setOpen}
+              setOldPassword={setOldPassword}
+              setNewPassword={setNewPassword}
+              setNewPasswordVerify={setNewPasswordVerify}
+              handleResetSubmit={handleResetSubmit}
+              error={resetError}
+            /> 
+          </>
+          : null
+          }
           <Button style={styles.logout}>
             <ExitToAppIcon className="logout" onClick={() => logout()} />
           </Button>

@@ -64,9 +64,13 @@ const PatientProfile = () => {
   const [diet, setDiet] = useState('');
   const [localEducators, setLocalEducators] = useState([]);
   const [filteredEducators, setFilteredEducators] = useState([]);
-  const { darkMode, educatorId, token } = useSelector((state) => state.auth);
+  const { darkMode, educatorId, token, admin } = useSelector(
+    (state) => state.auth
+  );
   const { patients, educators } = useSelector((state) => state.educators);
-  const { patientProfile, loading, patientId } = useSelector((state) => state.patient);
+  const { patientProfile, loading, patientId } = useSelector(
+    (state) => state.patient
+  );
 
   const styles = !darkMode ? lightStyles : darkStyles;
 
@@ -118,8 +122,9 @@ const PatientProfile = () => {
     }
   }, [localEducators]);
   useEffect(() => {
-    dispatch(getPatientAction({educatorId, token, patientId}))
-  },[patientId])
+    if (admin) dispatch(getPatientAction({ adminId:educatorId, token, patientId }));
+    else dispatch(getPatientAction({ educatorId, token, patientId }));
+  }, [patientId]);
   const {
     dateAffectedText,
     name,
