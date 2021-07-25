@@ -35,9 +35,10 @@ export const lightStyles = {
   },
   allChatsText: {
     marginBottom: -5,
-    fontSize: 16,
+    fontSize: 14,
     width: '100%',
     textAlign: 'center',
+    height:20
   },
   patientListName: {
     color: 'black',
