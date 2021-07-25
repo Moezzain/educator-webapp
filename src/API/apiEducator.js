@@ -72,7 +72,7 @@ export const getChats = async (educatorId, token) => {
 
 
 
-export const getEducatorData = async (educatorId, token) => {
+export const getEducatorData = async ({educatorId, token}) => {
   try {
     const get = 'chats,appointments,educator,all';
     const result = await axios.get(`${url}/educator?id=${educatorId}&get=${get}&educatorId=${educatorId}`, {headers: {

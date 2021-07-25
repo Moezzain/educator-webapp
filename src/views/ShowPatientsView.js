@@ -17,7 +17,7 @@ import { setChatsAction } from '../redux/reducers/authReducer';
 import {
   setCurrentChatAction,
   clearAllChatsAction,
-  getAllChats,
+  getAllChatsAction,
 } from '../redux/reducers/chatsReducer';
 import { setPatientIdAction } from '../redux/reducers/patientReducer';
 import { setCurrentEducatorAction } from '../redux//reducers/educatorsReducer';
@@ -59,7 +59,7 @@ const ShowPatientsView = () => {
     },
   });
 
-  const { chats, token, educatorId, darkMode } = useSelector(
+  const { chats, token, educatorId, darkMode, admin } = useSelector(
     (state) => state.auth
   );
   const {
@@ -80,7 +80,7 @@ const ShowPatientsView = () => {
       if (chats?.length && !chats[0].id) {
         let tempChats = parseArray(chats);
         dispatch(setChatsAction(tempChats));
-      }
+      } 
     } catch (err) {
       console.log('error setting chats:', err);
     }
@@ -136,8 +136,13 @@ const ShowPatientsView = () => {
     dispatch(setCurrentChatAction(chatId));
   };
   const allPateints = () => {
-    if(fetchedEducatorId)
-    dispatch(getAllChats({ educatorId: fetchedEducatorId, token }));
+    if(fetchedEducatorId){
+      if(admin)
+      dispatch(getAllChatsAction({ educatorId: fetchedEducatorId, token, adminId: educatorId }));
+      else
+      dispatch(getAllChatsAction({ educatorId: fetchedEducatorId, token }));
+
+    }
   };
   const renderListHeader = () => {
     return (

@@ -2,13 +2,14 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import url from './../../../config/apiConfig';
 import { commonState } from '../../../helpers/commonReducerState';
-import {parseArray} from '../../../helpers/Converters'
+import { parseArray } from '../../../helpers/Converters';
 export const getChatsAction = createAsyncThunk(
   'chats/getChatsAction',
-  async ({ chatId, educatorId, token }, { rejectWithValue }) => {
+  async ({ chatId, educatorId, token, adminId }, { rejectWithValue }) => {
     try {
+      const adminParam = adminId ? `adminId=${adminId}&` : '';
       let result = await axios.get(
-        `${url}/message?chatId=${chatId}&educatorId=${educatorId}`,
+        `${url}/message?chatId=${chatId}&${adminParam}educatorId=${educatorId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -26,12 +27,13 @@ export const getChatsAction = createAsyncThunk(
     }
   }
 );
-export const getAllChats = createAsyncThunk(
+export const getAllChatsAction = createAsyncThunk(
   'chats/getAllChats',
-  async ({ educatorId, token }, { rejectWithValue }) => {
+  async ({ educatorId, token, adminId }, { rejectWithValue }) => {
     try {
+      const adminParam = adminId ? `adminId=${adminId}&` : '';
       let result = await axios.get(
-        `${url}/chats?educatorId=${educatorId}&filterDate=all`,
+        `${url}/chats?educatorId=${educatorId}&${adminParam}filterDate=all`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -39,14 +41,14 @@ export const getAllChats = createAsyncThunk(
           timeout: 10000,
         }
       );
-      if(result?.data){
-        const chats = parseArray(result.data?.chats)
-        const archivedChats = parseArray(result.data?.archivedChats)
+      if (result?.data) {
+        const chats = parseArray(result.data?.chats);
+        const archivedChats = parseArray(result.data?.archivedChats);
         const parsedData = {
           chats,
-          archivedChats
-        }
-        return parsedData
+          archivedChats,
+        };
+        return parsedData;
       }
     } catch (error) {
       console.log(error);
@@ -86,18 +88,17 @@ const chatsReducer = createSlice({
     [getChatsAction.rejected]: (state, action) => {
       state.error = action.payload;
     },
-    [getAllChats.pending]: (state, action) => {
-      state.allChatsLoading = true
-
+    [getAllChatsAction.pending]: (state, action) => {
+      state.allChatsLoading = true;
     },
-    [getAllChats.fulfilled]: (state, action) => {
-      state.allChats = action.payload.chats
-      state.archivedChats = action.payload.archivedChats
-      state.allChatsLoading = false
+    [getAllChatsAction.fulfilled]: (state, action) => {
+      state.allChats = action.payload.chats;
+      state.archivedChats = action.payload.archivedChats;
+      state.allChatsLoading = false;
     },
-    [getAllChats.rejected]: (state, action) => {
-      state.allChatsLoading = false
-      state.error = action.payload
+    [getAllChatsAction.rejected]: (state, action) => {
+      state.allChatsLoading = false;
+      state.error = action.payload;
     },
   },
 });

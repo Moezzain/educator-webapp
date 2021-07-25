@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { isCaseHandler, getEducatorIds,getEducatorData } from '../../../API/apiEducator';
+import { getAdminData } from '../../../API/apiAdmin';
 import { commonState } from '../../../helpers/commonReducerState';
-import url from '../../../config/apiConfig'
 export const getEducatorsAndPatients = createAsyncThunk(
   'educators/getEducatorsAndPatients',
   async ({ educatorId, token },{rejectWithValue}) => {
@@ -16,7 +16,7 @@ export const getEducatorsAndPatients = createAsyncThunk(
       let patients = {}
       for (var i in tempEducators) {
         let educator = tempEducators[i]
-        let {chats, appointments, educators}= await getEducatorData(educator.id, token)
+        let {chats, appointments, educators}= await getEducatorData({educatorId:educator.id, token})
         const educatorData = educators?.find((filterEducator) => {
           return filterEducator?.id === educator?.id
         })
@@ -52,7 +52,7 @@ export const getEducatorsAndPatients = createAsyncThunk(
   else{
     
     let patients = {}
-    let {chats, appointments, educator}= await getEducatorData(educatorId, token)
+    let {chats, appointments, educator}= await getEducatorData({educatorId, token})
     
     if (chats) {
       educator.chats = chats
@@ -89,6 +89,50 @@ export const getEducatorsAndPatients = createAsyncThunk(
     }
   }
 );
+export const getAllEducators = createAsyncThunk(
+  'educators/getAllEducators',
+  async({adminId, token}, {rejectWithValue}) => {
+
+
+    const tempEducators = await getEducatorIds({educatorId:adminId, token});
+      
+      let patients = {}
+      for (var i in tempEducators) {
+        let educator = tempEducators[i]
+        let {chats, appointments, educators}= await getAdminData({educatorId: educator.id, adminId, token})
+        const educatorData = educators?.find((filterEducator) => {
+          return filterEducator?.id === educator?.id
+        })
+        tempEducators[i].specialty = educatorData?.specialty
+        const isCaseHandler = educatorData?.isCaseHandler
+        educator.isCaseHandler = isCaseHandler
+        if (chats) {
+          educator.chats = chats
+          educator.count = chats.length
+          chats.forEach((chat) => {
+            let patient = patients[chat.patientId]
+            if (!patient) {
+              patients[chat.patientId] = chat
+              patient= patients[chat.patientId]
+            }
+            if (patient && patient.educators) {
+              patient.educators.push({id: educator.id, name: educator.name})
+            }
+            else {
+              patient.educators = [{id: educator.id, name: educator.name}]
+            }
+          })
+          // break;
+  
+        }
+        if (appointments) {
+          tempEducators[i].appointments = appointments
+        }
+      
+      }
+      return {educators: tempEducators, patients};
+  }
+)
 const initialState = {
   educators: [],
   patients: [],
@@ -119,6 +163,17 @@ const educatorsReducer = createSlice({
           state.loading = true
       },
       [getEducatorsAndPatients.rejected]: (state, action) => {
+          state.loading = false
+      },
+      [getAllEducators.fulfilled]: (state, action) => {
+          state.educators = action.payload.educators
+          state.patients = action.payload.patients
+          state.loading = false
+      },
+      [getAllEducators.pending]: (state, action) => {
+          state.loading = true
+      },
+      [getAllEducators.rejected]: (state, action) => {
           state.loading = false
       },
   },

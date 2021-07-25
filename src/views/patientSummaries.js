@@ -10,13 +10,15 @@ import { lightStyles, darkStyles } from '../styles/patientNotesStyles';
 import '../App.css';
 import ReadMore from '../components/ReadMore';
 
-import {getPatientAction} from '../redux/reducers/patientReducer'
+import { getPatientAction } from '../redux/reducers/patientReducer';
 
 const PatientSummaries = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const { patientProfile, patientId } = useSelector((state) => state.patient);
-  const { darkMode, educatorId, token } = useSelector((state) => state.auth);
+  const { darkMode, educatorId, token, admin } = useSelector(
+    (state) => state.auth
+  );
 
   const [currentPage, setCurrentPage] = useState('notes');
   const [currentNote, setCurrentNote] = useState(null);
@@ -34,7 +36,9 @@ const PatientSummaries = () => {
   };
   const styles = !darkMode ? lightStyles : darkStyles;
   useEffect(() => {
-    dispatch(getPatientAction({ educatorId, token, patientId }));
+    if (admin)
+      dispatch(getPatientAction({ adminId: educatorId, token, patientId }));
+    else dispatch(getPatientAction({ educatorId, token, patientId }));
   }, [patientId]);
   const renderReadMore = (note) => {
     setCurrentNote(note);
