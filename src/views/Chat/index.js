@@ -74,13 +74,32 @@ const Chat = () => {
                 />
               )}
               {message.message?.image ? (
+                <Message
+                  model={{
+                    message: message.message.text,
+                    direction: message.userId,
+                  }}
+                >
                 <Message.ImageContent
                   src={message.message.image}
-                  alt={"The image isn't working link: " + message.message.image}
+                    alt={
+                      "The image isn't working link: " + message.message.image
+                    }
                   width={400}
                 />
+                </Message>
               ) : message.message?.audio ? (
+                <Message
+                  model={{
+                    message: message.message.text,
+                    direction: message.userId,
+                    type: 'image',
+                  }}
+                >
+                  <Message.CustomContent>
                 <ReactAudioPlayer src={message.message.audio} controls />
+                  </Message.CustomContent>
+                </Message>
               ) : message.message?.file ? (
                 <Message
                   model={{
@@ -115,7 +134,6 @@ const Chat = () => {
                     <div style={localStyles.customMessage}>
                       <Linkify componentDecorator={componentDecorator}>
                       {message.message.text}
-                      
                       </Linkify>
                     </div>
                   </Message.CustomContent>
