@@ -7,8 +7,6 @@ import { useHistory } from 'react-router-dom';
 import TextField from '@material-ui/core/TextField';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Button from '@material-ui/core/Button';
-import { ToggleButton } from '@material-ui/lab';
-import { ToggleButtonGroup } from '@material-ui/lab';
 import Container from '@material-ui/core/Container';
 import { styles } from '../styles/loginViewStyles';
 import Card from '@material-ui/core/Card';
@@ -20,6 +18,8 @@ const LoginView = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [activeRole, setActiveRole] = useState('educator');
+  const [buttonEducatorColor, setButtonEducatorColor] = useState('lightgrey');
+  const [buttonAdminColor, setButtonAdminColor] = useState('white');
   const [lang, setLang] = useState({
     ar: {
       username: 'اسم المستخدم',
@@ -128,28 +128,47 @@ const LoginView = () => {
         <img src={logo} style={styles.logo} />
         <div style={styles.formDiv}>
           <Card style={styles.card}>
-            <ToggleButtonGroup
-              style={{ width: '100%' }}
-              value={activeRole}
-              exclusive
-              aria-label="text alignment"
+            <div
+              style={{
+                borderRadius: 5,
+                borderWidth: 1,
+                borderColor: 'grey',
+                borderStyle: 'solid',
+              }}
             >
-              <ToggleButton
-                style={{ width: '50%', height: 50 }}
+              <Button
+                style={{
+                  width: '50%',
+                  height: 50,
+                  backgroundColor: buttonEducatorColor,
+                }}
                 value="educator"
-                onClick={() => setActiveRole('educator')}
+                onClick={() => {
+                  setActiveRole('educator');
+                  setButtonEducatorColor('lightgrey');
+                  setButtonAdminColor('white');
+                }}
               >
                 Educator
-              </ToggleButton>
-              <ToggleButton
-                style={{ width: '50%', height: 50 }}
+              </Button>
+              <Button
+                style={{
+                  width: '50%',
+                  height: 50,
+                  backgroundColor: buttonAdminColor,
+                }}
                 value="admin"
-                onClick={() => setActiveRole('admin')}
+                onClick={() => {
+                  setActiveRole('admin');
+                  setButtonAdminColor('lightgrey');
+                  setButtonEducatorColor('white');
+                }}
               >
                 {' '}
                 Admin
-              </ToggleButton>
-            </ToggleButtonGroup>
+              </Button>
+            </div>
+
             {activeRole === 'admin'
               ? renderLoginAdmin()
               : renderLoginEducator()}
