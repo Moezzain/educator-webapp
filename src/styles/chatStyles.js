@@ -1,4 +1,4 @@
-import { darkTheme, mainTheme } from './themes';
+import { darkTheme } from './themes';
 
 export const lightStyles = {
   root: {

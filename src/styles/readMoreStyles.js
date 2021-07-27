@@ -1,5 +1,4 @@
-import { mainTheme, darkTheme } from './themes';
-const theme = mainTheme;
+import {  darkTheme } from './themes';
 
 export const lightStyles = {
   titleText: {fontSize:30},

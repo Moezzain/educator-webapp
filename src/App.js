@@ -3,7 +3,6 @@ import {
   HashRouter as Router,
   Switch,
   Route,
-  Link
 } from "react-router-dom";
 import LoginView from './views/LoginView'
 import ShowPatientsView from './views/ShowPatientsView'
