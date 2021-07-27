@@ -3,17 +3,14 @@ import React, { useEffect, useState } from 'react';
 import { concatProfile } from '../helpers';
 // redux
 import { useSelector, useDispatch } from 'react-redux';
-import { setFetchedEducatorIdReducer } from '../redux/reducers/educatorsReducer';
 import { getPatientAction } from '../redux/reducers/patientReducer';
 // ui
 import CircularProgress from '@material-ui/core/CircularProgress';
 import '../App.css';
-import { useTheme } from '@material-ui/core/styles';
 import { lightStyles, darkStyles } from '../styles/patientProfileStyles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
 import RenderCard from '../components/ProfileCard';
 import PatientAppointments from '../components/PatientAppointments';
 import ProfileChart from '../components/ProfileChart';
@@ -42,7 +39,6 @@ const lang = {
 };
 
 const PatientProfile = () => {
-  const theme = useTheme();
 
   const dispatch = useDispatch();
 

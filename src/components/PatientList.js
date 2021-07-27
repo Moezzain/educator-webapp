@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import Input from '@material-ui/core/Input';
 import { Conversation } from '@chatscope/chat-ui-kit-react';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import Button from '@material-ui/core/Button';
 import { darkStyles, lightStyles } from '../styles/patientListStyles';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Switch from '@material-ui/core/Switch';

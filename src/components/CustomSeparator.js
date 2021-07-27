@@ -1,6 +1,5 @@
 import React from 'react';
 import { darkStyles, lightStyles } from '../styles/chatStyles';
-import { useSelector } from 'react-redux';
 
 const CustomSeparator = ({ date, darkMode }) => {
   const Styles = !darkMode ? lightStyles : darkStyles;

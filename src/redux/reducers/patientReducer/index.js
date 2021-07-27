@@ -1,6 +1,4 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
-import url from '../../../config/apiConfig';
 import { getPatient, getAppointments, getPatientAdmin } from '../../../API/apiPatient';
 import { commonState } from '../../../helpers/commonReducerState';
 

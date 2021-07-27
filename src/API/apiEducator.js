@@ -38,7 +38,6 @@ export const getEducatorIds = async (educatorId, token) => {
 
 export const getEducatorChats = async (educatorId, token) => {
   const educators = await getEducatorIds(educatorId, token);
-  let patientChats = []
   for (var i in educators) {
     let chats = await getChats(educators[i].id, token)
     if (chats) {
