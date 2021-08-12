@@ -20,9 +20,16 @@ export const getMessages = async (chatId, educatorId, token) => {
 
 export const getEducatorIds = async (educatorId, token) => {
   try {
-    const result = await axios.get(`${url}/educator?get=all&id=${educatorId}&educatorId=${educatorId}`, {headers: {
+    let result;
+    Object.keys(educatorId)[0] === 'adminId' ? 
+    result = await axios.get(`${url}/educator?get=all&adminId=${educatorId.adminId}&educatorId=${educatorId}`, {headers: {
       Authorization: `Bearer ${token}`
     }})
+    : 
+    result = await axios.get(`${url}/educator?get=all&${educatorId}&educatorId=${educatorId}`, {headers: {
+      Authorization: `Bearer ${token}`
+    }})
+     
     if (result.data) {
       let educators = {}
       result.data.forEach((educator) => {

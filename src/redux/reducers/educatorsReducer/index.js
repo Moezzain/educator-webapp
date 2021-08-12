@@ -10,7 +10,6 @@ export const getEducatorsAndPatients = createAsyncThunk(
       const caseHandler = await isCaseHandler(educatorId,token)
       if(caseHandler){
         
-      
       const tempEducators = await getEducatorIds(educatorId, token);
       
       let patients = {}
@@ -92,9 +91,7 @@ export const getEducatorsAndPatients = createAsyncThunk(
 export const getAllEducators = createAsyncThunk(
   'educators/getAllEducators',
   async({adminId, token}, {rejectWithValue}) => {
-
-
-    const tempEducators = await getEducatorIds({educatorId:adminId, token});
+    const tempEducators = await getEducatorIds({adminId}, token);
       
       let patients = {}
       for (var i in tempEducators) {
