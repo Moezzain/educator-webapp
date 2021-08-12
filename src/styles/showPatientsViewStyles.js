@@ -149,7 +149,6 @@ export const darkStyles = {
     marginBottom: 10,
     backgroundColor: theme.primary.white,
     borderRadius:10,
-    backgroundColor: darkTheme.secondary.darkBlue
   },
   patientListName: {
     color: darkTheme.secondary.lightGrey,
