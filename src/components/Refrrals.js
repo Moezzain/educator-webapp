@@ -125,9 +125,9 @@ const Refrrals = ({ setActiveList }) => {
             <div
               style={styles.linksWrapper}
             >
-              {Object.values(referrers)
+              {referrers && Object.values(referrers)
                 .sort((a, b) => {
-                  return new Date(b.createdOn) - new Date(a.createdOn);
+                  return new Date(b?.createdOn) - new Date(a?.createdOn);
                 })
                 .map((ref) => {
                   return (
@@ -138,16 +138,16 @@ const Refrrals = ({ setActiveList }) => {
                         style={styles.linkCard}
                       >
                         <div style={styles.linkText}>
-                          {ref.name} :{langText[lang].name}
+                          {ref?.name} :{langText[lang].name}
                         </div>
                         <div style={styles.linkText}>
-                          {ref.referCode} :{langText[lang].code}
+                          {ref?.referCode} :{langText[lang].code}
                         </div>
                         <div style={styles.linkText}>
-                          {ref.url} :{langText[lang].link}
+                          {ref?.url} :{langText[lang].link}
                         </div>
                         <div style={styles.linkText}>
-                          {new Date(ref.createdOn).toLocaleDateString()} :
+                          {new Date(ref?.createdOn).toLocaleDateString()} :
                           {langText[lang].date}
                         </div>
                       </Card>
