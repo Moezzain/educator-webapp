@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   addRefrralsAction,
   getRefrralsAction,
+  clearErrorsAction,
 } from '../redux/reducers/refrralsReducer';
 //UI
 import TextField from '@material-ui/core/TextField';
@@ -11,7 +12,8 @@ import Button from '@material-ui/core/Button';
 import { Card } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
-import styles from '../styles/refrralsStyles'
+import styles from '../styles/refrralsStyles';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const Refrrals = ({ setActiveList }) => {
   const dispatch = useDispatch();
@@ -28,11 +30,15 @@ const Refrrals = ({ setActiveList }) => {
       code: 'كود',
       link: 'رابط',
       date: 'تاريخ',
+      added: 'تمت الاضافه بنجاح',
+      error: 'حدث خطا',
     },
   });
   const [lang, setLang] = useState('ar');
   const { token, educatorId } = useSelector((state) => state.auth);
-  const { referrers } = useSelector((state) => state.refrrals);
+  const { referrers, loading, error, added } = useSelector(
+    (state) => state.refrrals
+  );
   useEffect(() => {
     dispatch(getRefrralsAction({ token, adminId: educatorId }));
   }, []);
@@ -59,16 +65,13 @@ const Refrrals = ({ setActiveList }) => {
         aria-label="notes"
         onClick={() => {
           setActiveList('');
+          dispatch(clearErrorsAction());
         }}
       >
         <CloseIcon style={styles.closeIcon} fontSize="large" />
       </IconButton>
-      <div
-        style={styles.mainContainer}
-      >
-        <div
-          style={styles.leftHalf}
-        >
+      <div style={styles.mainContainer}>
+        <div style={styles.leftHalf}>
           <div style={styles.addLinkText}>{langText[lang].addLink}</div>
           <div style={styles.formDiv}>
             <TextField
@@ -101,6 +104,7 @@ const Refrrals = ({ setActiveList }) => {
               label="medium"
               variant="outlined"
             />
+            <div style={styles.formText}>{loading && <LinearProgress />}</div>
             <Button
               style={styles.formButton}
               onClick={() => submit()}
@@ -109,51 +113,47 @@ const Refrrals = ({ setActiveList }) => {
             >
               ارسال{' '}
             </Button>
+            {error ? (
+              <div style={styles.error}>{langText[lang].error}</div>
+            ) : (
+              added && <div style={styles.error}>{langText[lang].added}</div>
+            )}
           </div>
         </div>
         <div style={styles.divider} />
-        <div
-          style={styles.rightHalf}
-        >
+        <div style={styles.rightHalf}>
           <div style={styles.numberOfLinks}>
             {' '}
-            {langText[lang].numberOfLinks}: {referrers.length}
+            {langText[lang].numberOfLinks}: {referrers?.length}
           </div>
-          <div
-            style={styles.rightMainContainer}
-          >
-            <div
-              style={styles.linksWrapper}
-            >
-              {referrers && Object.values(referrers)
-                .sort((a, b) => {
-                  return new Date(b?.createdOn) - new Date(a?.createdOn);
-                })
-                .map((ref) => {
-                  return (
-                    <div
-                      style={styles.linkCardDiv}
-                    >
-                      <Card
-                        style={styles.linkCard}
-                      >
-                        <div style={styles.linkText}>
-                          {ref?.name} :{langText[lang].name}
-                        </div>
-                        <div style={styles.linkText}>
-                          {ref?.referCode} :{langText[lang].code}
-                        </div>
-                        <div style={styles.linkText}>
-                          {ref?.url} :{langText[lang].link}
-                        </div>
-                        <div style={styles.linkText}>
-                          {new Date(ref?.createdOn).toLocaleDateString()} :
-                          {langText[lang].date}
-                        </div>
-                      </Card>
-                    </div>
-                  );
-                })}
+          <div style={styles.rightMainContainer}>
+            <div style={styles.linksWrapper}>
+              {referrers &&
+                Object.values(referrers)
+                  .sort((a, b) => {
+                    return new Date(b?.createdOn) - new Date(a?.createdOn);
+                  })
+                  .map((ref) => {
+                    return (
+                      <div style={styles.linkCardDiv}>
+                        <Card style={styles.linkCard}>
+                          <div style={styles.linkText}>
+                            {ref?.name} :{langText[lang].name}
+                          </div>
+                          <div style={styles.linkText}>
+                            {ref?.referCode} :{langText[lang].code}
+                          </div>
+                          <div style={styles.linkText}>
+                            {ref?.url} :{langText[lang].link}
+                          </div>
+                          <div style={styles.linkText}>
+                            {new Date(ref?.createdOn).toLocaleDateString()} :
+                            {langText[lang].date}
+                          </div>
+                        </Card>
+                      </div>
+                    );
+                  })}
             </div>
           </div>
         </div>

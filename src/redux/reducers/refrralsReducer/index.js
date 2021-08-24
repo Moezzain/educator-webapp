@@ -5,48 +5,52 @@ import url from '../../../config/apiConfig';
 
 export const addRefrralsAction = createAsyncThunk(
   'refrrals/addRefrralsAction',
-  async ({name, phone, specialty,referCode, medium, token, adminId}, { rejectWithValue }) => {
-    console.log('ref', name, phone, specialty,referCode, medium, token);
-    const data = {name, phone, specialty,referCode, medium}
-    console.log('data', data);
+  async (
+    { name, phone, specialty, referCode, medium, token, adminId },
+    { rejectWithValue }
+  ) => {
+    const data = { name, phone, specialty, referCode, medium };
 
     return axios
-      .post(`${url}/referrer?adminId=${adminId}`, data, {headers: {
-        Authorization: `Bearer ${token}`
-      }})
+      .post(`${url}/referrer?adminId=${adminId}`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((res) => {
-        console.log('resa: ',res);
         if (res.data) {
-         console.log('res: ',res);
           return res.data;
         } else return rejectWithValue('credintials');
-      }).catch((e) => {
-        console.log('error ',e);
-      }) 
+      })
+      .catch((e) => {
+        console.log('error ', e);
+        return rejectWithValue('credintials');
+      });
   }
 );
 export const getRefrralsAction = createAsyncThunk(
   'refrrals/getRefrralsAction',
-  async ({token, adminId}, { rejectWithValue }) => {
-
+  async ({ token, adminId }, { rejectWithValue }) => {
     return axios
-      .get(`${url}/referrers?adminId=${adminId}`, {headers: {
-        Authorization: `Bearer ${token}`
-      }})
+      .get(`${url}/referrers?adminId=${adminId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((res) => {
-        console.log('resa: ',res);
         if (res.data) {
-         console.log('res: ',res);
           return res.data;
         } else return rejectWithValue('credintials');
-      }).catch((e) => {
-        console.log('error ',e);
-      }) 
+      })
+      .catch((e) => {
+        console.log('error ', e);
+      });
   }
 );
 const initialState = {
-  referral:null,
+  referral: null,
   referrers: [],
+  added: false,
   ...commonState,
 };
 const refrralsReducer = createSlice({
@@ -54,25 +58,40 @@ const refrralsReducer = createSlice({
   initialState,
   reducers: {
     clearAll: () => initialState,
+    clearErrors: (state, action) => {
+      state.added = false;
+      state.error = false;
+      state.loading = false;
+    },
   },
 
   extraReducers: {
     [getRefrralsAction.fulfilled]: (state, action) => {
-      state.referrers = action.payload
+      state.referrers = action.payload;
     },
     [getRefrralsAction.rejected]: (state, action) => {
-      state.error = action.payload
+      state.error = action.payload;
     },
     [addRefrralsAction.fulfilled]: (state, action) => {
-      console.log('res in red: ',action.payload);
-      state.referrers.push(action.payload)
+      state.referrers.push(action.payload);
+      state.loading = false;
+      state.error = false;
+      state.added = true;
     },
-
+    [addRefrralsAction.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [addRefrralsAction.rejected]: (state, action) => {
+      state.error = true;
+      state.loading = false;
+      state.added = false;
+    },
   },
 });
 
 export const {
   clearAll: clearAllRefrralsAction,
+  clearErrors: clearErrorsAction,
 } = refrralsReducer.actions;
 
 export default refrralsReducer.reducer;
