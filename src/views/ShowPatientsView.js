@@ -149,6 +149,8 @@ const ShowPatientsView = () => {
   const renderListHeader = () => {
     return (
       <div style={styles.listHeaderDiv}>
+        {
+          admin &&
         <Button
           variant="contained"
           onClick={() => setActiveList('links')}
@@ -156,6 +158,7 @@ const ShowPatientsView = () => {
         >
           روابط
         </Button>
+        }
         <Button
           variant="contained"
           onClick={() => setActiveList('patients')}
@@ -215,7 +218,7 @@ const ShowPatientsView = () => {
         >
           <ShortTextIcon style={styles.icons} fontSize="large" />
         </IconButton>
-        <IconButton
+        {/* <IconButton
           aria-label="darkmode"
           style={{ right: 85, position: 'absolute' }}
           onClick={() => {
@@ -226,7 +229,7 @@ const ShowPatientsView = () => {
             style={styles.icons}
             fontSize="large"
           ></Brightness4Icon>
-        </IconButton>
+        </IconButton> */}
       </div>
     );
   };
@@ -253,7 +256,7 @@ const ShowPatientsView = () => {
             </div>
           ) :
           activeList === 'links'? (
-            <Refrrals />
+            <Refrrals setActiveList={setActiveList}/>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
               <div style={styles.listDev}>
