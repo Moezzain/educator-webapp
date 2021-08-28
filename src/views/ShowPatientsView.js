@@ -10,6 +10,7 @@ import PatientNotes from './PatientNotes';
 import PatientSummaries from './patientSummaries';
 import CalendarView from './CalendarView';
 import PatientList from '../components/PatientList';
+import Refrrals from '../components/Refrrals'
 
 // Redux
 import { useSelector, useDispatch } from 'react-redux';
@@ -33,6 +34,7 @@ import ShortTextIcon from '@material-ui/icons/ShortText';
 import Brightness4Icon from '@material-ui/icons/Brightness4';
 import Container from '@material-ui/core/Container';
 import Card from '@material-ui/core/Card';
+import TextField from '@material-ui/core/TextField';
 
 import '../App.css';
 import { lightStyles, darkStyles } from '../styles/showPatientsViewStyles';
@@ -147,6 +149,16 @@ const ShowPatientsView = () => {
   const renderListHeader = () => {
     return (
       <div style={styles.listHeaderDiv}>
+        {
+          admin &&
+        <Button
+          variant="contained"
+          onClick={() => setActiveList('links')}
+          style={styles.buttonsText}
+        >
+          روابط
+        </Button>
+        }
         <Button
           variant="contained"
           onClick={() => setActiveList('patients')}
@@ -206,7 +218,7 @@ const ShowPatientsView = () => {
         >
           <ShortTextIcon style={styles.icons} fontSize="large" />
         </IconButton>
-        <IconButton
+        {/* <IconButton
           aria-label="darkmode"
           style={{ right: 85, position: 'absolute' }}
           onClick={() => {
@@ -217,10 +229,11 @@ const ShowPatientsView = () => {
             style={styles.icons}
             fontSize="large"
           ></Brightness4Icon>
-        </IconButton>
+        </IconButton> */}
       </div>
     );
   };
+  // "name": "pamphlet", "phone":"+966500000000", "specialty":"none", "referCode":"pamphlet1", "medium":"pamphlet"
   const setValueCurrentPage = (page) => {
     if (!disableIcons) setCurrentPage(page);
   };
@@ -241,6 +254,9 @@ const ShowPatientsView = () => {
                 />
               </div>
             </div>
+          ) :
+          activeList === 'links'? (
+            <Refrrals setActiveList={setActiveList}/>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
               <div style={styles.listDev}>
