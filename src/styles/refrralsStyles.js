@@ -38,7 +38,7 @@ const styles = {
     flexWrap: 'wrap',
   },
   linkCardDiv: {
-    minWidth: '48%',
+    width:'48%',
     marginLeft: 10,
     right: 0,
   },
@@ -53,5 +53,16 @@ const styles = {
     marginTop: '10%',
     textAlign: 'center',
   },
+  fullUrlText:{
+    overflowWrap: 'break-word',
+    textAlign: 'end',
+    fontSize: 18,
+    maxWidth: '90%',
+  },
+  fullUrlDiv:{
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  }
 };
 export default styles;

@@ -143,8 +143,17 @@ const Refrrals = ({ setActiveList }) => {
                           <div style={styles.linkText}>
                             {ref?.referCode} :{langText[lang].code}
                           </div>
-                          <div style={styles.linkText}>
-                            {ref?.fullUrl} :{langText[lang].link}
+                          <div
+                            style={styles.fullUrlDiv}
+                          >
+                            <div
+                              style={styles.fullUrlText}
+                            >
+                              {ref?.fullUrl}
+                            </div>
+                            <div style={styles.linkText}>
+                              :{langText[lang].link}
+                            </div>
                           </div>
                           <div style={styles.linkText}>
                             {new Date(ref?.createdOn).toLocaleDateString()} :
