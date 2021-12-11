@@ -17,6 +17,23 @@ const styles = {
   addLinkText: { textAlign: 'center', fontSize: 20 },
   formDiv: { height: '100%', width: '70%', alignSelf: 'center' },
   formText: { justifyContent: 'center', width: '100%', marginTop: '10%' },
+  menuButton: { justifyContent: 'center', width: '100%', marginTop: '10%', border: '1px solid gray' },
+  discountContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    marginTop: '10%'
+  },
+  discountInput: {
+    display: 'flex',
+    flex: 3,
+    justifyContent: 'center',
+  },
+  discountUnit: {
+    display: 'flex',
+    flex: 1,
+    alignItems: 'center',
+    marginLeft: '5%'
+  },
   formButton: {
     justifyContent: 'center',
     width: '100%',
@@ -38,7 +55,7 @@ const styles = {
     flexWrap: 'wrap',
   },
   linkCardDiv: {
-    width:'48%',
+    width: '48%',
     marginLeft: 10,
     right: 0,
   },
@@ -53,13 +70,19 @@ const styles = {
     marginTop: '10%',
     textAlign: 'center',
   },
-  fullUrlText:{
+  errorDiscountINput: {
+    width: '100%',
+    marginTop: '5%',
+    textAlign: 'center',
+    color: 'red',
+  },
+  fullUrlText: {
     overflowWrap: 'break-word',
     textAlign: 'end',
     fontSize: 18,
     maxWidth: '90%',
   },
-  fullUrlDiv:{
+  fullUrlDiv: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'flex-end',
