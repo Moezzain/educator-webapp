@@ -6,10 +6,10 @@ import url from '../../../config/apiConfig';
 export const addRefrralsAction = createAsyncThunk(
   'refrrals/addRefrralsAction',
   async (
-    { name, phone, specialty, referCode, medium, token, adminId },
+    { name, phone, specialty, referCode, medium, referAction, token, adminId },
     { rejectWithValue }
   ) => {
-    const data = { name, phone, specialty, referCode, medium };
+    const data = { name, phone, specialty, referCode, referAction, medium };
 
     return axios
       .post(`${url}/referrer?adminId=${adminId}`, data, {
