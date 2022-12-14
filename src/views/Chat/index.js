@@ -89,7 +89,7 @@ const Chat = () => {
     <div style={localStyles.root}>
       <div style={{ display: 'flex', flexDirection: 'row' }}>
         <div style={localStyles.statsDiv}>
-          {messages.length} :{lang.ar.messageCount} <br />
+          {messages?.length} :{lang.ar.messageCount} <br />
           {lang.ar.usageDuration}: {duration} {'يوم'}
         </div>
         {loading ? (
@@ -111,7 +111,7 @@ const Chat = () => {
             >
               <NavigateBeforeIcon style={styles.icons} fontSize="large" />
             </IconButton>
-            <div style={localStyles.emptyMessages}>{page} - {Math.ceil(messages.length / 30)} </div>
+            {messages && <div style={localStyles.emptyMessages}>{page} - {Math.ceil(messages.length / 30)} </div> }
             <IconButton
               style={localStyles.iconsButton}
               aria-label="older"
@@ -218,7 +218,7 @@ const Chat = () => {
             >
               <NavigateBeforeIcon style={styles.icons} fontSize="large" />
             </IconButton>
-            <div style={localStyles.emptyMessages}>{page} - {Math.ceil(messages.length / 30)} </div>
+            {messages && <div style={localStyles.emptyMessages}>{page} - {Math.ceil(messages.length / 30)} </div> }
             <IconButton
               style={localStyles.iconsButton}
               aria-label="older"
