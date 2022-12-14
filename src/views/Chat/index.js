@@ -10,10 +10,14 @@ import Linkify from 'react-linkify';
 
 import { getChatsAction } from '../../redux/reducers/chatsReducer';
 import { useSelector, useDispatch } from 'react-redux';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 
+import { IconButton } from '@material-ui/core';
 const Chat = () => {
   const dispatch = useDispatch();
   const [localMessages, setLocalMessages] = useState([]);
+  const [page, setPage] = useState(0);
   const [duration, setDuration] = useState(0);
   const [lang, setLang] = useState({
     ar: {
@@ -58,15 +62,34 @@ const Chat = () => {
     }
   }, [currentChat]);
   useEffect(() => {
-    const messagesAndDuration = formatMessages(messages);
-    setLocalMessages(messagesAndDuration.formatedMessages.reverse());
-    setDuration(messagesAndDuration.duration);
+    if (messages) {
+      const allMessagesAndDuration = formatMessages(messages);
+      setDuration(allMessagesAndDuration.duration);
+      const messagesAndDuration = formatMessages(messages.slice(messages.length - 30, messages.length));
+      setLocalMessages(messagesAndDuration.formatedMessages.reverse());
+      setPage(1)
+    }
   }, [messages]);
+
+  const olderMessages = () => {
+    const messagesAndDuration = formatMessages(messages.slice(messages.length - 30 - (30 * page), messages.length - (30 * page)));
+    let tempLocalMessages = JSON.parse(JSON.stringify(messagesAndDuration.formatedMessages.reverse()));
+    setLocalMessages(tempLocalMessages);
+    setPage(page + 1)
+  }
+
+  const newerMessages = () => {
+    const messagesAndDuration = formatMessages(messages.slice(messages.length - 30 - (30 * (page - 2)), messages.length - (30 * (page - 2))));
+    let tempLocalMessages = JSON.parse(JSON.stringify(messagesAndDuration.formatedMessages.reverse()));
+    setLocalMessages(tempLocalMessages);
+    setPage(page - 1)
+  }
+
   return (
     <div style={localStyles.root}>
       <div style={{ display: 'flex', flexDirection: 'row' }}>
         <div style={localStyles.statsDiv}>
-          {localMessages.length} :{lang.ar.messageCount} <br />
+          {messages.length} :{lang.ar.messageCount} <br />
           {lang.ar.usageDuration}: {duration} {'يوم'}
         </div>
         {loading ? (
@@ -77,6 +100,28 @@ const Chat = () => {
       </div>
       <div style={localStyles.chatDiv}>
         <div style={localStyles.chatScrollDiv}>
+          <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <IconButton
+              style={localStyles.iconsButton}
+              aria-label="newer"
+              onClick={() => {
+                if (page != 1)
+                  newerMessages();
+              }}
+            >
+              <NavigateBeforeIcon style={styles.icons} fontSize="large" />
+            </IconButton>
+            <div style={localStyles.emptyMessages}>{page} - {Math.ceil(messages.length / 30)} </div>
+            <IconButton
+              style={localStyles.iconsButton}
+              aria-label="older"
+              onClick={() => {
+                olderMessages();
+              }}
+            >
+              <NavigateNextIcon style={styles.icons} fontSize="large" />
+            </IconButton>
+          </div>
           {localMessages.map((message) => (
             <div key={message.id}>
               {message.message?.date && (
@@ -92,13 +137,13 @@ const Chat = () => {
                     direction: message.userId,
                   }}
                 >
-                <Message.ImageContent
-                  src={message.message.image}
+                  <Message.ImageContent
+                    src={message.message.image}
                     alt={
                       "The image isn't working link: " + message.message.image
                     }
-                  width={400}
-                />
+                    width={400}
+                  />
                 </Message>
               ) : message.message?.audio ? (
                 <Message
@@ -109,7 +154,7 @@ const Chat = () => {
                   }}
                 >
                   <Message.CustomContent>
-                <ReactAudioPlayer src={message.message.audio} controls />
+                    <ReactAudioPlayer src={message.message.audio} controls />
                   </Message.CustomContent>
                 </Message>
               ) : message.message?.file ? (
@@ -162,6 +207,28 @@ const Chat = () => {
               )}
             </div>
           ))}
+          <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <IconButton
+              style={localStyles.iconsButton}
+              aria-label="newer"
+              onClick={() => {
+                if (page != 1)
+                  newerMessages();
+              }}
+            >
+              <NavigateBeforeIcon style={styles.icons} fontSize="large" />
+            </IconButton>
+            <div style={localStyles.emptyMessages}>{page} - {Math.ceil(messages.length / 30)} </div>
+            <IconButton
+              style={localStyles.iconsButton}
+              aria-label="older"
+              onClick={() => {
+                olderMessages();
+              }}
+            >
+              <NavigateNextIcon style={styles.icons} fontSize="large" />
+            </IconButton>
+          </div>
         </div>
       </div>
     </div>
