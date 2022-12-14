@@ -1,14 +1,22 @@
-import { darkTheme } from './themes';
+import { mainTheme, darkTheme } from "./themes";
+
+const theme = mainTheme;
 
 export const lightStyles = {
   root: {
     height: '100%',
     width: '100%',
   },
+  iconsButton: { height: 50, width: 50, marginLeft: 20, marginRight: 20, marginTop: 10 },
   chatDiv: {
     position: 'relative',
     height: '80%',
     width: '96%',
+  },
+  educatorsButton: {
+    width: '20%',
+    margin: 5,
+    backgroundColor: theme.secondary.lightBlue,
   },
   messageFooter: {
     ontSize: 10,
