@@ -65,6 +65,7 @@ const Chat = () => {
     if (messages) {
       const allMessagesAndDuration = formatMessages(messages);
       setDuration(allMessagesAndDuration.duration);
+      console.log(messages);
       const messagesAndDuration = formatMessages(messages.slice(messages.length - 30, messages.length));
       setLocalMessages(messagesAndDuration.formatedMessages.reverse());
       setPage(1)
@@ -72,7 +73,11 @@ const Chat = () => {
   }, [messages]);
 
   const olderMessages = () => {
-    const messagesAndDuration = formatMessages(messages.slice(messages.length - 30 - (30 * page), messages.length - (30 * page)));
+    let messagesAndDuration;
+    if(page + 1 === Math.ceil(messages.length / 30))
+      messagesAndDuration = formatMessages(messages.slice(0, messages.length%30));
+    else
+      messagesAndDuration = formatMessages(messages.slice(messages.length - 30 - (30 * page), messages.length - (30 * page)));
     let tempLocalMessages = JSON.parse(JSON.stringify(messagesAndDuration.formatedMessages.reverse()));
     setLocalMessages(tempLocalMessages);
     setPage(page + 1)
@@ -116,6 +121,7 @@ const Chat = () => {
               style={localStyles.iconsButton}
               aria-label="older"
               onClick={() => {
+                if(page !== Math.ceil(messages.length / 30))
                 olderMessages();
               }}
             >
@@ -223,6 +229,7 @@ const Chat = () => {
               style={localStyles.iconsButton}
               aria-label="older"
               onClick={() => {
+                if(page !== Math.ceil(messages.length / 30))
                 olderMessages();
               }}
             >
