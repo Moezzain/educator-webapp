@@ -10,7 +10,8 @@ import PatientNotes from './PatientNotes';
 import PatientSummaries from './patientSummaries';
 import CalendarView from './CalendarView';
 import PatientList from '../components/PatientList';
-import Refrrals from '../components/Refrrals'
+import Refrrals from '../components/Refrrals';
+import Notifications from '../components/Notifications';
 
 // Redux
 import { useSelector, useDispatch } from 'react-redux';
@@ -64,12 +65,8 @@ const ShowPatientsView = () => {
   const { chats, token, educatorId, darkMode, admin } = useSelector(
     (state) => state.auth
   );
-  const {
-    fetchedEducatorId,
-    patients,
-    educators,
-    currentEducator,
-  } = useSelector((state) => state.educators);
+  const { fetchedEducatorId, patients, educators, currentEducator } =
+    useSelector((state) => state.educators);
   const { patientId } = useSelector((state) => state.patient);
   const { allChats, allChatsLoading } = useSelector((state) => state.chats);
 
@@ -82,7 +79,7 @@ const ShowPatientsView = () => {
       if (chats?.length && !chats[0].id) {
         let tempChats = parseArray(chats);
         dispatch(setChatsAction(tempChats));
-      } 
+      }
     } catch (err) {
       console.log('error setting chats:', err);
     }
@@ -96,7 +93,7 @@ const ShowPatientsView = () => {
       if (tempEducator.length !== 0) {
         setLocalPatients(tempEducator[0].chats);
       }
-      setCheckedAllChats(false)
+      setCheckedAllChats(false);
       setSearchTerm('');
       dispatch(setCurrentEducatorAction(tempEducator[0]));
       dispatch(clearAllChatsAction());
@@ -113,8 +110,8 @@ const ShowPatientsView = () => {
     }
   }, [allChats]);
   useEffect(() => {
-    let tempEducator
-    if(!checkedAllChats){
+    let tempEducator;
+    if (!checkedAllChats) {
       tempEducator = Object.values(educators).filter((educator) => {
         return fetchedEducatorId === educator.id;
       });
@@ -122,15 +119,13 @@ const ShowPatientsView = () => {
         setLocalPatients(tempEducator[0].chats);
       }
     }
-  },[checkedAllChats])
+  }, [checkedAllChats]);
   const renderChat = () => {
     if (!localPatients.length) {
       return null;
     }
 
-    return (
-      <Chat/>
-    );
+    return <Chat />;
   };
 
   const activateChat = (chatId, patientId) => {
@@ -138,27 +133,40 @@ const ShowPatientsView = () => {
     dispatch(setCurrentChatAction(chatId));
   };
   const allPateints = () => {
-    if(fetchedEducatorId){
-      if(admin)
-      dispatch(getAllChatsAction({ educatorId: fetchedEducatorId, token, adminId: educatorId }));
+    if (fetchedEducatorId) {
+      if (admin)
+        dispatch(
+          getAllChatsAction({
+            educatorId: fetchedEducatorId,
+            token,
+            adminId: educatorId,
+          })
+        );
       else
-      dispatch(getAllChatsAction({ educatorId: fetchedEducatorId, token }));
-
+        dispatch(getAllChatsAction({ educatorId: fetchedEducatorId, token }));
     }
   };
   const renderListHeader = () => {
     return (
       <div style={styles.listHeaderDiv}>
-        {
-          admin &&
-        <Button
-          variant="contained"
-          onClick={() => setActiveList('links')}
-          style={styles.buttonsText}
-        >
-          روابط
-        </Button>
-        }
+        {admin && (
+          <div>
+            <Button
+              variant="contained"
+              onClick={() => setActiveList('links')}
+              style={styles.buttonsText}
+            >
+              روابط
+            </Button>
+            <Button
+              variant="contained"
+              onClick={() => setActiveList('notifications')}
+              style={styles.buttonsText}
+            >
+              تنبيهات
+            </Button>
+          </div>
+        )}
         <Button
           variant="contained"
           onClick={() => setActiveList('patients')}
@@ -238,11 +246,10 @@ const ShowPatientsView = () => {
     if (!disableIcons) setCurrentPage(page);
   };
   return (
-    <div style={{height:'100vh'}}>
+    <div style={{ height: '100vh' }}>
       <MyNav />
       <Container maxWidth={false} style={styles.container}>
-        <Card style={styles.card}
-        >
+        <Card style={styles.card}>
           {activeList === 'appointments' ? (
             <div style={styles.calendarMainDiv}>
               <div style={styles.headerListDiv}>{renderListHeader()}</div>
@@ -254,9 +261,10 @@ const ShowPatientsView = () => {
                 />
               </div>
             </div>
-          ) :
-          activeList === 'links'? (
-            <Refrrals setActiveList={setActiveList}/>
+          ) : activeList === 'links' ? (
+            <Refrrals setActiveList={setActiveList} />
+          ) : activeList === 'notifications' ? (
+            <Notifications setActiveList={setActiveList}/>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
               <div style={styles.listDev}>
@@ -297,7 +305,7 @@ const ShowPatientsView = () => {
         </Card>
       </Container>
       <Footer />
-    </div >
+    </div>
   );
 };
 
