@@ -277,6 +277,7 @@ const InvoiceScreen = () => {
                         </tr>
                       </tbody>
                     </table>
+                    <br>
                     <table class="alignTable">
                       <tbody>
                         <tr>
@@ -284,15 +285,23 @@ const InvoiceScreen = () => {
                           <td>اجمالي المبلغ الخاضع للضريبة</td>
                         </tr>
                         <tr>
-                          <td class="textAlign textAlign">${invoice?.intensity?.price}</td>
+                          <td class="textAlign textAlign">${Number(invoice?.intensity?.price) * 0.15}</td>
                           <td>القيمة المضافة: 15%</td>
                         </tr>
+                        ${invoice && invoice?.discountValue > 0 ? 
+                            `<tr>
+                            <td class="textAlign textAlign">${(Number(invoice?.discountValue) * 0.15 + Number(invoice?.discountValue)).toFixed(2)}</td>
+                            <td>قيمة التخفيض </td>
+                          </tr>`
+                          : ''
+                          }
                       </tbody>
                     </table>
                     <div class="line"> </div>
                     <div class="txtCon">
                         <div class="textblack">الاجمالي مع الضريبة</div>
-                        <div class="textblack textAlign">${invoice?.intensity?.price}</div>
+                        <td class="textblack textAlign">${(Number(invoice?.intensity?.price) * 1.15 - Number(invoice?.discountValue) * 1.15).toFixed(2)}</td>
+
                     </div>
                     <div style="align-self: center;">
                       <img class="qrcode" src="https://chart.googleapis.com/chart?chs=150x150&amp;cht=qr&amp;chl=${invoiceID}&amp;choe=UTF-8"
