@@ -11,10 +11,25 @@ export const lightStyles = {
     width: '100%',
     backgroundColor: theme.primary.black,
   },
+  filtersContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+  },
   card: {
     width: '95%',
     display: 'flex',
     direction: 'row',
+    padding: 10,
+    marginTop: 10,
+    marginBottom: 10,
+    backgroundColor: theme.primary.white,
+    borderRadius:10
+  },
+  incoicesCard: {
+    width: '95%',
+    display: 'flex',
+    direction: 'column',
     padding: 10,
     marginTop: 10,
     marginBottom: 10,
@@ -114,6 +129,11 @@ export const darkStyles = {
     marginLeft: '2vw',
     backgroundColor: darkTheme.secondary.lightBlue,
   },
+  filtersContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+  },
   mianDev: {
     marginLeft: 20,
     width: '100%',
@@ -150,6 +170,17 @@ export const darkStyles = {
     backgroundColor: theme.primary.white,
     borderRadius:10,
   },
+  incoicesCard: {
+    width: '95%',
+    display: 'flex',
+    direction: 'column',
+    padding: 10,
+    marginTop: 10,
+    marginBottom: 10,
+    backgroundColor: theme.primary.white,
+    borderRadius:10
+  },
+
   patientListName: {
     color: darkTheme.secondary.lightGrey,
   },

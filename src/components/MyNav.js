@@ -31,6 +31,7 @@ import { Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
+import ReceiptIcon from '@material-ui/icons/Receipt';
 
 import app from '../App.css';
 
@@ -136,10 +137,14 @@ const MyNav = () => {
             width="110"
             height="35"
             style={styles.navLogo}
+            onClick={() => history.push('showpatients')}
           />
           {admin ? 
           <>
 
+            <Button onClick={() => history.push('invoices')}>
+              <ReceiptIcon />
+            </Button>
             <Button onClick={handleClickOpen}>
               <PermIdentityIcon />
             </Button>

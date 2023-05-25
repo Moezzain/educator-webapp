@@ -114,7 +114,7 @@ const ShowPatientsView = () => {
   }, [allChats]);
   useEffect(() => {
     let tempEducator
-    if(!checkedAllChats){
+    if(!checkedAllChats && educators){
       tempEducator = Object.values(educators).filter((educator) => {
         return fetchedEducatorId === educator.id;
       });
@@ -122,7 +122,7 @@ const ShowPatientsView = () => {
         setLocalPatients(tempEducator[0].chats);
       }
     }
-  },[checkedAllChats])
+  },[checkedAllChats, educators])
   const renderChat = () => {
     if (!localPatients.length) {
       return null;

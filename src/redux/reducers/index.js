@@ -3,6 +3,7 @@ import authReducer from './authReducer'
 import educatorsReducer from './educatorsReducer'
 import patientReducer from './patientReducer'
 import refrralsReducer from './refrralsReducer'
+import invoicesReducer from './invoiceReducer'
 import {persistCombineReducers} from 'redux-persist'
 import storage from 'redux-persist/lib/storage' // defaults to localStorage for web
 
@@ -16,7 +17,8 @@ const reducers = persistCombineReducers(persistConfig,{
     auth:authReducer,
     educators:educatorsReducer,
     patient:patientReducer,
-    refrrals:refrralsReducer
+    refrrals:refrralsReducer,
+    invoices: invoicesReducer,
 })
 
 export default reducers
