@@ -66,7 +66,8 @@ const Chat = () => {
       const allMessagesAndDuration = formatMessages(messages);
       setDuration(allMessagesAndDuration.duration);
       console.log(messages);
-      const messagesAndDuration = formatMessages(messages.slice(messages.length - 30, messages.length));
+      const tempMessagesStart = messages.length > 30 ? messages.length - 30 : 0;
+      const messagesAndDuration = formatMessages(messages.slice(tempMessagesStart, messages.length));
       setLocalMessages(messagesAndDuration.formatedMessages.reverse());
       setPage(1)
     }

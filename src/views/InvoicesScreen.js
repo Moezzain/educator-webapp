@@ -74,7 +74,7 @@ const InvoiceScreen = () => {
 
     const { allInvoices } = useSelector((state) => state.invoices);
     useEffect(() => {
-        dispatch(getInvoicesAction({ adminId: educatorId }));
+        dispatch(getInvoicesAction({ adminId: educatorId, token }));
         return () => { };
     }, []);
     const styles = !darkMode ? lightStyles : darkStyles;
@@ -99,14 +99,14 @@ const InvoiceScreen = () => {
     const handleClearDates = () => {
         setEndDate('2023-00-00');
         setStartDate('2023-00-00');
-        dispatch(getInvoicesAction({ adminId: educatorId }));
+        dispatch(getInvoicesAction({ adminId: educatorId, token }));
     }
 
     const handleApplySetDate = () => {
         if ((!StartDate || !EndDate) || (StartDate === '2023-00-00' || EndDate === '2023-00-00'))
             setError(true);
         else {
-            dispatch(getInvoicesAction({ adminId: educatorId, startDate: StartDate, endDate: EndDate }));
+            dispatch(getInvoicesAction({ adminId: educatorId, startDate: StartDate, endDate: EndDate, token }));
             setError(false);
         }
     };
