@@ -7,9 +7,9 @@ export const getInvoicesAction = createAsyncThunk(
   'invoices/getIvoicesAction',
   async ({ startDate, endDate, token, adminId }, { rejectWithValue }) => {
     try {
-      const adminParam = adminId ? `adminId=${adminId}&` : '';
+      const adminParam = adminId ? `&adminId=${adminId}` : '';
       let result = await axios.get(
-        `${url}/invoices?get=allInvoices&${adminParam}startDate=${startDate? startDate : ''}&endDate=${endDate? endDate : ''}`,
+        `${url}/invoices?get=allInvoices&startDate=${startDate? startDate : ''}&endDate=${endDate? endDate : ''}${adminParam}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
