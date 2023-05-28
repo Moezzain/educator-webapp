@@ -45,7 +45,7 @@ const MyNav = () => {
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordVerify, setNewPasswordVerify] = useState('');
   const [value, setValue] = useState(2);
-  const { educators, loading, fetchedEducatorId } = useSelector(
+  const { educators, patients, loading, fetchedEducatorId } = useSelector(
     (state) => state.educators
   );
   const { educatorId, token, darkMode, admin, resetError } = useSelector(
@@ -56,7 +56,8 @@ const MyNav = () => {
     
   useEffect(() => {
     if (admin) {
-      dispatch(getAllEducators({ adminId: educatorId, token }));
+      if(patients.length == 0 || educators.length == 0)
+        dispatch(getAllEducators({ adminId: educatorId, token }));
     } else {
       dispatch(getEducatorsAndPatients({ educatorId, token }));
     }
