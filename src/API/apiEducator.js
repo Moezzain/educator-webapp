@@ -81,7 +81,7 @@ export const getChats = async (educatorId, token) => {
 export const getEducatorData = async ({educatorId, token}) => {
   try {
     const get = 'chats,appointments,educator,all';
-    const result = await axios.get(`${url}/educator?id=${educatorId}&get=${get}&educatorId=${educatorId}`, {headers: {
+    const result = await axios.get(`${url}/educator?id=${educatorId}&get=${get}&educatorId=${educatorId}&adminDashboard=true`, {headers: {
       Authorization: `Bearer ${token}`
     }})
     if(result.data) {

@@ -113,208 +113,208 @@ const InvoiceScreen = () => {
     const people = ['Alfred', 'Jodocus', 'Kwak', 'Dolf'];
 
     const converter = ({
-        invoiceDate,
-        invoice,
-        amountWithoutDiscount,
-        invoiceID,
-        paymentId
-      }) => {
-        let html =
-                `<!DOCTYPE html>
-                <html>
-                
-                <head>
-                  <base target="_top">
-                  <style>
-                    .container {
-                      background: #FFFFFF;
-                      box-shadow: 0px 8px 50px rgba(230, 234, 238, 0.6);
-                      border-radius: 10px;
-                      width: 688px;
-                      height: 639px;
-                      font-family: 'Cairo';
-                      font-style: normal;
-                      text-align: right;
-                      display: flex;
-                      flex-direction: column;
-                      font-size: 14px;
-                      font-family: 'Noto Sans Arabic';
-                      padding: 18px;
-                      /* align-items: flex-end; */
-                
-                    }
-                    upperContainer {
-                        border-radius: 10px;
-                        width: 988px;
-                        height: 939px;
-                        font-family: 'Cairo';
-                        font-style: normal;
-                        text-align: right;
-                        font-size: 14px;
-                        /* align-items: flex-end; */
-                    }
-                  
-                
-                    .imageCon {
-                      width: 100px;
-                      height: 50px;
-                      align-self: end;
-                    }
-                
-                    .txtCon {
-                      display: flex;
-                      flex-direction: row-reverse;
-                      width: 100%;
-                      justify-content: space-between;
-                      align-self: flex-end;
-                    }
-                
-                    .txt {
-                      font-style: normal;
-                      font-weight: 600;
-                      font-size: 14px;
-                      line-height: 22px;
-                      text-align: right;
-                      font-family: 'Noto Sans Arabic';
-                      padding: 3.5px;
-                      color: #042C43;
-                      width: 100%;
-                    }
-                
-                    .textblack {
-                      font-style: normal;
-                      font-weight: 600;
-                      font-size: 14px;
-                      line-height: 22px;
-                      text-align: right;
-                      font-family: 'Noto Sans Arabic';
-                      padding: 3.5px;
-                      width: 100%;
-                      color: black;
-                    }
-                    
-                    .color {
-                      color: #042C43;
-                      font-weight: 600;
-                      font-size: 14px;
-                    }
-                    
-                    .dashed {
-                      background: rgba(192, 192, 192, 0.2);
-                      border: 1px dashed #C0C0C0;
-                      border-radius: 9px;
-                      /* padding: 13px; */
-                    }
-                    .textAlign {
-                        text-align: left;
-                    }
-                    .line {
-                      background: rgba(192, 192, 192, 0.2);
-                      border: 1px solid #C0C0C0;
-                      border-radius: 9px;
-                      /* padding: 13px; */
-                    }
-                
-                    .qrcode {
-                      width: 200px;
-                      height: 200px;
-                    }
-                
-                    .shell {
-                      position: absolute;
-                      top: 80px;
-                      left: 80px;
-                      width: 40px;
-                      height: 40px;
-                    }
-                    .alignTable {
-                        width: 100%;
-                        align-self: end;
-                    }
-                    .alignTableEnd {
-                        width: 100%;
-                      align-self: end;
-                    }
-                    tr{
-                      color: #042c42
-                    }
-                  </style>
-                <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic&family=Open+Sans:wght@300&family=Quintessential&display=swap" rel="stylesheet">
-                </head>
-                
-                <body>
-                <div id= "testt" class="container">
-                    <div id= "testt" class="container">
-                    <div class="txt">فاتورة ضريبية مبسطة</div>
-                    <div class="txt">فاتورة من تطبيق أثنين</div>
-                      <div class="txtCon">
-                      <div class="txt">الرقم الضريبي</div>
-                      <div class="textblack">310397281100003</div>
-                    </div>
-                         <!-- 
-                    <div class="txt">العنوان: الملك عبدالعزيزالرياض، الياسمين 13326</div> -->
-                    <div class="dashed"> </div>
-                    <div class="txtCon">
-                      <div class="textblack">رقم الفاتورة</div>
-                      <div class="textblack">${paymentId}</div>
-                    </div>
-                    <div class="txtCon">
-                      <div class="textblack">تاريخ الفاتورة</div>
-                      <div class="textblack">${invoiceDate}</div>
-                    </div>
-                    <div class="dashed"> </div>
-                    <table>
-                      <tbody>
-                        <tr>
-                          <td class="textAlign">المبلغ</td>
-                          <td>الجلسات</td>
-                          <td>الباقة </td>
-                        </tr>
-                        <tr>
-                          <td class="textAlign">${invoice?.intensity?.price}</td>
-                          <td>${invoice?.intensity?.numberOfSessions}</td>
-                          <td>${invoice?.intensity?.intensityTitleAr}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                    <br>
-                    <table class="alignTable">
-                      <tbody>
-                        <tr>
-                          <td class="textAlign textAlign">${invoice?.intensity?.price}</td>
-                          <td>اجمالي المبلغ الخاضع للضريبة</td>
-                        </tr>
-                        <tr>
-                          <td class="textAlign textAlign">${Number(invoice?.intensity?.price) * 0.15}</td>
-                          <td>القيمة المضافة: 15%</td>
-                        </tr>
-                        ${invoice && invoice?.discountValue > 0 ? 
-                            `<tr>
-                            <td class="textAlign textAlign">${(Number(invoice?.discountValue) * 0.15 + Number(invoice?.discountValue)).toFixed(2)}</td>
-                            <td>قيمة التخفيض </td>
-                          </tr>`
-                          : ''
-                          }
-                      </tbody>
-                    </table>
-                    <div class="line"> </div>
-                    <div class="txtCon">
-                        <div class="textblack">الاجمالي مع الضريبة</div>
-                        <td class="textblack textAlign">${(Number(invoice?.intensity?.price) * 1.15 - Number(invoice?.discountValue) * 1.15).toFixed(2)}</td>
-
-                    </div>
-                    <div style="align-self: center;">
-                      <img class="qrcode" src="https://chart.googleapis.com/chart?chs=150x150&amp;cht=qr&amp;chl=${invoiceID}&amp;choe=UTF-8"
-                        alt="QR code" />
-                    </div>
-                  </div>
-                </div>
-                </body>
-                
-                </html>
-                `;
-           return html;
+      invoiceDate,
+      invoice,
+      amountWithoutDiscount,
+      invoiceID,
+      paymentId
+    }) => {
+      let html =
+        `<!DOCTYPE html>
+  <html>
+  
+  <head>
+    <base target="_top">
+    <style>
+      .container {
+        background: #FFFFFF;
+        box-shadow: 0px 8px 50px rgba(230, 234, 238, 0.6);
+        border-radius: 10px;
+        width: 688px;
+        height: 639px;
+        font-family: 'Cairo';
+        font-style: normal;
+        text-align: right;
+        display: flex;
+        flex-direction: column;
+        font-size: 14px;
+        font-family: 'Noto Sans Arabic';
+        padding: 18px;
+        /* align-items: flex-end; */
+  
       }
+      upperContainer {
+          border-radius: 10px;
+          width: 988px;
+          height: 939px;
+          font-family: 'Cairo';
+          font-style: normal;
+          text-align: right;
+          font-size: 14px;
+          /* align-items: flex-end; */
+      }
+    
+  
+      .imageCon {
+        width: 100px;
+        height: 50px;
+        align-self: end;
+      }
+  
+      .txtCon {
+        display: flex;
+        flex-direction: row-reverse;
+        width: 100%;
+        justify-content: space-between;
+        align-self: flex-end;
+      }
+  
+      .txt {
+        font-style: normal;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 22px;
+        text-align: right;
+        font-family: 'Noto Sans Arabic';
+        padding: 3.5px;
+        color: #042C43;
+        width: 100%;
+      }
+  
+      .textblack {
+        font-style: normal;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 22px;
+        text-align: right;
+        font-family: 'Noto Sans Arabic';
+        padding: 3.5px;
+        width: 100%;
+        color: black;
+      }
+      
+      .color {
+        color: #042C43;
+        font-weight: 600;
+        font-size: 14px;
+      }
+      
+      .dashed {
+        background: rgba(192, 192, 192, 0.2);
+        border: 1px dashed #C0C0C0;
+        border-radius: 9px;
+        /* padding: 13px; */
+      }
+      .textAlign {
+          text-align: left;
+      }
+      .line {
+        background: rgba(192, 192, 192, 0.2);
+        border: 1px solid #C0C0C0;
+        border-radius: 9px;
+        /* padding: 13px; */
+      }
+  
+      .qrcode {
+        width: 200px;
+        height: 200px;
+      }
+  
+      .shell {
+        position: absolute;
+        top: 80px;
+        left: 80px;
+        width: 40px;
+        height: 40px;
+      }
+      .alignTable {
+          width: 100%;
+          align-self: end;
+      }
+      .alignTableEnd {
+          width: 100%;
+        align-self: end;
+      }
+      tr{
+        color: #042c42
+      }
+    </style>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic&family=Open+Sans:wght@300&family=Quintessential&display=swap" rel="stylesheet">
+  </head>
+  
+  <body>
+  <div id= "testt" class="container">
+      <div id= "testt" class="container">
+      <div class="txt">فاتورة ضريبية مبسطة</div>
+      <div class="txt">فاتورة من تطبيق أثنين</div>
+        <div class="txtCon">
+        <div class="txt">الرقم الضريبي</div>
+        <div class="textblack">310397281100003</div>
+      </div>
+           <!-- 
+      <div class="txt">العنوان: الملك عبدالعزيزالرياض، الياسمين 13326</div> -->
+      <div class="dashed"> </div>
+      <div class="txtCon">
+        <div class="textblack">رقم الفاتورة</div>
+        <div class="textblack">${paymentId}</div>
+      </div>
+      <div class="txtCon">
+        <div class="textblack">تاريخ الفاتورة</div>
+        <div class="textblack">${invoiceDate}</div>
+      </div>
+      <div class="dashed"> </div>
+      <table>
+        <tbody>
+          <tr>
+            <td class="textAlign">المبلغ</td>
+            <td>الجلسات</td>
+            <td>الباقة </td>
+          </tr>
+          <tr>
+            <td class="textAlign">${invoice?.intensity?.price}</td>
+            <td>${invoice?.intensity?.numberOfSessions}</td>
+            <td>${invoice?.intensity?.intensityTitleAr}</td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      <table class="alignTable">
+        <tbody>
+          <tr>
+            <td class="textAlign textAlign">${invoice?.intensity?.price}</td>
+            <td>اجمالي المبلغ الخاضع للضريبة</td>
+          </tr>
+          ${invoice && invoice?.discountValue > 0 ?
+          `<tr>
+              <td class="textAlign textAlign">${(Number(invoice?.discountValue) * 0.15 + Number(invoice?.discountValue)).toFixed(2)}</td>
+              <td>قيمة التخفيض </td>
+            </tr>`
+          : ''
+        }
+            <tr>
+            <td class="textAlign textAlign">${((Number(invoice?.intensity?.price) - Number(invoice?.discountValue)) * 0.15).toFixed(2)}</td>
+            <td>القيمة المضافة: 15%</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="line"> </div>
+      <div class="txtCon">
+          <div class="textblack">الاجمالي مع الضريبة</div>
+          <td class="textblack textAlign">${(Number(invoice?.intensity?.price) * 1.15 - Number(invoice?.discountValue) * 1.15).toFixed(2)}</td>
+
+      </div>
+      <div style="align-self: center;">
+        <img class="qrcode" src="https://chart.googleapis.com/chart?chs=150x150&amp;cht=qr&amp;chl=${invoiceID}&amp;choe=UTF-8"
+          alt="QR code" />
+      </div>
+    </div>
+  </div>
+  </body>
+  
+  </html>
+                `;
+      return html;
+    }
 
     const DownloadAllFiles = async () => {
         if (allInvoices) {

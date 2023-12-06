@@ -5,7 +5,7 @@ import axios from "axios"
 export const getAdminData = async ({educatorId, adminId, token}) => {
   try {
     const get = 'chats,appointments,educator,all';
-    const result = await axios.get(`${url}/educator?id=${educatorId}&get=${get}&adminId=${adminId}`, {headers: {
+    const result = await axios.get(`${url}/educator?id=${educatorId}&get=${get}&adminId=${adminId}&adminDashboard=true`, {headers: {
       Authorization: `Bearer ${token}`
     }})
     if(result.data) {
